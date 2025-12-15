@@ -1,57 +1,63 @@
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import { isAuthenticated, logout as logoutService } from '../services/auth';
+import React, { createContext, useEffect, useState } from "react";
+import { signIn, signOut, getCurrentUser } from "aws-amplify/auth";
 
 interface AuthContextData {
   isLoggedIn: boolean;
   loading: boolean;
-  setIsLoggedIn: (value: boolean) => void;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
-interface AuthProviderProps {
-  children: ReactNode;
-}
+export const AuthContext = createContext<AuthContextData>(
+  {} as AuthContextData
+);
 
-export const AuthContext = createContext<AuthContextData>({} as AuthContextData);
-
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    checkAuth();
+    checkSession();
   }, []);
 
-  const checkAuth = async () => {
+  const checkSession = async () => {
     try {
-      const authenticated = await isAuthenticated();
-      setIsLoggedIn(authenticated);
-    } catch (error) {
-      console.error('Erro ao verificar autenticação:', error);
+      await getCurrentUser();
+      setIsLoggedIn(true);
+    } catch {
       setIsLoggedIn(false);
     } finally {
       setLoading(false);
     }
   };
 
-  const logout = async () => {
+  const login = async (email: string, password: string) => {
+    setLoading(true);
     try {
-      await logoutService();
-      setIsLoggedIn(false);
-    } catch (error) {
-      console.error('Erro ao fazer logout:', error);
+      await signIn({
+        username: email,
+        password: password,
+        options: {
+          authFlowType: "USER_PASSWORD_AUTH",
+        },
+      });
+      setIsLoggedIn(true);
+    } catch (error: any) {
+      throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
+  const logout = async () => {
+    await signOut();
+    setIsLoggedIn(false);
+  };
+
   return (
-    <AuthContext.Provider 
-      value={{ 
-        isLoggedIn, 
-        loading, 
-        setIsLoggedIn, 
-        logout 
-      }}
-    >
+    <AuthContext.Provider value={{ isLoggedIn, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

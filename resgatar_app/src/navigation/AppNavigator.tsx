@@ -6,7 +6,6 @@ import {DashboardScreen} from '../screens/DashboardScreen'
 import {LoadingScreen} from '../screens/LoadingScreen';
 
 const Stack = createNativeStackNavigator();
-
 const AppNavigator = () => {
   const { isLoggedIn, loading } = useContext(AuthContext);
 
@@ -19,10 +18,14 @@ const AppNavigator = () => {
       {!isLoggedIn ? (
         <Stack.Screen name="Login" component={LoginScreen} />
       ) : (
-        <Stack.Screen name="Home" component={DashboardScreen} />
+        <Stack.Screen
+          name="Dashboard"
+          component={DashboardScreen}
+        />
       )}
     </Stack.Navigator>
   );
 };
+
 
 export default AppNavigator;

@@ -1,17 +1,24 @@
+import {
+  COGNITO_USER_POOL_ID,
+  COGNITO_USER_POOL_CLIENT_ID,
+  COGNITO_REGION,
+} from "@env";
 import { Amplify } from "aws-amplify";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
-Amplify.configure({
+const config = {
   Auth: {
-    storage: AsyncStorage,
     Cognito: {
-      userPoolId: "us-east-1_XXXXXXXXX",
-      userPoolClientId: "YYYYYYYYYYYYYYYY",
-
-      // 👇 ISSO RESOLVE O ERRO
+      userPoolId: COGNITO_USER_POOL_ID,
+      userPoolClientId: COGNITO_USER_POOL_CLIENT_ID,
+      region: COGNITO_REGION,
       loginWith: {
-        email: true,
+        username: true,
       },
+      userPoolEndpoint: undefined,
     },
   },
-});
+};
+
+Amplify.configure(config);
+
+export default Amplify;

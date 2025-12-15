@@ -1,27 +1,15 @@
-// src/app/dashboard.tsx
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Button } from '../components/Button'; // Importa o nosso componente Button
+import { AuthContext } from '../context/AuthContext';
+import { Button } from '../components/Button';
 
-export const  DashboardScreen = () => {
+export const DashboardScreen = () => {
+  const { logout } = useContext(AuthContext);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Dashboard</Text>
+    <View>
+      <Text>Dashboard</Text>
+      <Button title="Sair" onPress={logout} />
     </View>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 32,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 24, // Adiciona um espaço abaixo do título
-  },
-});
+};
