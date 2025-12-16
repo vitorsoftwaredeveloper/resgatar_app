@@ -1,13 +1,22 @@
-import React from 'react';
-import { TextInput, TextInputProps } from 'react-native';
-import { styles } from './styles';
+import React from "react";
+import { TextInput, TextInputProps, View } from "react-native";
+import { styles } from "./styles";
 
-export function Input({ ...rest }: TextInputProps) {
+interface InputProps extends TextInputProps {
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+}
+
+export function Input({ leftIcon, rightIcon, ...rest }: InputProps) {
   return (
-    <TextInput
-      style={styles.input}
-      placeholderTextColor="#999999" 
-      {...rest}
-    />
+    <View style={styles.container}>
+      {leftIcon && <View style={styles.iconContainer}>{leftIcon}</View>}
+      <TextInput
+        style={styles.input}
+        placeholderTextColor="#999999"
+        {...rest}
+      />
+      {rightIcon && <View style={styles.iconContainer}>{rightIcon}</View>}
+    </View>
   );
 }
