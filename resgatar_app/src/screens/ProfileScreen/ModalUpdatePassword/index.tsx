@@ -2,20 +2,13 @@ import React, { useContext, useState } from "react";
 import {
   View,
   Text,
-  ScrollView,
   TouchableOpacity,
   Alert,
   Modal,
   TextInput,
 } from "react-native";
 import { X } from "lucide-react-native";
-import {
-  formatCEP,
-  formatCNPJCPF,
-  formatCurrencyBRL,
-  formatPhoneNumber,
-} from "@/utils/helper";
-import { styles } from "../styles";
+import { styles } from "./styles";
 import { Button } from "@/components/Button";
 import { AuthContext } from "@/context/AuthContext";
 

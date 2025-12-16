@@ -15,7 +15,7 @@ import {
   formatPhoneNumber,
 } from "@/utils/helper";
 import { BirthdayPicker } from "@/components/DatePicker";
-import { styles } from "../styles";
+import { styles } from "./styles";
 import { colors } from "@/theme/colors";
 import { Input } from "@/components/Input";
 import { AuthContext } from "@/context/AuthContext";
@@ -29,7 +29,6 @@ export const ModalEditProfile = ({
   editModalVisible,
   setEditModalVisible,
 }: IModalEditProfile) => {
-  //   const [editModalVisible, setEditModalVisible] = useState(false);
   const { member } = useContext(AuthContext);
 
   const [memberData, setMemberData] = useState({
@@ -74,6 +73,7 @@ export const ModalEditProfile = ({
         style={styles.modalContainer}
         contentContainerStyle={{
           gap: 12,
+          paddingBottom: 32,
         }}
       >
         <View style={styles.modalHeader}>
@@ -251,9 +251,18 @@ export const ModalEditProfile = ({
           onChangeText={(text) => handleMemberDataChange("numberType", text)}
           keyboardType="numeric"
         />
-
-        <Button title="Salvar" onPress={handleSaveProfile} />
-        <Button title="Cancelar" onPress={() => setEditModalVisible(false)} />
+        <View style={styles.saveButtonText}>
+          <Button
+            title="Salvar"
+            onPress={handleSaveProfile}
+            styleCustom={{ minWidth: "45%" }}
+          />
+          <Button
+            title="Cancelar"
+            onPress={() => setEditModalVisible(false)}
+            styleCustom={{ minWidth: "45%" }}
+          />
+        </View>
       </ScrollView>
     </Modal>
   );
