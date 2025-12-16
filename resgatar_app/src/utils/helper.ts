@@ -67,4 +67,28 @@ function formatCEP(value: string): string {
   return `${digits.slice(0, 5)}-${digits.slice(5)}`;
 }
 
-export { formatCNPJCPF, formatPhoneNumber, formatCurrencyBRL, formatCEP };
+function formatUTCToDateBR(timestamp: number | string): string {
+  const ts = Number(timestamp);
+
+  if (!ts || Number.isNaN(ts)) {
+    return "";
+  }
+
+  const date = new Date(ts);
+
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const year = date.getUTCFullYear();
+
+  const result = `${day}/${month}/${year}`;
+
+  return result;
+}
+
+export {
+  formatCNPJCPF,
+  formatPhoneNumber,
+  formatCurrencyBRL,
+  formatCEP,
+  formatUTCToDateBR,
+};

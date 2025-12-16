@@ -13,4 +13,13 @@ export const MemberServices = {
       throw error;
     }
   },
+  editMember: async (member: IMember) => {
+    try {
+      const response = await api.put("/member", member);
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao editar membro", error);
+      throw error;
+    }
+  },
 };

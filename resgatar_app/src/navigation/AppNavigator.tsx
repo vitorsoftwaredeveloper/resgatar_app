@@ -10,7 +10,7 @@ const AppNavigator = () => {
   const { isLoggedIn, loading } = useContext(AuthContext);
 
   if (loading) {
-    return <LoadingScreen />;
+    return <LoadingScreen title="Aguarde..." />;
   }
 
   return (

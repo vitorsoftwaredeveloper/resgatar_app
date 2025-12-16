@@ -20,6 +20,7 @@ import { colors } from "@/theme/colors";
 import { Input } from "@/components/Input";
 import { AuthContext } from "@/context/AuthContext";
 import { Button } from "@/components/Button";
+import { IMember, IMemberState } from "@/types/Member";
 
 interface IModalEditProfile {
   editModalVisible: boolean;
@@ -29,9 +30,9 @@ export const ModalEditProfile = ({
   editModalVisible,
   setEditModalVisible,
 }: IModalEditProfile) => {
-  const { member } = useContext(AuthContext);
+  const { member, updateMember } = useContext(AuthContext);
 
-  const [memberData, setMemberData] = useState({
+  const [memberData, setMemberData] = useState<IMemberState>({
     email: member?.email || "",
     phoneNumber: member?.phoneNumber || "",
     firstName: member?.firstName || "",
@@ -47,7 +48,7 @@ export const ModalEditProfile = ({
     datePayment: member?.paymentInfo?.datePayment?.toString() || "",
     amount: member?.paymentInfo?.amount?.toString() || "",
     type: member?.identification?.type || "CPF",
-    numberType: member?.identification?.number || "",
+    numberType: member?.identification?.numberType || "",
   });
 
   const handleMemberDataChange = (field: string, value: string) => {
@@ -57,9 +58,10 @@ export const ModalEditProfile = ({
     });
   };
 
-  const handleSaveProfile = () => {
-    Alert.alert("Sucesso", "Perfil atualizado!");
+  const handleSaveProfile = async () => {
+    await updateMember(memberData);
     setEditModalVisible(false);
+    Alert.alert("Sucesso", "Perfil atualizado com sucesso!");
   };
 
   return (
@@ -165,13 +167,13 @@ export const ModalEditProfile = ({
           label="Número"
           placeholder=""
           value={memberData.number}
-          onChangeText={(text) => handleMemberDataChange("street", text)}
+          onChangeText={(text) => handleMemberDataChange("number", text)}
         />
         <Input
           label="Complemento"
           placeholder=""
           value={memberData.complement}
-          onChangeText={(text) => handleMemberDataChange("complemento", text)}
+          onChangeText={(text) => handleMemberDataChange("complement", text)}
         />
 
         <Text style={styles.sectionTitle}>Informações da contribuição</Text>
@@ -253,13 +255,13 @@ export const ModalEditProfile = ({
         />
         <View style={styles.saveButtonText}>
           <Button
-            title="Salvar"
-            onPress={handleSaveProfile}
+            title="Cancelar"
+            onPress={() => setEditModalVisible(false)}
             styleCustom={{ minWidth: "45%" }}
           />
           <Button
-            title="Cancelar"
-            onPress={() => setEditModalVisible(false)}
+            title="Salvar"
+            onPress={handleSaveProfile}
             styleCustom={{ minWidth: "45%" }}
           />
         </View>

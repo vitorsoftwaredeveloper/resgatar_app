@@ -11,7 +11,7 @@ import {
   getStoredMember,
   removeMember,
 } from "@/storage/asyncStorage";
-import { IMember } from "@/types/Member";
+import { IMember, IMemberState } from "@/types/Member";
 
 interface AuthContextData {
   isLoggedIn: boolean;
@@ -20,6 +20,7 @@ interface AuthContextData {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   changePassword: (oldPassword: string, newPassword: string) => Promise<void>;
+  updateMember: (member: IMemberState) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextData>(
@@ -95,6 +96,47 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }
 
+  async function updateMember(member: IMemberState) {
+    setLoading(true);
+
+    try {
+      const formatMember: IMember = {
+        firstName: member.firstName,
+        lastName: member.lastName,
+        email: member.email,
+        phoneNumber: member.phoneNumber,
+        paymentInfo: {
+          datePayment: parseInt(member.datePayment),
+          amount: parseFloat(member.amount),
+        },
+        identification: {
+          type: member.type as "CPF" | "CNPJ",
+          numberType: member.numberType,
+        },
+        bio: member.bio,
+        dateOfBirth: member.dateOfBirth,
+        address: {
+          street: member.street,
+          number: member.number,
+          city: member.city,
+          state: member.state,
+          zip: member.zip,
+          complement: member.complement,
+        },
+      };
+
+      await MemberServices.editMember(formatMember);
+
+      setMember(formatMember);
+      await saveMember(formatMember);
+    } catch (error) {
+      setMember(null);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function changePassword(oldPassword: string, newPassword: string) {
     try {
       await updatePassword({
@@ -115,6 +157,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         login,
         logout,
         changePassword,
+        updateMember,
       }}
     >
       {children}

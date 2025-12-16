@@ -1,6 +1,24 @@
+interface IMemberState {
+  email: string;
+  phoneNumber: string;
+  firstName: string;
+  lastName: string;
+  bio: string;
+  dateOfBirth: number;
+  street: string;
+  number: string;
+  city: string;
+  state: string;
+  zip: string;
+  complement: string;
+  datePayment: string;
+  amount: string;
+  type: "CNPJ" | "CPF";
+  numberType: string;
+}
+
 interface IMember {
   email: string;
-  password: string;
   phoneNumber: string;
   firstName: string;
   lastName: string;
@@ -20,9 +38,9 @@ interface IMember {
   };
   identification: {
     type: "CPF" | "CNPJ";
-    number: string;
+    numberType: string;
   };
   role?: "admin" | "user";
 }
 
-export { IMember };
+export { IMember, IMemberState };

@@ -1,12 +1,10 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  ActivityIndicator,
-  SafeAreaView,
-} from 'react-native';
+import React from "react";
+import { View, Text, ActivityIndicator, SafeAreaView } from "react-native";
 
-export const LoadingScreen: React.FC = () => {
+interface ILoadingProps {
+  title: string;
+}
+export const LoadingScreen = ({ title }: ILoadingProps) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
@@ -16,44 +14,40 @@ export const LoadingScreen: React.FC = () => {
         </View>
 
         {/* App Name */}
-        <Text style={styles.appName}>Meu App</Text>
-        
+        <Text style={styles.appName}>{title}</Text>
+
         {/* Loading Indicator */}
-        <ActivityIndicator 
-          size="large" 
-          color="#007AFF" 
-          style={styles.loader}
-        />
-        
+        <ActivityIndicator size="large" color="#007AFF" style={styles.loader} />
+
         {/* Loading Text */}
-        <Text style={styles.loadingText}>Carregando...</Text>
+        {/* <Text style={styles.loadingText}>Carregando...</Text> */}
       </View>
     </SafeAreaView>
   );
 };
 
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 24,
   },
   logoContainer: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#f0f0f0',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#f0f0f0",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 24,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 4,
@@ -67,8 +61,8 @@ const styles = StyleSheet.create({
   },
   appName: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
     marginBottom: 48,
   },
   loader: {
@@ -76,8 +70,8 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 16,
-    color: '#666',
-    fontWeight: '500',
+    color: "#666",
+    fontWeight: "500",
   },
 });
 
