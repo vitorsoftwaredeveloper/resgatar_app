@@ -5,7 +5,7 @@ interface IMember {
   firstName: string;
   lastName: string;
   bio?: string;
-  age?: number;
+  dateOfBirth: number;
   address?: {
     street?: string;
     number?: string;

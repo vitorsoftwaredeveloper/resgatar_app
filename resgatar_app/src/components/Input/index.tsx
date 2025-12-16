@@ -6,6 +6,7 @@ interface InputProps extends TextInputProps {
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   label?: string;
+  height?: number;
 }
 
 export function Input({
@@ -13,6 +14,7 @@ export function Input({
   rightIcon,
   label,
   value,
+  height,
   ...rest
 }: InputProps) {
   const [isFocused, setIsFocused] = useState(false);
@@ -54,7 +56,13 @@ export function Input({
   };
 
   return (
-    <View style={[styles.container, isFocused && styles.focused]}>
+    <View
+      style={[
+        styles.container,
+        isFocused && styles.focused,
+        height ? { height } : {},
+      ]}
+    >
       {leftIcon && <View style={styles.iconContainer}>{leftIcon}</View>}
       {label && <Animated.Text style={labelStyle}>{label}</Animated.Text>}
       <TextInput

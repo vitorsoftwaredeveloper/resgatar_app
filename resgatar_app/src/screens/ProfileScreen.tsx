@@ -150,14 +150,16 @@ export const ProfileScreen = () => {
             value={memberData.bio}
             onChangeText={(text) => handleMemberDataChange("bio", text)}
             multiline
+            numberOfLines={4}
+            height={100}
           />
 
-          <Input
-            label="Idade"
-            placeholder=""
-            value={memberData.age}
-            onChangeText={(text) => handleMemberDataChange("age", text)}
-            keyboardType="numeric"
+          <Text style={styles.label}>Data de nascimento</Text>
+          <BirthdayPicker
+            date={memberData.dateOfBirth}
+            handleDate={(date: any) =>
+              handleMemberDataChange("dateOfBirth", date)
+            }
           />
 
           <Text style={styles.sectionTitle}>Endereço</Text>
