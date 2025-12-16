@@ -19,7 +19,7 @@ const formatCNPJCPF = (value: string, type: string) => {
   return value;
 };
 
-export function formatPhoneNumber(value: string) {
+function formatPhoneNumber(value: string) {
   const digits = value.replace(/\D/g, "").slice(0, 11);
 
   if (digits.length <= 2) {
@@ -37,4 +37,24 @@ export function formatPhoneNumber(value: string) {
   return digits.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
 }
 
-export { formatCNPJCPF };
+function formatCurrencyBRL(value: string, max = 1000) {
+  const digits = value.replace(/\D/g, "");
+
+  if (!digits) return "";
+
+  const amount = Number(digits) / 100;
+
+  if (amount > max) {
+    return max.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+  }
+
+  return amount.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+}
+
+export { formatCNPJCPF, formatPhoneNumber, formatCurrencyBRL };

@@ -14,7 +14,12 @@ import { colors } from "../theme/colors";
 import { AuthContext } from "../context/AuthContext";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
-import { formatCNPJCPF, formatPhoneNumber } from "@/utils/helper";
+import {
+  formatCNPJCPF,
+  formatCurrencyBRL,
+  formatPhoneNumber,
+} from "@/utils/helper";
+import { BirthdayPicker } from "@/components/DatePicker";
 
 export const ProfileScreen = () => {
   const { logout, member } = useContext(AuthContext);
@@ -25,7 +30,7 @@ export const ProfileScreen = () => {
     firstName: member?.firstName || "",
     lastName: member?.lastName || "",
     bio: member?.bio || "",
-    age: member?.age?.toString() || "",
+    dateOfBirth: member?.dateOfBirth || 0,
     street: member?.address?.street || "",
     number: member?.address?.number || "",
     city: member?.address?.city || "",
@@ -36,6 +41,12 @@ export const ProfileScreen = () => {
     type: member?.identification?.type || "CPF",
     numberType: member?.identification?.number || "",
   });
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [passwordModalVisible, setPasswordModalVisible] = useState(false);
+
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleMemberDataChange = (field: string, value: string) => {
     setMemberData({
@@ -48,13 +59,6 @@ export const ProfileScreen = () => {
     // TODO: Save to API
     Alert.alert("Sucesso", "Perfil atualizado!");
   };
-
-  const [editModalVisible, setEditModalVisible] = useState(false);
-  const [passwordModalVisible, setPasswordModalVisible] = useState(false);
-
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSaveProfile = () => {
     Alert.alert("Sucesso", "Perfil atualizado!");
@@ -108,7 +112,7 @@ export const ProfileScreen = () => {
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Editar Perfil</Text>
             <TouchableOpacity onPress={() => setEditModalVisible(false)}>
-              <X color="#FFFFFF" size={24} />
+              <X color={colors.white} size={24} />
             </TouchableOpacity>
           </View>
 
@@ -194,18 +198,37 @@ export const ProfileScreen = () => {
             onChangeText={(text) => handleMemberDataChange("zip", text)}
           />
 
-          <Text style={styles.sectionTitle}>Informações de Pagamento</Text>
-          <Input
-            label="Data de Pagamento"
-            placeholder=""
-            value={memberData.datePayment}
-            onChangeText={(text) => handleMemberDataChange("datePayment", text)}
-            keyboardType="numeric"
-          />
+          <Text style={styles.sectionTitle}>Informações da contribuição</Text>
+          <Text style={styles.label}>Dia da contribuição</Text>
+          <View style={styles.dayPickerContainer}>
+            {Array.from({ length: 10 }, (_, i) => i + 1).map((day) => (
+              <TouchableOpacity
+                key={day}
+                style={[
+                  styles.dayOption,
+                  memberData.datePayment === day.toString() &&
+                    styles.dayOptionSelected,
+                ]}
+                onPress={() =>
+                  handleMemberDataChange("datePayment", day.toString())
+                }
+              >
+                <Text
+                  style={[
+                    styles.dayText,
+                    memberData.datePayment === day.toString() &&
+                      styles.dayTextSelected,
+                  ]}
+                >
+                  {day}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
           <Input
             label="Valor"
             placeholder=""
-            value={memberData.amount}
+            value={formatCurrencyBRL(memberData.amount)}
             onChangeText={(text) => handleMemberDataChange("amount", text)}
             keyboardType="numeric"
           />
@@ -373,6 +396,39 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   radioTextSelected: {
+    color: colors.white,
+  },
+  label: {
+    fontSize: 16,
+    color: colors.text,
+    marginBottom: 10,
+  },
+  dayPickerContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginBottom: 10,
+  },
+  dayOption: {
+    width: 40,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
+    marginRight: 5,
+    marginBottom: 5,
+    backgroundColor: colors.background,
+  },
+  dayOptionSelected: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+  },
+  dayText: {
+    fontSize: 16,
+    color: colors.text,
+  },
+  dayTextSelected: {
     color: colors.white,
   },
   input: {
