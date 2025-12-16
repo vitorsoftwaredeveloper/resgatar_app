@@ -62,7 +62,7 @@ export const LoginScreen = () => {
               onPress={() => setShowPassword(!showPassword)}
               styleCustom={{ paddingVertical: 0, paddingHorizontal: 0 }}
             >
-              <EyeClosed color="white" />
+              <EyeIcon color="white" />
             </Button>
           ) : (
             <Button
@@ -71,13 +71,13 @@ export const LoginScreen = () => {
               onPress={() => setShowPassword(!showPassword)}
               styleCustom={{ paddingVertical: 0, paddingHorizontal: 0 }}
             >
-              <EyeIcon color="white" />
+              <EyeClosed color="white" />
             </Button>
           )
         }
         placeholder="Password"
         value={credentials.password}
-        secureTextEntry={showPassword}
+        secureTextEntry={!showPassword}
         onChangeText={(password) =>
           handleCredentialsChange("password", password)
         }

@@ -1,7 +1,18 @@
 interface IMember {
   email: string;
+  password: string;
   phoneNumber: string;
-  role: "admin" | "user";
+  firstName: string;
+  lastName: string;
+  bio?: string;
+  age?: number;
+  address?: {
+    street?: string;
+    number?: string;
+    city?: string;
+    state?: string;
+    zip?: string;
+  };
   paymentInfo: {
     datePayment: number;
     amount: number;
@@ -10,9 +21,7 @@ interface IMember {
     type: "CPF" | "CNPJ";
     number: string;
   };
-  status: "active" | "defaulter";
-  firstName: string;
-  lastName: string;
+  role?: "admin" | "user";
 }
 
 export { IMember };
