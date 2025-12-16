@@ -1,9 +1,11 @@
 import React, { createContext, useEffect, useState } from "react";
 import { signIn, signOut, getCurrentUser } from "aws-amplify/auth";
+import { MemberServices } from "@/services/MemberService";
 
 interface AuthContextData {
   isLoggedIn: boolean;
   loading: boolean;
+  member: any;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -17,6 +19,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [member, setMember] = useState({});
 
   useEffect(() => {
     checkSession();
@@ -43,8 +46,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           authFlowType: "USER_PASSWORD_AUTH",
         },
       });
-      setIsLoggedIn(true);
+
+      await MemberServices.getMember()
+        .then((member) => {
+          setIsLoggedIn(true);
+          setMember(member);
+        })
+        .catch((error: any) => {
+          throw error;
+        });
     } catch (error: any) {
+      setIsLoggedIn(false);
       throw error;
     } finally {
       setLoading(false);
@@ -57,7 +69,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, loading, login, logout }}>
+    <AuthContext.Provider
+      value={{ isLoggedIn, loading, member, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
