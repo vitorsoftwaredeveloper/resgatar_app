@@ -46,7 +46,9 @@ export const ModalEditProfile = ({
     zip: member?.address?.zip || "",
     complement: member?.address?.complement || "",
     datePayment: member?.paymentInfo?.datePayment?.toString() || "",
-    amount: member?.paymentInfo?.amount?.toString() || "",
+    amount: formatCurrencyBRL(
+      member?.paymentInfo?.amount?.toString() as string
+    ),
     type: member?.identification?.type || "CPF",
     numberType: member?.identification?.numberType || "",
   });
@@ -205,10 +207,14 @@ export const ModalEditProfile = ({
         </View>
         <Input
           label="Valor"
-          placeholder=""
-          value={formatCurrencyBRL(memberData.amount)}
-          onChangeText={(text) => handleMemberDataChange("amount", text)}
+          value={memberData.amount}
           keyboardType="numeric"
+          onChangeText={(text) =>
+            handleMemberDataChange(
+              "amount",
+              formatCurrencyBRL(text, memberData.amount)
+            )
+          }
         />
 
         <Text style={styles.sectionTitle}>Identificação</Text>

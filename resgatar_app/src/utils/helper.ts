@@ -37,7 +37,7 @@ function formatPhoneNumber(value: string) {
   return digits.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
 }
 
-function formatCurrencyBRL(value: string, max = 1000) {
+function formatCurrencyBRL(value: string, previousValue = "", max = 1000) {
   const digits = value.replace(/\D/g, "");
 
   if (!digits) return "";
@@ -45,10 +45,7 @@ function formatCurrencyBRL(value: string, max = 1000) {
   const amount = Number(digits) / 100;
 
   if (amount > max) {
-    return max.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    });
+    return previousValue;
   }
 
   return amount.toLocaleString("pt-BR", {
