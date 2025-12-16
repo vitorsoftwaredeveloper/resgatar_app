@@ -28,8 +28,6 @@ export const BirthdayPicker = ({ date, handleDate }: BirthdayPickerProps) => {
           display={Platform.OS === "ios" ? "spinner" : "default"}
           maximumDate={new Date()}
           onChange={(event, selectedDate) => {
-            console.log({ event });
-            console.log({ selectedDate });
             setShow(false);
             if (selectedDate) handleDate(event.nativeEvent.timestamp);
           }}

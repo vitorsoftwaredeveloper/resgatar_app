@@ -12,6 +12,7 @@ interface IMember {
     city?: string;
     state?: string;
     zip?: string;
+    complement?: string;
   };
   paymentInfo: {
     datePayment: number;

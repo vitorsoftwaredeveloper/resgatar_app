@@ -18,7 +18,7 @@ const AppNavigator = () => {
       {!isLoggedIn ? (
         <Stack.Screen name="Login" component={LoginScreen} />
       ) : (
-        <Stack.Screen name="Dashboard" component={BottomTabs} />
+        <Stack.Screen name="Home" component={BottomTabs} />
       )}
     </Stack.Navigator>
   );

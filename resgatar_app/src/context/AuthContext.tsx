@@ -1,5 +1,10 @@
 import React, { createContext, useEffect, useState } from "react";
-import { signIn, signOut, getCurrentUser } from "aws-amplify/auth";
+import {
+  signIn,
+  signOut,
+  getCurrentUser,
+  updatePassword,
+} from "aws-amplify/auth";
 import { MemberServices } from "@/services/MemberService";
 import {
   saveMember,
@@ -14,6 +19,7 @@ interface AuthContextData {
   member: IMember | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  changePassword: (oldPassword: string, newPassword: string) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextData>(
@@ -42,7 +48,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setMember(storedMember);
       } else {
         const memberData = await MemberServices.getMember();
-        console.log({ memberData });
         setMember(memberData);
         await saveMember(memberData);
       }
@@ -90,6 +95,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }
 
+  async function changePassword(oldPassword: string, newPassword: string) {
+    try {
+      await updatePassword({
+        oldPassword,
+        newPassword,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -98,6 +114,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         member,
         login,
         logout,
+        changePassword,
       }}
     >
       {children}
