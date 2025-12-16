@@ -1,10 +1,10 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-export const DashboardScreen = () => {
+export const BillsScreen = () => {
   return (
     <View style={styles.container}>
-      <Text>Dashboard</Text>
+      <Text>Faturas</Text>
     </View>
   );
 };
