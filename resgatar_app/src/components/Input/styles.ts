@@ -1,28 +1,32 @@
 import { StyleSheet } from "react-native";
-import { colors } from "../../theme/colors";
+import { colors } from "@/theme/colors";
 
 export const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: 52,
-    backgroundColor: colors.background,
-    borderRadius: 10,
+    minHeight: 56,
+    backgroundColor: colors.input.background,
+    borderRadius: 14,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.input.border,
     flexDirection: "row",
     alignItems: "center",
+    paddingHorizontal: 4,
   },
+
   focused: {
-    borderColor: colors.primary,
+    borderColor: colors.input.focus,
   },
+
   input: {
     flex: 1,
-    height: "100%",
     fontSize: 16,
-    color: colors.text,
-    paddingHorizontal: 12,
+    color: colors.text.primary,
+    paddingHorizontal: 10,
+    paddingVertical: 14,
   },
+
   iconContainer: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
   },
 });

@@ -1,17 +1,43 @@
 import { StyleSheet } from "react-native";
-import { colors } from "../../theme/colors";
+import { colors } from "@/theme/colors";
 
 export const styles = StyleSheet.create({
   button: {
-    backgroundColor: colors.primary,
-    borderRadius: 8,
-    paddingVertical: 12,
+    minHeight: 48,
+    borderRadius: 14,
     paddingHorizontal: 24,
     alignItems: "center",
+    justifyContent: "center",
   },
+
+  /* VARIANTS */
+  primary: {
+    backgroundColor: colors.primary.main,
+  },
+
+  secondary: {
+    backgroundColor: colors.surface.secondary,
+    borderWidth: 1,
+    borderColor: colors.surface.border,
+  },
+
+  danger: {
+    backgroundColor: colors.status.error,
+  },
+
+  /* TEXT */
   buttonText: {
-    color: colors.text,
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "600",
+    color: colors.text.primary,
+  },
+
+  textOnPrimary: {
+    color: colors.text.onPrimary,
+  },
+
+  /* DISABLED */
+  disabled: {
+    opacity: 0.6,
   },
 });

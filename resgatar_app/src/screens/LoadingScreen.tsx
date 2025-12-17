@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, ActivityIndicator, SafeAreaView } from "react-native";
+import { View, Text, ActivityIndicator } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface ILoadingProps {
   title: string;

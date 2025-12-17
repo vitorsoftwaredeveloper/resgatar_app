@@ -2,92 +2,138 @@ import { colors } from "@/theme/colors";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
+  /* ===== CONTAINER ===== */
   modalContainer: {
     flex: 1,
-    padding: 20,
-    backgroundColor: colors.modalBackground,
+    backgroundColor: colors.background.primary,
   },
+
+  modalContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 48,
+  },
+
+  /* ===== HEADER ===== */
   modalHeader: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20,
-  },
-  modalTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    color: colors.text,
-    flex: 1,
-  },
-  saveButtonText: {
-    marginTop: 60,
-    flexDirection: "row",
     justifyContent: "space-between",
-    flex: 1,
+
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+
+    backgroundColor: colors.surface.primary,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.surface.border,
   },
+
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "600",
+    color: colors.text.primary,
+  },
+
+  /* ===== CAMPOS ===== */
+  field: {
+    marginBottom: 16,
+  },
+
+  label: {
+    fontSize: 14,
+    color: colors.text.secondary,
+    marginBottom: 8,
+  },
+
+  /* ===== SEÇÕES ===== */
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: colors.text.primary,
+    marginTop: 32,
+    marginBottom: 16,
+  },
+
+  section: {
+    marginTop: 10,
+    gap: 16,
+  },
+
+  /* ===== DIA CONTRIBUIÇÃO ===== */
   dayPickerContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    marginBottom: 10,
+    gap: 12,
+    marginTop: 8,
+    marginBottom: 24,
   },
+
   dayOption: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 8,
+
+    backgroundColor: colors.surface.secondary,
     borderWidth: 1,
-    borderColor: colors.borderLight,
-    marginRight: 5,
-    marginBottom: 5,
-    backgroundColor: colors.background,
+    borderColor: colors.surface.border,
   },
+
   dayOptionSelected: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
+    backgroundColor: colors.surface.border,
   },
+
   dayText: {
-    fontSize: 16,
-    color: colors.text,
+    fontSize: 15,
+    color: colors.text.primary,
   },
+
   dayTextSelected: {
-    color: colors.white,
+    color: colors.text.onPrimary,
+    fontWeight: "600",
   },
-  label: {
-    fontSize: 16,
-    color: colors.text,
-    marginBottom: 10,
-  },
-  radioOption: {
-    alignItems: "center",
-    padding: 10,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: colors.borderLight,
-    marginRight: 10,
-    backgroundColor: colors.background,
-  },
-  radioOptionSelected: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  radioText: {
-    fontSize: 16,
-    color: colors.text,
-  },
-  radioTextSelected: {
-    color: colors.white,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginTop: 20,
-    marginBottom: 10,
-    color: colors.text,
-  },
+
+  /* ===== CPF / CNPJ ===== */
   pickerContainer: {
     flexDirection: "row",
-    marginBottom: 10,
+    gap: 12,
+    marginBottom: 16,
+  },
+
+  radioOption: {
+    flex: 1,
+    paddingVertical: 14,
+    borderRadius: 12,
+
+    alignItems: "center",
+
+    backgroundColor: colors.surface.secondary,
+    borderWidth: 1,
+    borderColor: colors.surface.border,
+  },
+
+  radioOptionSelected: {
+    backgroundColor: colors.surface.border,
+  },
+
+  radioText: {
+    fontSize: 15,
+    color: colors.text.primary,
+  },
+
+  radioTextSelected: {
+    color: colors.text.onPrimary,
+    fontWeight: "600",
+  },
+
+  /* ===== BOTÕES ===== */
+  saveButtonText: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 12,
+
+    marginTop: 40,
+    marginBottom: 24,
   },
 });

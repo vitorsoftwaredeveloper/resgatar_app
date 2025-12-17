@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { TextInput, TextInputProps, View, Text, Animated } from "react-native";
+import { TextInput, TextInputProps, View, Animated } from "react-native";
 import { styles } from "./styles";
+import { colors } from "@/theme/colors";
 
 interface InputProps extends TextInputProps {
   leftIcon?: React.ReactNode;
@@ -24,7 +25,7 @@ export function Input({
     setIsFocused(true);
     Animated.timing(animation, {
       toValue: 1,
-      duration: 200,
+      duration: 180,
       useNativeDriver: false,
     }).start();
   };
@@ -34,7 +35,7 @@ export function Input({
     if (!value) {
       Animated.timing(animation, {
         toValue: 0,
-        duration: 200,
+        duration: 180,
         useNativeDriver: false,
       }).start();
     }
@@ -42,17 +43,18 @@ export function Input({
 
   const labelStyle = {
     position: "absolute" as const,
-    left: leftIcon ? 52 : 12,
+    left: leftIcon ? 48 : 14,
     top: animation.interpolate({
       inputRange: [0, 1],
-      outputRange: [16, -8],
+      outputRange: [18, -7],
     }),
     fontSize: animation.interpolate({
       inputRange: [0, 1],
-      outputRange: [16, 12],
+      outputRange: [15, 12],
     }),
-    // color: isFocused ? "#67159C" : "#999999",
-    color: "#999999",
+    color: isFocused ? colors.primary.main : colors.text.muted,
+    backgroundColor: colors.input.background,
+    paddingHorizontal: 6,
   };
 
   return (
@@ -64,15 +66,18 @@ export function Input({
       ]}
     >
       {leftIcon && <View style={styles.iconContainer}>{leftIcon}</View>}
+
       {label && <Animated.Text style={labelStyle}>{label}</Animated.Text>}
+
       <TextInput
-        style={[styles.input, label && { paddingTop: 16 }]}
-        placeholderTextColor="#999999"
+        style={styles.input}
+        placeholderTextColor={colors.input.textMuted}
         onFocus={handleFocus}
         onBlur={handleBlur}
         value={value}
         {...rest}
       />
+
       {rightIcon && <View style={styles.iconContainer}>{rightIcon}</View>}
     </View>
   );
