@@ -34,7 +34,7 @@ interface IMember {
   };
   paymentInfo: {
     datePayment: number;
-    amount: number;
+    amount: string;
   };
   identification: {
     type: "CPF" | "CNPJ";

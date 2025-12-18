@@ -1,4 +1,3 @@
-import { colors } from "@/theme/colors";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -13,30 +12,12 @@ export const styles = StyleSheet.create({
     borderBottomLeftRadius: 28,
     borderBottomRightRadius: 28,
   },
-  headerTitle: {
+  title: {
     color: "#FFF",
     fontSize: 20,
     fontWeight: "600",
   },
-  content: {
+  list: {
     padding: 20,
-  },
-  menuCard: {
-    backgroundColor: "#FFF",
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 3,
-  },
-  logout: {
-    marginTop: 32,
-    alignItems: "center",
-  },
-  logoutText: {
-    color: "#D64545",
-    fontSize: 16,
-    fontWeight: "600",
   },
 });

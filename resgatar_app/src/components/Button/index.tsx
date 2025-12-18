@@ -4,23 +4,37 @@ import { styles } from "./styles";
 
 type Props = ButtonProps & {
   title: string;
-  backgroundColor?: string;
-  children?: React.ReactNode;
+  variant?: "primary" | "secondary" | "danger";
   styleCustom?: any;
 };
 
-export function Button({ title, ...rest }: Props) {
+export function Button({
+  title,
+  variant = "primary",
+  styleCustom,
+  disabled,
+  ...rest
+}: Props) {
   return (
     <TouchableOpacity
+      activeOpacity={0.85}
+      disabled={disabled}
       style={[
         styles.button,
-        rest.styleCustom && rest.styleCustom,
-        rest.backgroundColor && { backgroundColor: rest.backgroundColor },
+        styles[variant],
+        disabled && styles.disabled,
+        styleCustom,
       ]}
       {...rest}
     >
-      {title && <Text style={styles.buttonText}>{title}</Text>}
-      {rest.children && rest.children}
+      <Text
+        style={[
+          styles.buttonText,
+          variant !== "secondary" && styles.textOnPrimary,
+        ]}
+      >
+        {title}
+      </Text>
     </TouchableOpacity>
   );
 }
