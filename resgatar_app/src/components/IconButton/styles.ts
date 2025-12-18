@@ -1,12 +1,12 @@
-import { COLORS, colors } from "@/theme/colors";
+import { COLORS } from "@/theme/colors";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-  closeButton: {
+  iconButton: {
     width: 30,
     height: 30,
     borderRadius: 20,
-    backgroundColor: COLORS.muted,
+    backgroundColor: COLORS.mutedBackground,
     alignItems: "center",
     justifyContent: "center",
   },

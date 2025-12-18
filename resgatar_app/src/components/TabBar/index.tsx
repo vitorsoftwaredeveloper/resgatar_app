@@ -42,7 +42,7 @@ export function TabBar({ state, navigation }: any) {
             >
               <View>
                 {icons[route.name]}
-                {route.name === "Bills" && <Badge value={3} />}
+                {/* {route.name === "Bills" && <Badge value={3} />} */}
               </View>
 
               <Text style={[styles.label, { color: iconColor }]}>

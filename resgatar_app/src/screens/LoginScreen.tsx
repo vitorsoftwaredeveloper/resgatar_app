@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
 import { StyleSheet, Text, View, Alert } from "react-native";
 import { AuthContext } from "../context/AuthContext";
-import { Button } from "../components/Button";
-import { Input } from "../components/Input";
 import { Mail, Lock, EyeIcon, EyeClosed } from "lucide-react-native";
+import { Input } from "@/components/Input";
+import { Button } from "@/components/Button";
 
 export const LoginScreen = () => {
   const { login, loading } = useContext(AuthContext);

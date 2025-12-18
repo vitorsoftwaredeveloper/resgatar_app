@@ -20,7 +20,9 @@ import { AuthContext } from "@/context/AuthContext";
 import { IMemberState } from "@/types/Member";
 import { Card } from "@/components/Card";
 import { Row } from "@/components/Row";
-import { CloseButton } from "@/components/CloseButton";
+import { IconButton } from "@/components/IconButton";
+import { X } from "lucide-react-native";
+import { COLORS } from "@/theme/colors";
 
 interface IModalEditProfile {
   editModalVisible: boolean;
@@ -74,7 +76,11 @@ export const ModalEditProfile = ({
           <View style={styles.header}>
             <Text style={styles.headerTitle}>Meus dados</Text>
 
-            <CloseButton onPress={() => setEditModalVisible(false)} />
+            <IconButton
+              color={COLORS.white}
+              icon={X}
+              onPress={() => setEditModalVisible(false)}
+            />
           </View>
 
           <ScrollView
