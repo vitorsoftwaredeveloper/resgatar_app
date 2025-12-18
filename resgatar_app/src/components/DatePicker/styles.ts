@@ -2,14 +2,6 @@ import { StyleSheet } from "react-native";
 import { COLORS } from "@/theme/colors";
 
 export const styles = StyleSheet.create({
-  inputWrapper: {
-    marginBottom: 12,
-  },
-  inputLabel: {
-    fontSize: 13,
-    color: COLORS.muted,
-    marginBottom: 6,
-  },
   inputBox: {
     backgroundColor: COLORS.inputBg,
     borderWidth: 1,
@@ -17,9 +9,10 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     paddingVertical: 14,
     paddingHorizontal: 16,
+    alignItems: "center",
   },
-  inputHighlighted: {
-    borderColor: "#E0B96A",
-    borderWidth: 2,
+  inputText: {
+    fontSize: 16,
+    color: COLORS.text,
   },
 });

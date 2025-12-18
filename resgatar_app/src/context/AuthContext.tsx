@@ -101,13 +101,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     try {
       const formatMember: IMember = {
-        firstName: member.firstName,
-        lastName: member.lastName,
-        email: member.email,
+        firstName: member.firstName.trim(),
+        lastName: member.lastName.trim(),
+        email: member.email.trim(),
         phoneNumber: member.phoneNumber,
         paymentInfo: {
           datePayment: parseInt(member.datePayment),
-          amount: parseFloat(member.amount),
+          amount: member.amount
+            .replace("R$", "")
+            .replace(/\./g, "")
+            .replace(",", "."),
         },
         identification: {
           type: member.type as "CPF" | "CNPJ",
@@ -116,12 +119,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         bio: member.bio,
         dateOfBirth: member.dateOfBirth,
         address: {
-          street: member.street,
-          number: member.number,
-          city: member.city,
-          state: member.state,
+          street: member.street.trim(),
+          number: member.number.trim(),
+          city: member.city.trim(),
+          state: member.state.trim(),
           zip: member.zip,
-          complement: member.complement,
+          complement: member.complement.trim(),
         },
       };
 

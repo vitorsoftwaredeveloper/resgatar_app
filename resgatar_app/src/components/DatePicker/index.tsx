@@ -1,7 +1,9 @@
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Platform, Button } from "react-native";
+import { Platform, TouchableOpacity, View, Text } from "react-native";
 import { useState } from "react";
 import { formatUTCToDateBR } from "@/utils/helper";
+import { styles } from "./styles";
+import { COLORS } from "@/theme/colors";
 
 interface BirthdayPickerProps {
   date: number;
@@ -33,10 +35,13 @@ export const BirthdayPicker = ({ date, handleDate }: BirthdayPickerProps) => {
 
   return (
     <>
-      <Button
-        title={date ? formatUTCToDateBR(date) : "Data de nascimento"}
-        onPress={() => setShow(true)}
-      />
+      <TouchableOpacity onPress={() => setShow(true)}>
+        <View style={styles.inputBox}>
+          <Text style={styles.inputText}>
+            {date ? formatUTCToDateBR(date) : "Data de nascimento"}
+          </Text>
+        </View>
+      </TouchableOpacity>
 
       {show && (
         <DateTimePicker
@@ -44,6 +49,7 @@ export const BirthdayPicker = ({ date, handleDate }: BirthdayPickerProps) => {
           mode="date"
           display={Platform.OS === "ios" ? "spinner" : "default"}
           maximumDate={new Date()}
+          accentColor={COLORS.primary}
           onChange={(event, selectedDate) => {
             setShow(false);
             if (selectedDate) handleDate(event.nativeEvent.timestamp);

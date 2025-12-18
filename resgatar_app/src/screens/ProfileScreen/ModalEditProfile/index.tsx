@@ -7,7 +7,6 @@ import {
   Alert,
   Modal,
 } from "react-native";
-import { X } from "lucide-react-native";
 import {
   formatCEP,
   formatCNPJCPF,
@@ -16,11 +15,12 @@ import {
 } from "@/utils/helper";
 import { BirthdayPicker } from "@/components/DatePicker";
 import { styles } from "./styles";
-import { colors } from "@/theme/colors";
 import { Input } from "@/components/Input";
 import { AuthContext } from "@/context/AuthContext";
-import { Button } from "@/components/Button";
 import { IMemberState } from "@/types/Member";
+import { Card } from "@/components/Card";
+import { Row } from "@/components/Row";
+import { CloseButton } from "@/components/CloseButton";
 
 interface IModalEditProfile {
   editModalVisible: boolean;
@@ -54,7 +54,7 @@ export const ModalEditProfile = ({
     numberType: member?.identification?.numberType || "",
   });
 
-  const handleMemberDataChange = (field: string, value: string) => {
+  const handleMemberDataChange = (field: string, value: string | number) => {
     setMemberData((prev) => ({
       ...prev,
       [field]: value,
@@ -68,204 +68,213 @@ export const ModalEditProfile = ({
   };
 
   return (
-    <Modal
-      visible={editModalVisible}
-      animationType="slide"
-      onRequestClose={() => setEditModalVisible(false)}
-      transparent
-    >
-      <View style={styles.modalContainer}>
-        {/* ===== HEADER FIXO ===== */}
-        <View style={styles.modalHeader}>
-          <Text style={styles.modalTitle}>Editar Perfil</Text>
-          <TouchableOpacity onPress={() => setEditModalVisible(false)}>
-            <X color={colors.text.primary} size={24} />
-          </TouchableOpacity>
-        </View>
+    <Modal visible={editModalVisible} animationType="slide" transparent>
+      <View style={styles.overlay}>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>Meus dados</Text>
 
-        {/* ===== CONTEÚDO ===== */}
-        <ScrollView
-          contentContainerStyle={styles.modalContent}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* ===== DADOS PESSOAIS ===== */}
-          <Text style={styles.sectionTitle}>Dados pessoais</Text>
-          <View style={styles.section}>
-            <Input
-              label="Email"
-              value={memberData.email}
-              onChangeText={(v) => handleMemberDataChange("email", v)}
-              keyboardType="email-address"
-            />
+            <CloseButton onPress={() => setEditModalVisible(false)} />
+          </View>
 
-            <Input
-              label="Telefone"
-              value={memberData.phoneNumber}
-              onChangeText={(v) =>
-                handleMemberDataChange("phoneNumber", formatPhoneNumber(v))
-              }
-              keyboardType="phone-pad"
-            />
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 70 }}
+          >
+            {/* DADOS PESSOAIS */}
+            <Card title="Dados pessoais">
+              <Input
+                label="Email"
+                value={memberData.email}
+                onChange={(v: string) => handleMemberDataChange("email", v)}
+                keyboardType="email-address"
+              />
 
-            <Input
-              label="Nome"
-              value={memberData.firstName}
-              onChangeText={(v) => handleMemberDataChange("firstName", v)}
-            />
+              <Input
+                label="Telefone"
+                value={formatPhoneNumber(memberData.phoneNumber)}
+                onChange={(v: string) =>
+                  handleMemberDataChange("phoneNumber", v)
+                }
+                keyboardType="phone-pad"
+              />
 
-            <Input
-              label="Sobrenome"
-              value={memberData.lastName}
-              onChangeText={(v) => handleMemberDataChange("lastName", v)}
-            />
+              <Input
+                label="Nome"
+                value={memberData.firstName}
+                onChange={(v: string) => handleMemberDataChange("firstName", v)}
+              />
 
-            <Input
-              label="Bio"
-              value={memberData.bio}
-              onChangeText={(v) => handleMemberDataChange("bio", v)}
-              multiline
-              numberOfLines={4}
-              height={100}
-            />
+              <Input
+                label="Sobrenome"
+                value={memberData.lastName}
+                onChange={(v: string) => handleMemberDataChange("lastName", v)}
+              />
 
-            <View>
-              <Text style={styles.label}>Data de nascimento</Text>
+              <Input
+                label="Bio"
+                value={memberData.bio}
+                onChange={(v: string) => handleMemberDataChange("bio", v)}
+              />
+            </Card>
+
+            {/* DATA NASCIMENTO */}
+            <Card title="Data de nascimento">
               <BirthdayPicker
                 date={memberData.dateOfBirth}
-                handleDate={(date: any) =>
+                handleDate={(date) =>
                   handleMemberDataChange("dateOfBirth", date)
                 }
               />
-            </View>
-          </View>
+            </Card>
 
-          {/* ===== ENDEREÇO ===== */}
-          <Text style={styles.sectionTitle}>Endereço</Text>
-          <View style={styles.section}>
-            <Input
-              label="CEP"
-              value={formatCEP(memberData.zip)}
-              onChangeText={(v) => handleMemberDataChange("zip", v)}
-              keyboardType="numeric"
-            />
-
-            <Input
-              label="Estado"
-              value={memberData.state}
-              autoCapitalize="characters"
-              maxLength={2}
-              onChangeText={(v) => handleMemberDataChange("state", v)}
-            />
-
-            <Input
-              label="Cidade"
-              value={memberData.city}
-              onChangeText={(v) => handleMemberDataChange("city", v)}
-            />
-
-            <Input
-              label="Logradouro"
-              value={memberData.street}
-              onChangeText={(v) => handleMemberDataChange("street", v)}
-            />
-
-            <Input
-              label="Número"
-              value={memberData.number}
-              onChangeText={(v) => handleMemberDataChange("number", v)}
-            />
-
-            <Input
-              label="Complemento"
-              value={memberData.complement}
-              onChangeText={(v) => handleMemberDataChange("complement", v)}
-            />
-          </View>
-
-          {/* ===== CONTRIBUIÇÃO ===== */}
-          <Text style={styles.sectionTitle}>Informações da contribuição</Text>
-          <View style={styles.section}>
-            <Text style={styles.label}>Dia da contribuição</Text>
-            <View style={styles.dayPickerContainer}>
-              {Array.from({ length: 10 }, (_, i) => i + 1).map((day) => (
-                <TouchableOpacity
-                  key={day}
-                  style={[
-                    styles.dayOption,
-                    memberData.datePayment === day.toString() &&
-                      styles.dayOptionSelected,
-                  ]}
-                  onPress={() =>
-                    handleMemberDataChange("datePayment", day.toString())
+            <Card title="Endereço">
+              <Input
+                label="CEP"
+                value={formatCEP(memberData.zip)}
+                onChange={(v: string) => handleMemberDataChange("zip", v)}
+                keyboardType="numeric"
+              />
+              <Row>
+                <Input
+                  label="Estado"
+                  value={memberData.state}
+                  onChange={(v: string) => handleMemberDataChange("state", v)}
+                  flex={1}
+                  maxLength={2}
+                />
+                <Input
+                  label="Cidade"
+                  value={memberData.city}
+                  onChange={(v: string) => handleMemberDataChange("city", v)}
+                  flex={1}
+                />
+              </Row>
+              <Input
+                label="Logradouro"
+                value={memberData.street}
+                onChange={(v: string) => handleMemberDataChange("street", v)}
+              />
+              <Row>
+                <Input
+                  label="Número"
+                  value={memberData.number}
+                  onChange={(v: string) => handleMemberDataChange("number", v)}
+                  flex={1}
+                  keyboardType="numeric"
+                />
+                <Input
+                  label="Complemento"
+                  value={memberData.complement}
+                  onChange={(v: string) =>
+                    handleMemberDataChange("complement", v)
                   }
-                >
-                  <Text
-                    style={[
-                      styles.dayText,
-                      memberData.datePayment === day.toString() &&
-                        styles.dayTextSelected,
-                    ]}
-                  >
-                    {day}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            <Input
-              label="Valor"
-              value={memberData.amount}
-              keyboardType="numeric"
-              onChangeText={(v) =>
-                handleMemberDataChange(
-                  "amount",
-                  formatCurrencyBRL(v, memberData.amount)
-                )
-              }
-            />
-          </View>
+                  flex={1}
+                />
+              </Row>
+            </Card>
 
-          {/* ===== IDENTIFICAÇÃO ===== */}
-          <Text style={styles.sectionTitle}>Identificação</Text>
-          <View style={styles.section}>
-            <View style={styles.pickerContainer}>
-              {["CPF", "CNPJ"].map((type) => (
+            <Card title="Informações da contribuição">
+              <Text style={styles.subLabel}>Dia da contribuição</Text>
+
+              <View style={styles.daysGrid}>
+                {Array.from({ length: 10 }, (_, i) => {
+                  const day = i + 1;
+                  const selected =
+                    day === parseInt(memberData.datePayment || "1");
+
+                  return (
+                    <TouchableOpacity
+                      key={day}
+                      onPress={() =>
+                        handleMemberDataChange("datePayment", day.toString())
+                      }
+                      style={[
+                        styles.dayCircle,
+                        selected && styles.dayCircleActive,
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.dayText,
+                          selected && styles.dayTextActive,
+                        ]}
+                      >
+                        {day}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+
+              <Input
+                label="Valor"
+                value={memberData.amount}
+                onChange={(v: string) =>
+                  handleMemberDataChange("amount", formatCurrencyBRL(v))
+                }
+                keyboardType="decimal-pad"
+              />
+            </Card>
+
+            <Card title="Identificação">
+              <View style={styles.toggle}>
                 <TouchableOpacity
-                  key={type}
+                  onPress={() => handleMemberDataChange("type", "CPF")}
                   style={[
-                    styles.radioOption,
-                    memberData.type === type && styles.radioOptionSelected,
+                    styles.toggleItem,
+                    memberData.type === "CPF" && styles.toggleActive,
                   ]}
-                  onPress={() => handleMemberDataChange("type", type)}
                 >
                   <Text
-                    style={[
-                      styles.radioText,
-                      memberData.type === type && styles.radioTextSelected,
-                    ]}
+                    style={
+                      memberData.type === "CPF"
+                        ? styles.toggleTextActive
+                        : styles.toggleText
+                    }
                   >
-                    {type}
+                    CPF
                   </Text>
                 </TouchableOpacity>
-              ))}
-            </View>
+                <TouchableOpacity
+                  onPress={() => handleMemberDataChange("type", "CNPJ")}
+                  style={[
+                    styles.toggleItem,
+                    memberData.type === "CNPJ" && styles.toggleActive,
+                  ]}
+                >
+                  <Text
+                    style={
+                      memberData.type === "CNPJ"
+                        ? styles.toggleTextActive
+                        : styles.toggleText
+                    }
+                  >
+                    CNPJ
+                  </Text>
+                </TouchableOpacity>
+              </View>
 
-            <Input
-              label={memberData.type}
-              value={formatCNPJCPF(memberData.numberType, memberData.type)}
-              keyboardType="numeric"
-              onChangeText={(v) => handleMemberDataChange("numberType", v)}
-            />
-          </View>
+              <Input
+                label={memberData.type}
+                value={formatCNPJCPF(memberData.numberType, memberData.type)}
+                onChange={(v: string) =>
+                  handleMemberDataChange("numberType", v)
+                }
+                keyboardType="numeric"
+              />
+            </Card>
+          </ScrollView>
 
-          {/* ===== AÇÕES ===== */}
-          <View style={styles.saveButtonText}>
-            <Button
-              title="Salvar"
+          <View style={styles.footer}>
+            <TouchableOpacity
+              style={styles.saveButton}
               onPress={handleSaveProfile}
-              styleCustom={{ minWidth: "100%" }}
-            />
+            >
+              <Text style={styles.saveText}>Salvar</Text>
+            </TouchableOpacity>
           </View>
-        </ScrollView>
+        </View>
       </View>
     </Modal>
   );

@@ -1,4 +1,4 @@
-import { COLORS, colors } from "@/theme/colors";
+import { COLORS } from "@/theme/colors";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -9,6 +9,9 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    overflow: "hidden",
   },
 
   header: {
@@ -17,13 +20,19 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
   },
   headerTitle: {
     color: "#FFF",
     fontSize: 22,
     fontWeight: "700",
+  },
+  closeButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#FFFFFF33",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   card: {
@@ -139,6 +148,9 @@ export const styles = StyleSheet.create({
   },
 
   footer: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
     padding: 16,
     backgroundColor: COLORS.background,
   },
