@@ -1,8 +1,11 @@
-import React from "react";
+import React, { use, useContext, useEffect, useState } from "react";
 import { styles } from "./styles";
 import { View, Text, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ContributionItem } from "@/components/ContributionItem";
+import { PixPaymentModal } from "./PixPaymentModal";
+import { ChargeContext } from "@/context/ChargeContext";
+import { TRANSACTION_STATUS } from "@/types/Charge";
 
 const DATA: any[] = [
   {
@@ -10,32 +13,41 @@ const DATA: any[] = [
     month: "Dezembro 2024",
     value: "R$ 50,00",
     description: "Vence em 10/12/2024",
-    status: "PENDING",
+    status: TRANSACTION_STATUS.PENDING,
   },
   {
     id: "2",
     month: "Novembro 2024",
     value: "R$ 50,00",
     description: "Pago em 08/11/2024",
-    status: "PAID",
+    status: TRANSACTION_STATUS.APPROVED,
   },
   {
     id: "3",
     month: "Outubro 2024",
     value: "R$ 50,00",
     description: "Pago em 10/10/2024",
-    status: "PAID",
+    status: TRANSACTION_STATUS.APPROVED,
   },
   {
     id: "4",
     month: "Setembro 2024",
     value: "R$ 50,00",
     description: "Pago em 09/09/2024",
-    status: "PAID",
+    status: TRANSACTION_STATUS.APPROVED,
   },
 ];
 
 export const BillsScreen = () => {
+  const { createCharge } = useContext(ChargeContext);
+  const [modalPayVisible, setModalPayVisible] = useState(false);
+
+  const handlePay = async (item: any) => {
+    await createCharge(item.value).then(() => {
+      setModalPayVisible(true);
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -47,12 +59,16 @@ export const BillsScreen = () => {
         data={DATA}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <ContributionItem
-            data={item}
-            onPay={() => console.log("Pagar", item.id)}
-          />
+          <ContributionItem data={item} onPay={() => handlePay(item)} />
         )}
       />
+
+      {modalPayVisible && (
+        <PixPaymentModal
+          visible={modalPayVisible}
+          onClose={() => setModalPayVisible(false)}
+        />
+      )}
     </SafeAreaView>
   );
 };

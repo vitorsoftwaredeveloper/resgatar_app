@@ -1,11 +1,13 @@
-// src/types/contribution.ts
-export type ContributionStatus = "PENDING" | "PAID";
+import React from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import { styles } from "./styles";
+import { TRANSACTION_STATUS } from "@/types/Charge";
 
 interface Contribution {
   id: string;
   month: string;
   value: string;
-  status: ContributionStatus;
+  status: string;
   description: string;
 }
 
@@ -13,17 +15,13 @@ export interface ContributionItemProps {
   contribution: Contribution;
 }
 
-import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { styles } from "./styles";
-
 interface Props {
   data: Contribution;
   onPay?: () => void;
 }
 
 export function ContributionItem({ data, onPay }: Props) {
-  const isPending = data.status === "PENDING";
+  const isPending = data.status === TRANSACTION_STATUS.PENDING;
 
   return (
     <View style={styles.card}>

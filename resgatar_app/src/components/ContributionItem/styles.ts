@@ -1,3 +1,4 @@
+import { COLORS } from "@/theme/colors";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -50,20 +51,20 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
   },
   pending: {
-    backgroundColor: "#FDECEC",
+    backgroundColor: COLORS.waiting,
   },
   paid: {
-    backgroundColor: "#EFEAE5",
+    backgroundColor: COLORS.successBackground,
   },
   badgeText: {
     fontSize: 12,
     fontWeight: "500",
   },
   pendingText: {
-    color: "#D64545",
+    color: COLORS.white,
   },
   paidText: {
-    color: "#8C6A4A",
+    color: COLORS.success,
   },
   button: {
     marginTop: 16,
