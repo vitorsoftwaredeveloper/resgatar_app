@@ -11,16 +11,16 @@ import {
   getStoredMember,
   removeMember,
 } from "@/storage/asyncStorage";
-import { IMember, IMemberState } from "@/types/Member";
+import { IMember, IMemberState, IMemberWithContribution } from "@/types/Member";
 
 interface AuthContextData {
   isLoggedIn: boolean;
-  loading: boolean;
-  member: IMember | null;
+  member: IMemberWithContribution | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   changePassword: (oldPassword: string, newPassword: string) => Promise<void>;
   updateMember: (member: IMemberState) => Promise<void>;
+  reloadMemberData: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextData>(
@@ -30,8 +30,7 @@ export const AuthContext = createContext<AuthContextData>(
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [loading, setLoading] = useState(true);
-  const [member, setMember] = useState<IMember | null>(null);
+  const [member, setMember] = useState<IMemberWithContribution | null>(null);
   const isLoggedIn = !!member;
 
   useEffect(() => {
@@ -55,14 +54,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     } catch {
       setMember(null);
       await removeMember();
-    } finally {
-      setLoading(false);
     }
   }
 
   async function login(email: string, password: string) {
-    setLoading(true);
-
     try {
       await signIn({
         username: email,
@@ -80,64 +75,67 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setMember(null);
       throw error;
     } finally {
-      setLoading(false);
     }
   }
 
   async function logout() {
-    setLoading(true);
-
     try {
       await signOut();
     } finally {
       await removeMember();
       setMember(null);
-      setLoading(false);
     }
   }
 
-  async function updateMember(member: IMemberState) {
-    setLoading(true);
-
+  async function updateMember(memberCurrent: IMemberState) {
     try {
       const formatMember: IMember = {
-        firstName: member.firstName.trim(),
-        lastName: member.lastName.trim(),
-        email: member.email.trim(),
-        phoneNumber: member.phoneNumber,
+        firstName: memberCurrent.firstName.trim(),
+        lastName: memberCurrent.lastName.trim(),
+        email: memberCurrent.email.trim(),
+        phoneNumber: memberCurrent.phoneNumber,
         paymentInfo: {
-          datePayment: parseInt(member.datePayment),
-          amount: member.amount
+          datePayment: parseInt(memberCurrent.datePayment),
+          amount: memberCurrent.amount
             .replace("R$", "")
             .replace(/\./g, "")
             .replace(",", "."),
         },
         identification: {
-          type: member.type as "CPF" | "CNPJ",
-          numberType: member.numberType,
+          type: memberCurrent.type as "CPF" | "CNPJ",
+          numberType: memberCurrent.numberType,
         },
-        bio: member.bio,
-        dateOfBirth: member.dateOfBirth,
+        bio: memberCurrent.bio,
+        dateOfBirth: memberCurrent.dateOfBirth,
         address: {
-          street: member.street.trim(),
-          number: member.number.trim(),
-          city: member.city.trim(),
-          state: member.state.trim(),
-          zip: member.zip,
-          complement: member.complement.trim(),
+          street: memberCurrent.street.trim(),
+          number: memberCurrent.number.trim(),
+          city: memberCurrent.city.trim(),
+          state: memberCurrent.state.trim(),
+          zip: memberCurrent.zip,
+          complement: memberCurrent.complement.trim(),
         },
       };
 
       await MemberServices.editMember(formatMember);
 
-      setMember(formatMember);
+      setMember({
+        ...formatMember,
+        contributions: member?.contributions as any,
+      });
       await saveMember(formatMember);
     } catch (error) {
       setMember(null);
       throw error;
     } finally {
-      setLoading(false);
     }
+  }
+
+  async function reloadMemberData() {
+    const memberData = await MemberServices.getMember();
+    console.log({ memberData });
+    setMember(memberData);
+    await saveMember(memberData);
   }
 
   async function changePassword(oldPassword: string, newPassword: string) {
@@ -155,12 +153,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     <AuthContext.Provider
       value={{
         isLoggedIn,
-        loading,
         member,
         login,
         logout,
         changePassword,
         updateMember,
+        reloadMemberData,
       }}
     >
       {children}

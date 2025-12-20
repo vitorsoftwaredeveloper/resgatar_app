@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { styles } from "./styles";
 import { TRANSACTION_STATUS } from "@/types/Charge";
+import { Button } from "../Button";
 
 interface Contribution {
   id: string;
@@ -52,9 +53,11 @@ export function ContributionItem({ data, onPay }: Props) {
       </View>
 
       {isPending && (
-        <TouchableOpacity style={styles.button} onPress={onPay}>
-          <Text style={styles.buttonText}>Pagar agora</Text>
-        </TouchableOpacity>
+        <Button
+          title="Pagar agora"
+          onPress={onPay}
+          styleCustom={{ marginTop: 16 }}
+        />
       )}
     </View>
   );

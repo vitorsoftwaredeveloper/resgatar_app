@@ -66,16 +66,4 @@ export const styles = StyleSheet.create({
   paidText: {
     color: COLORS.success,
   },
-  button: {
-    marginTop: 16,
-    backgroundColor: "#6B4F3A",
-    paddingVertical: 14,
-    borderRadius: 14,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#FFF",
-    fontSize: 16,
-    fontWeight: "600",
-  },
 });

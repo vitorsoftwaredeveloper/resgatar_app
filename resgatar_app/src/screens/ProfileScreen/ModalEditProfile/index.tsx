@@ -23,6 +23,9 @@ import { Row } from "@/components/Row";
 import { IconButton } from "@/components/IconButton";
 import { X } from "lucide-react-native";
 import { COLORS } from "@/theme/colors";
+import { Button } from "@/components/Button";
+import Toast from "react-native-toast-message";
+import { ToastMessage } from "@/components/Toast";
 
 interface IModalEditProfile {
   editModalVisible: boolean;
@@ -64,9 +67,11 @@ export const ModalEditProfile = ({
   };
 
   const handleSaveProfile = async () => {
-    await updateMember(memberData);
+    await updateMember(memberData).then(() => {
+      ToastMessage.success("Sucesso", "Perfil atualizado com sucesso!");
+    });
     setEditModalVisible(false);
-    Alert.alert("Sucesso", "Perfil atualizado com sucesso!");
+    // Alert.alert("Sucesso", "Perfil atualizado com sucesso!");
   };
 
   return (
@@ -92,14 +97,14 @@ export const ModalEditProfile = ({
               <Input
                 label="Email"
                 value={memberData.email}
-                onChange={(v: string) => handleMemberDataChange("email", v)}
+                onChangeText={(v: string) => handleMemberDataChange("email", v)}
                 keyboardType="email-address"
               />
 
               <Input
                 label="Telefone"
                 value={formatPhoneNumber(memberData.phoneNumber)}
-                onChange={(v: string) =>
+                onChangeText={(v: string) =>
                   handleMemberDataChange("phoneNumber", v)
                 }
                 keyboardType="phone-pad"
@@ -108,19 +113,23 @@ export const ModalEditProfile = ({
               <Input
                 label="Nome"
                 value={memberData.firstName}
-                onChange={(v: string) => handleMemberDataChange("firstName", v)}
+                onChangeText={(v: string) =>
+                  handleMemberDataChange("firstName", v)
+                }
               />
 
               <Input
                 label="Sobrenome"
                 value={memberData.lastName}
-                onChange={(v: string) => handleMemberDataChange("lastName", v)}
+                onChangeText={(v: string) =>
+                  handleMemberDataChange("lastName", v)
+                }
               />
 
               <Input
                 label="Bio"
                 value={memberData.bio}
-                onChange={(v: string) => handleMemberDataChange("bio", v)}
+                onChangeText={(v: string) => handleMemberDataChange("bio", v)}
               />
             </Card>
 
@@ -138,41 +147,49 @@ export const ModalEditProfile = ({
               <Input
                 label="CEP"
                 value={formatCEP(memberData.zip)}
-                onChange={(v: string) => handleMemberDataChange("zip", v)}
+                onChangeText={(v: string) => handleMemberDataChange("zip", v)}
                 keyboardType="numeric"
               />
               <Row>
                 <Input
                   label="Estado"
                   value={memberData.state}
-                  onChange={(v: string) => handleMemberDataChange("state", v)}
+                  onChangeText={(v: string) =>
+                    handleMemberDataChange("state", v)
+                  }
                   flex={1}
                   maxLength={2}
                 />
                 <Input
                   label="Cidade"
                   value={memberData.city}
-                  onChange={(v: string) => handleMemberDataChange("city", v)}
+                  onChangeText={(v: string) =>
+                    handleMemberDataChange("city", v)
+                  }
                   flex={1}
                 />
               </Row>
               <Input
                 label="Logradouro"
                 value={memberData.street}
-                onChange={(v: string) => handleMemberDataChange("street", v)}
+                onChangeText={(v: string) =>
+                  handleMemberDataChange("street", v)
+                }
               />
               <Row>
                 <Input
                   label="Número"
                   value={memberData.number}
-                  onChange={(v: string) => handleMemberDataChange("number", v)}
+                  onChangeText={(v: string) =>
+                    handleMemberDataChange("number", v)
+                  }
                   flex={1}
                   keyboardType="numeric"
                 />
                 <Input
                   label="Complemento"
                   value={memberData.complement}
-                  onChange={(v: string) =>
+                  onChangeText={(v: string) =>
                     handleMemberDataChange("complement", v)
                   }
                   flex={1}
@@ -216,7 +233,7 @@ export const ModalEditProfile = ({
               <Input
                 label="Valor"
                 value={memberData.amount}
-                onChange={(v: string) =>
+                onChangeText={(v: string) =>
                   handleMemberDataChange("amount", formatCurrencyBRL(v))
                 }
                 keyboardType="decimal-pad"
@@ -264,7 +281,7 @@ export const ModalEditProfile = ({
               <Input
                 label={memberData.type}
                 value={formatCNPJCPF(memberData.numberType, memberData.type)}
-                onChange={(v: string) =>
+                onChangeText={(v: string) =>
                   handleMemberDataChange("numberType", v)
                 }
                 keyboardType="numeric"
@@ -273,12 +290,7 @@ export const ModalEditProfile = ({
           </ScrollView>
 
           <View style={styles.footer}>
-            <TouchableOpacity
-              style={styles.saveButton}
-              onPress={handleSaveProfile}
-            >
-              <Text style={styles.saveText}>Salvar</Text>
-            </TouchableOpacity>
+            <Button title="Salvar" onPress={handleSaveProfile} />
           </View>
         </View>
       </View>

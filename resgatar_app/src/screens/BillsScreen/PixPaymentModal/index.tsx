@@ -9,6 +9,7 @@ import { Animated } from "react-native";
 import { useEffect, useRef } from "react";
 import { IconButton } from "@/components/IconButton";
 import { TRANSACTION_STATUS } from "@/types/Charge";
+import { AuthContext } from "@/context/AuthContext";
 
 interface PixPaymentModalProps {
   visible: boolean;
@@ -17,6 +18,7 @@ interface PixPaymentModalProps {
 
 export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
   const { charge, consultCharge } = useContext(ChargeContext);
+  const { reloadMemberData } = useContext(AuthContext);
   const scaleAnim = useRef(new Animated.Value(0.95)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const pulse = useRef(new Animated.Value(1)).current;
@@ -57,20 +59,29 @@ export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
   }, [visible]);
 
   useEffect(() => {
-    // consultCharge();
+    let active = true;
 
-    if (charge.status !== TRANSACTION_STATUS.PENDING) return;
+    const poll = async () => {
+      if (!active) return;
 
-    const interval = setInterval(() => {
-      consultCharge();
-    }, 5000);
+      await consultCharge();
 
-    return () => clearInterval(interval);
+      if (charge.status === TRANSACTION_STATUS.PENDING) {
+        setTimeout(poll, 5000);
+      }
+    };
+
+    poll();
+
+    return () => {
+      active = false;
+    };
   }, [charge.status]);
 
   useEffect(() => {
     if (charge.status === TRANSACTION_STATUS.APPROVED) {
       setTimeout(() => {
+        reloadMemberData();
         onClose();
       }, 2500);
     }

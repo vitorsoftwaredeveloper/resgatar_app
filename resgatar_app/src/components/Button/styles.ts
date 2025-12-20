@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
   },
 
   primary: {
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.primary,
   },
 
   secondary: {

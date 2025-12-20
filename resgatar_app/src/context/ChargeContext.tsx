@@ -4,7 +4,7 @@ import { ChargeServices } from "@/services/ChargeService";
 
 interface ChargeContextData {
   charge: ICharge;
-  createCharge: (value: string) => Promise<void>;
+  createCharge: (value: number) => Promise<void>;
   consultCharge: () => Promise<void>;
 }
 
@@ -17,10 +17,8 @@ export const ChargeProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [charge, setCharge] = useState({} as ICharge);
 
-  async function createCharge(value: string) {
-    console.log("createCharge");
+  async function createCharge(value: number) {
     try {
-      console.log(value);
       const charge = await ChargeServices.createCharge(value);
 
       setCharge(charge);
