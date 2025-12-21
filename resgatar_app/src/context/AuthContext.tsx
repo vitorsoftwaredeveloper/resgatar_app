@@ -40,6 +40,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   async function checkSession() {
     try {
       //Verifica sessão Cognito (persistida pelo Amplify)
+
       await getCurrentUser();
 
       const storedMember = await getStoredMember();
@@ -48,6 +49,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setMember(storedMember);
       } else {
         const memberData = await MemberServices.getMember();
+
         setMember(memberData);
         await saveMember(memberData);
       }
@@ -89,7 +91,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   async function updateMember(memberCurrent: IMemberState) {
     try {
-      const formatMember: IMember = {
+      const formatMember = {
         firstName: memberCurrent.firstName.trim(),
         lastName: memberCurrent.lastName.trim(),
         email: memberCurrent.email.trim(),
@@ -115,14 +117,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           zip: memberCurrent.zip,
           complement: memberCurrent.complement.trim(),
         },
+        contributions: member?.contributions as any,
       };
 
       await MemberServices.editMember(formatMember);
 
-      setMember({
-        ...formatMember,
-        contributions: member?.contributions as any,
-      });
+      setMember(formatMember);
       await saveMember(formatMember);
     } catch (error) {
       setMember(null);
@@ -133,7 +133,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   async function reloadMemberData() {
     const memberData = await MemberServices.getMember();
-    console.log({ memberData });
     setMember(memberData);
     await saveMember(memberData);
   }

@@ -10,6 +10,7 @@ import { useEffect, useRef } from "react";
 import { IconButton } from "@/components/IconButton";
 import { TRANSACTION_STATUS } from "@/types/Charge";
 import { AuthContext } from "@/context/AuthContext";
+import { Clipboard } from "react-native";
 
 interface PixPaymentModalProps {
   visible: boolean;
@@ -22,6 +23,12 @@ export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
   const scaleAnim = useRef(new Animated.Value(0.95)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const pulse = useRef(new Animated.Value(1)).current;
+  const [isCopied, setIsCopied] = useState(false);
+
+  const copyToClipboard = (value: string) => {
+    Clipboard.setString(value);
+    setTimeout(() => setIsCopied(false), 2000);
+  };
 
   useEffect(() => {
     Animated.loop(
@@ -125,7 +132,9 @@ export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
 
           <View style={styles.amountContainer}>
             <Text style={styles.amountLabel}>Valor a pagar</Text>
-            <Text style={styles.amount}>R$ {charge.transactionAmount}</Text>
+            <Text style={styles.amount}>
+              R$ {`${charge.transactionAmount}`.replace(".", ",")}
+            </Text>
           </View>
 
           <View style={styles.qrContainer}>
@@ -152,9 +161,27 @@ export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
               {charge.transactionData.qrCode}
             </Text>
 
-            <Pressable style={styles.copyButton}>
-              <Copy size={18} color="#fff" />
-            </Pressable>
+            <View style={styles.containerCopy}>
+              {isCopied && (
+                <View style={styles.tooltipContainer}>
+                  <View style={styles.balloon}>
+                    <Text style={styles.balloonText}>Copiado!</Text>
+                  </View>
+
+                  <View style={styles.arrow} />
+                </View>
+              )}
+
+              <Pressable
+                style={styles.copyButton}
+                onPress={() => {
+                  setIsCopied(true);
+                  copyToClipboard(charge.transactionData.qrCode);
+                }}
+              >
+                <Copy size={18} color="#fff" />
+              </Pressable>
+            </View>
           </View>
 
           <View style={styles.infoBox}>

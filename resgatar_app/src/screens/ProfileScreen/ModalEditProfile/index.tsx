@@ -24,7 +24,6 @@ import { IconButton } from "@/components/IconButton";
 import { X } from "lucide-react-native";
 import { COLORS } from "@/theme/colors";
 import { Button } from "@/components/Button";
-import Toast from "react-native-toast-message";
 import { ToastMessage } from "@/components/Toast";
 
 interface IModalEditProfile {
@@ -67,15 +66,23 @@ export const ModalEditProfile = ({
   };
 
   const handleSaveProfile = async () => {
-    await updateMember(memberData).then(() => {
-      ToastMessage.success("Sucesso", "Perfil atualizado com sucesso!");
-    });
+    await updateMember(memberData)
+      .then(() => {
+        ToastMessage.success("Sucesso", "Perfil atualizado com sucesso!");
+      })
+      .catch(() => {
+        ToastMessage.error("Erro", "Falha ao atualizar perfil.");
+      });
     setEditModalVisible(false);
-    // Alert.alert("Sucesso", "Perfil atualizado com sucesso!");
   };
 
   return (
-    <Modal visible={editModalVisible} animationType="slide" transparent>
+    <Modal
+      visible={editModalVisible}
+      animationType="slide"
+      transparent
+      presentationStyle="overFullScreen"
+    >
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.header}>

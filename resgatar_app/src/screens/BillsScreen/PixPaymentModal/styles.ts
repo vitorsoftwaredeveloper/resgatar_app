@@ -168,4 +168,41 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     fontSize: 16,
   },
+
+  containerCopy: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  tooltipContainer: {
+    position: "absolute",
+    bottom: 42,
+    alignItems: "center",
+    width: 70,
+    marginLeft: 12,
+  },
+
+  balloon: {
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+
+  balloonText: {
+    color: COLORS.white,
+    fontSize: 12,
+    fontWeight: "500",
+  },
+
+  arrow: {
+    width: 0,
+    height: 0,
+    borderLeftWidth: 6,
+    borderRightWidth: 6,
+    borderTopWidth: 6,
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
+    borderTopColor: COLORS.primary,
+  },
 });

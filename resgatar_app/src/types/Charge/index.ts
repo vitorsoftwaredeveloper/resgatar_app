@@ -19,9 +19,9 @@ interface ICharge {
     };
   };
   transactionData: {
-    qrCode?: string;
+    qrCode: string;
     qrCodeBase64?: string;
-    ticketUrl?: string;
+    ticketUrl: string;
   };
 }
 
