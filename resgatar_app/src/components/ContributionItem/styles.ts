@@ -22,6 +22,11 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: "#F4ECE6",
     marginRight: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  iconSvg: {
+    color: COLORS.primary,
   },
   info: {
     flex: 1,

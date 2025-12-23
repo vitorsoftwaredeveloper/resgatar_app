@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { styles } from "./styles";
 import { TRANSACTION_STATUS } from "@/types/Charge";
 import { Button } from "../Button";
+import { FileText } from "lucide-react-native";
 
 interface Contribution {
   id: string;
@@ -27,7 +28,9 @@ export function ContributionItem({ data, onPay }: Props) {
   return (
     <View style={styles.card}>
       <View style={styles.row}>
-        <View style={styles.icon} />
+        <View style={styles.icon}>
+          <FileText size={24} color={styles.iconSvg.color} />
+        </View>
 
         <View style={styles.info}>
           <Text style={styles.month}>{data.month}</Text>
