@@ -1,3 +1,4 @@
+import { COLORS } from "@/theme/colors";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -21,6 +22,11 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: "#F4ECE6",
     marginRight: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  iconSvg: {
+    color: COLORS.primary,
   },
   info: {
     flex: 1,
@@ -50,31 +56,19 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
   },
   pending: {
-    backgroundColor: "#FDECEC",
+    backgroundColor: COLORS.waiting,
   },
   paid: {
-    backgroundColor: "#EFEAE5",
+    backgroundColor: COLORS.successBackground,
   },
   badgeText: {
     fontSize: 12,
     fontWeight: "500",
   },
   pendingText: {
-    color: "#D64545",
+    color: COLORS.white,
   },
   paidText: {
-    color: "#8C6A4A",
-  },
-  button: {
-    marginTop: 16,
-    backgroundColor: "#6B4F3A",
-    paddingVertical: 14,
-    borderRadius: 14,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#FFF",
-    fontSize: 16,
-    fontWeight: "600",
+    color: COLORS.success,
   },
 });

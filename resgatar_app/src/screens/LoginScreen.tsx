@@ -1,12 +1,16 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { StyleSheet, Text, View, Alert } from "react-native";
-import { AuthContext } from "../context/AuthContext";
-import { Button } from "../components/Button";
-import { Input } from "../components/Input";
+import { AuthContext } from "@/context/AuthContext";
 import { Mail, Lock, EyeIcon, EyeClosed } from "lucide-react-native";
+import { Input } from "@/components/Input";
+import { Button } from "@/components/Button";
+import { LoadingContext } from "@/context/LoadingContext";
+import { signOut } from "aws-amplify/auth";
 
 export const LoginScreen = () => {
-  const { login, loading } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
+  const { loading, startLoading, stopLoading } = useContext(LoadingContext);
+
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -28,7 +32,9 @@ export const LoginScreen = () => {
 
     try {
       console.log("Iniciando login...");
+
       await login(credentials.email.trim(), credentials.password);
+
       console.log("Login realizado com sucesso!");
     } catch (error: any) {
       console.error("Erro ao realizar login:", error);
@@ -36,6 +42,7 @@ export const LoginScreen = () => {
         "Erro no Login",
         error.message || "Não foi possível fazer login"
       );
+      signOut();
     }
   };
 
@@ -47,7 +54,9 @@ export const LoginScreen = () => {
         leftIcon={<Mail color="white" />}
         placeholder="Email"
         value={credentials.email}
-        onChangeText={(email) => handleCredentialsChange("email", email)}
+        onChangeText={(email: string) =>
+          handleCredentialsChange("email", email)
+        }
         keyboardType="email-address"
         autoCapitalize="none"
         autoCorrect={false}
@@ -58,27 +67,22 @@ export const LoginScreen = () => {
           showPassword ? (
             <Button
               title=""
-              backgroundColor="transparent"
               onPress={() => setShowPassword(!showPassword)}
-              styleCustom={{ paddingVertical: 0, paddingHorizontal: 0 }}
-            >
-              <EyeIcon color="white" />
-            </Button>
+              // styleCustom={{ paddingVertical: 0, paddingHorizontal: 0 }}
+            />
           ) : (
             <Button
               title=""
-              backgroundColor="transparent"
+              // backgroundColor="transparent"
               onPress={() => setShowPassword(!showPassword)}
-              styleCustom={{ paddingVertical: 0, paddingHorizontal: 0 }}
-            >
-              <EyeClosed color="white" />
-            </Button>
+              // styleCustom={{ paddingVertical: 0, paddingHorizontal: 0 }}
+            />
           )
         }
         placeholder="Password"
         value={credentials.password}
         secureTextEntry={!showPassword}
-        onChangeText={(password) =>
+        onChangeText={(password: string) =>
           handleCredentialsChange("password", password)
         }
         autoCapitalize="none"
@@ -98,7 +102,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#19181F",
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    // alignItems: "center",
     padding: 32,
     gap: 16,
   },

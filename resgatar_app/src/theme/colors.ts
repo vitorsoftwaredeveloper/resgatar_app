@@ -4,11 +4,16 @@ const COLORS = {
   primary: "#6B4F3A",
   text: "#3E2F23",
   muted: "#9E8E80",
+  mutedBackground: "#ffffff40",
   border: "#DED6CC",
   inputBg: "#FBF8F4",
   black: "#000000",
   white: "#FFFFFF",
   error: "#E53935",
+  waiting: "#E0B96A",
+  softBrown: "#EDE6DE",
+  success: "#1E7F43",
+  successBackground: "#E6F4EA",
 };
 
 export { COLORS };

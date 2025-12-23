@@ -1,8 +1,8 @@
 import { api } from "./api";
-import { IMember } from "@/types/Member";
+import { IMember, IMemberWithContribution } from "@/types/Member";
 
 export const MemberServices = {
-  getMember: async (): Promise<IMember> => {
+  getMember: async (): Promise<IMemberWithContribution> => {
     try {
       const response = await api.get("/member");
       const { data } = response.data;

@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { colors } from "@/theme/colors";
+import { COLORS } from "@/theme/colors";
 
 export const styles = StyleSheet.create({
   button: {
@@ -10,33 +10,30 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  /* VARIANTS */
   primary: {
-    backgroundColor: colors.primary.main,
+    backgroundColor: COLORS.primary,
   },
 
   secondary: {
-    backgroundColor: colors.surface.secondary,
+    backgroundColor: COLORS.background,
     borderWidth: 1,
-    borderColor: colors.surface.border,
+    borderColor: COLORS.background,
   },
 
   danger: {
-    backgroundColor: colors.status.error,
+    backgroundColor: COLORS.background,
   },
 
-  /* TEXT */
   buttonText: {
     fontSize: 16,
     fontWeight: "600",
-    color: colors.text.primary,
+    color: COLORS.background,
   },
 
   textOnPrimary: {
-    color: colors.text.onPrimary,
+    color: COLORS.background,
   },
 
-  /* DISABLED */
   disabled: {
     opacity: 0.6,
   },

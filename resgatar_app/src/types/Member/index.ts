@@ -43,4 +43,25 @@ interface IMember {
   role?: "admin" | "user";
 }
 
-export { IMember, IMemberState };
+type IMemberWithContribution = IMember & {
+  contributions: {
+    year: number;
+    months: Record<
+      | "january"
+      | "february"
+      | "march"
+      | "april"
+      | "may"
+      | "june"
+      | "july"
+      | "august"
+      | "september"
+      | "october"
+      | "november"
+      | "december",
+      { paid: boolean; value: number; paidAt: string }
+    >;
+  };
+};
+
+export { IMember, IMemberState, IMemberWithContribution };
