@@ -16,6 +16,7 @@ import { ModalUpdatePassword } from "./ModalUpdatePassword";
 import { ProfileMenuItem } from "@/components/ProfileMenuItem";
 import { ProfileHeaderCard } from "@/components/ProfileHeaderCard";
 import { styles } from "./styles";
+import { DashboardHeader } from "@/components/DashboardHeader";
 
 export const ProfileScreen = () => {
   const { logout, member } = useContext(AuthContext);
@@ -25,9 +26,7 @@ export const ProfileScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Perfil</Text>
-      </View>
+      <DashboardHeader name={member?.firstName as string} />
 
       <View style={styles.content}>
         <ProfileHeaderCard

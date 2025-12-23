@@ -4,7 +4,6 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { Home, FileText, User } from "lucide-react-native";
-import { Badge } from "../Badge";
 import { styles, TAB_WIDTH, ACTIVE_COLOR, INACTIVE_COLOR } from "./styles";
 
 export function TabBar({ state, navigation }: any) {
@@ -40,16 +39,13 @@ export function TabBar({ state, navigation }: any) {
               onPress={() => navigation.navigate(route.name)}
               style={styles.tab}
             >
-              <View>
-                {icons[route.name]}
-                {/* {route.name === "Bills" && <Badge value={3} />} */}
-              </View>
+              <View>{icons[route.name]}</View>
 
               <Text style={[styles.label, { color: iconColor }]}>
                 {route.name === "Dashboard"
                   ? "Início"
                   : route.name === "Bills"
-                  ? "Faturas"
+                  ? "Contribuições"
                   : "Perfil"}
               </Text>
             </Pressable>

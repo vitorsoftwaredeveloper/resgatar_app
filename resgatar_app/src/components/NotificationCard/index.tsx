@@ -8,18 +8,8 @@ import Animated, {
 } from "react-native-reanimated";
 import { styles } from "./styles";
 import { Ionicons } from "@expo/vector-icons";
-import { COLORS } from "@/theme";
-
-type INotificationType = "info" | "success" | "warning";
-
-interface INotification {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  type: INotificationType;
-  isNew: boolean;
-}
+import { INotification } from "@/types/Notification";
+import { timeAgo } from "@/utils/helper";
 
 interface Props {
   notification: INotification;
@@ -82,17 +72,15 @@ export const NotificationCard = ({
               </View>
             )}
           </View>
-          <Text style={styles.date}>{notification.date}</Text>
+          <Text style={styles.date}>{timeAgo(notification.createdAt)}</Text>
         </View>
 
-        {/* Preview da descrição (visível quando colapsado) */}
         {!expanded && (
           <Text style={styles.descriptionPreview} numberOfLines={2}>
             {notification.description}
           </Text>
         )}
 
-        {/* Conteúdo expandido */}
         <Animated.View style={[styles.expandable, animatedStyle]}>
           <View onLayout={handleContentLayout}>
             <Text style={styles.descriptionFull}>
@@ -111,7 +99,6 @@ export const NotificationCard = ({
         )}
       </View>
 
-      {/* Botão de expandir no canto direito */}
       <Pressable
         onPress={onToggle}
         accessibilityRole="button"

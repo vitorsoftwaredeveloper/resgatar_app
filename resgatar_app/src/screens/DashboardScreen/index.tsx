@@ -1,16 +1,26 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { View, Text, FlatList } from "react-native";
 import { NotificationCard } from "@/components/NotificationCard";
 import { DashboardHeader } from "@/components/DashboardHeader";
 import { styles } from "./styles";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NotificationSkeleton } from "@/components/Skeleton/NotificationSkeleton";
+import { NotificationServices } from "@/services/NotificationService";
+import { ToastMessage } from "@/components/Toast";
+import { INotification } from "@/types/Notification";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
+import { AuthContext } from "@/context/AuthContext";
 
 export function DashboardScreen() {
+  const { member } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<INotification[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const listRef = useRef<FlatList>(null);
+  const newNotifications = data.filter(
+    (notification) => notification.isNew
+  ).length;
 
   const handleToggle = (id: string, index: number) => {
     setExpandedId((current) => (current === id ? null : id));
@@ -24,47 +34,38 @@ export function DashboardScreen() {
     });
   };
 
-  useEffect(() => {
-    setTimeout(() => {
-      setData([
-        {
-          id: "1",
-          title: "Assembleia Geral Extraordinária",
-          description:
-            "Convocamos todos os associados para a assembleia Convocamos todos os associados para a assembleia Convocamos todos os associados para a assembleia Convocamos todos os associados para a assembleia",
-          date: "Hoje às 10:30",
-          type: "info",
-          isNew: true,
-        },
-        {
-          id: "2",
-          title: "Lembrete: Contribuição de Dezembro",
-          description: "Não esqueça de realizar sua contribuição mensal",
-          date: "Ontem às 14:00",
-          type: "success",
-          isNew: true,
-        },
-        {
-          id: "3",
-          title: "Manutenção Programada",
-          description: "O sistema ficará indisponível no domingo",
-          date: "20 Dez 2024",
-          type: "warning",
-          isNew: false,
-        },
-      ]);
+  const fetchNotifications = async () => {
+    try {
+      setLoading(true);
+
+      const response = await NotificationServices.listNotifications();
+      setData(response);
+    } catch (error: any) {
+      ToastMessage.error(
+        "Não foi possível carregar as notificações",
+        error.message
+      );
+    } finally {
       setLoading(false);
-    }, 1500);
-  }, []);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchNotifications();
+    }, [])
+  );
 
   return (
     <SafeAreaView style={styles.container}>
-      <DashboardHeader name="Vitor" />
+      <DashboardHeader name={member?.firstName as string} />
 
       <View style={styles.content}>
         <View style={styles.avisosHeader}>
           <Text style={styles.avisosTitle}>Avisos</Text>
-          <Text style={styles.badge}>2 novos</Text>
+          {newNotifications > 0 && (
+            <Text style={styles.badge}>novas notificações</Text>
+          )}
         </View>
 
         {loading ? (
@@ -76,12 +77,12 @@ export function DashboardScreen() {
         ) : (
           <FlatList
             data={data}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item._id}
             renderItem={({ item, index }) => (
               <NotificationCard
                 notification={item}
-                expanded={expandedId === item.id}
-                onToggle={() => handleToggle(item.id, index)}
+                expanded={expandedId === item._id}
+                onToggle={() => handleToggle(item._id, index)}
               />
             )}
             getItemLayout={(_, index) => ({
