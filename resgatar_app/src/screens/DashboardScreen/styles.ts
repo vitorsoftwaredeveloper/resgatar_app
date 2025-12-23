@@ -1,40 +1,44 @@
+import { COLORS, SPACING, TYPOGRAPHY } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F7F3EF",
   },
+
   content: {
-    padding: 20,
+    flex: 1,
+    backgroundColor: COLORS.background,
+    padding: SPACING.lg,
   },
-  section: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#3E2C1C",
-    marginVertical: 16,
+
+  title: {
+    fontSize: TYPOGRAPHY.title,
+    fontWeight: "700",
+    color: COLORS.primary,
+    marginBottom: SPACING.lg,
   },
-  quick: {
+
+  avisosHeader: {
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
+    marginBottom: 16,
   },
-  dots: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 16,
+
+  avisosTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#3E2C1C",
   },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: "#DDD",
-    marginHorizontal: 4,
-  },
-  dotActive: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: "#6B4F3A",
-    marginHorizontal: 4,
+
+  badge: {
+    backgroundColor: "#EFE6DF",
+    color: "#6B4E3D",
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+    fontSize: 13,
+    fontWeight: "600",
   },
 });
