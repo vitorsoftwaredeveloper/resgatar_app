@@ -11,6 +11,7 @@ import { INotification } from "@/types/Notification";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
 import { AuthContext } from "@/context/AuthContext";
+import { EmptyNotices } from "@/components/EmptyNotice";
 
 export function DashboardScreen() {
   const { member } = useContext(AuthContext);
@@ -39,7 +40,7 @@ export function DashboardScreen() {
       setLoading(true);
 
       const response = await NotificationServices.listNotifications();
-      setData(response);
+      setData([]);
     } catch (error: any) {
       ToastMessage.error(
         "Não foi possível carregar as notificações",
@@ -74,6 +75,8 @@ export function DashboardScreen() {
             <NotificationSkeleton />
             <NotificationSkeleton />
           </>
+        ) : data.length === 0 ? (
+          <EmptyNotices />
         ) : (
           <FlatList
             data={data}
