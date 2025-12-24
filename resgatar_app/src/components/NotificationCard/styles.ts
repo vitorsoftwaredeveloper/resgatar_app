@@ -28,6 +28,25 @@ export const styles = StyleSheet.create({
     borderLeftColor: COLORS.waiting,
   },
 
+  // Container do ícone à esquerda
+  iconContainer: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  infoIcon: {
+    backgroundColor: "#F0F4F8",
+  },
+  successIcon: {
+    backgroundColor: "#E8F9F4",
+  },
+  warningIcon: {
+    backgroundColor: "#FFF4E8",
+  },
+
   // Container de texto
   textContainer: {
     flex: 1,
@@ -75,6 +94,33 @@ export const styles = StyleSheet.create({
     fontWeight: "500",
   },
 
+  // Divider
+  divider: {
+    height: 1,
+    backgroundColor: "#E8DDD4",
+    marginVertical: 12,
+  },
+
+  // Tag (Comunicado, Lembrete, Alerta)
+  tagContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F3EEE9",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    alignSelf: "flex-start",
+    marginBottom: 12,
+  },
+  tagIcon: {
+    marginRight: 6,
+  },
+  tagLabel: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#6B4E3D",
+  },
+
   // Descrição preview (colapsado)
   descriptionPreview: {
     color: "#7A6A5E",
@@ -88,7 +134,6 @@ export const styles = StyleSheet.create({
     color: "#4A3F35",
     fontSize: 14,
     lineHeight: 22,
-    marginTop: 8,
   },
 
   // Animação de expansão
@@ -101,6 +146,40 @@ export const styles = StyleSheet.create({
     position: "absolute",
     opacity: 0,
     zIndex: -1,
+  },
+
+  // Footer
+  footer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 12,
+  },
+  footerLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  footerDate: {
+    fontSize: 13,
+    color: "#9B8678",
+    fontWeight: "500",
+  },
+
+  // Botão compartilhar
+  shareButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    backgroundColor: "#F3EEE9",
+  },
+  shareText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#6B4E3D",
   },
 
   // Botão de toggle
