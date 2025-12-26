@@ -31,9 +31,9 @@ export const EmptyNotices = () => {
         resizeMode="contain"
       />
 
-      <Text style={styles.title}>Nenhum aviso no momento</Text>
+      <Text style={styles.title}>Nenhuma notificação no momento</Text>
       <Text style={styles.description}>
-        Quando houver novidades, elas aparecerão aqui.
+        Quando houver notificaões, elas aparecerão aqui.
       </Text>
     </Animated.View>
   );

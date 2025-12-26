@@ -62,13 +62,6 @@ export function DashboardScreen() {
       <DashboardHeader name={member?.firstName as string} />
 
       <View style={styles.content}>
-        <View style={styles.avisosHeader}>
-          <Text style={styles.avisosTitle}>Avisos</Text>
-          {newNotifications > 0 && (
-            <Text style={styles.badge}>novas notificações</Text>
-          )}
-        </View>
-
         {loading ? (
           <>
             <NotificationSkeleton />
@@ -78,23 +71,31 @@ export function DashboardScreen() {
         ) : data.length === 0 ? (
           <EmptyNotices />
         ) : (
-          <FlatList
-            data={data}
-            keyExtractor={(item) => item._id}
-            renderItem={({ item, index }) => (
-              <NotificationCard
-                notification={item}
-                expanded={expandedId === item._id}
-                onToggle={() => handleToggle(item._id, index)}
-              />
-            )}
-            getItemLayout={(_, index) => ({
-              length: 120,
-              offset: 120 * index,
-              index,
-            })}
-            showsVerticalScrollIndicator={false}
-          />
+          <>
+            <View style={styles.avisosHeader}>
+              <Text style={styles.avisosTitle}>Avisos</Text>
+              {newNotifications > 0 && (
+                <Text style={styles.badge}>novas notificações</Text>
+              )}
+            </View>
+            <FlatList
+              data={data}
+              keyExtractor={(item) => item._id}
+              renderItem={({ item, index }) => (
+                <NotificationCard
+                  notification={item}
+                  expanded={expandedId === item._id}
+                  onToggle={() => handleToggle(item._id, index)}
+                />
+              )}
+              getItemLayout={(_, index) => ({
+                length: 120,
+                offset: 120 * index,
+                index,
+              })}
+              showsVerticalScrollIndicator={false}
+            />
+          </>
         )}
       </View>
     </SafeAreaView>
