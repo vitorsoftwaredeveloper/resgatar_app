@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { styles } from "./styles";
-import { View, Text, FlatList } from "react-native";
+import { FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ContributionItem } from "@/components/ContributionItem";
 import { PixPaymentModal } from "./PixPaymentModal";
@@ -8,6 +8,7 @@ import { ChargeContext } from "@/context/ChargeContext";
 import { TRANSACTION_STATUS } from "@/types/Charge";
 import { AuthContext } from "@/context/AuthContext";
 import { formatUTCToDateBR } from "@/utils/helper";
+import { DashboardHeader } from "@/components/DashboardHeader";
 
 const MONTH: Record<string, string> = {
   january: "Janeiro",
@@ -39,9 +40,7 @@ export const BillsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Contribuições</Text>
-      </View>
+      <DashboardHeader name={member?.firstName as string} />
 
       <FlatList
         contentContainerStyle={styles.list}

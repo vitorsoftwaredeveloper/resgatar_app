@@ -1,12 +1,5 @@
 import React, { useContext, useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Alert,
-  Modal,
-} from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Modal } from "react-native";
 import {
   formatCEP,
   formatCNPJCPF,
@@ -21,42 +14,44 @@ import { IMemberState } from "@/types/Member";
 import { Card } from "@/components/Card";
 import { Row } from "@/components/Row";
 import { IconButton } from "@/components/IconButton";
-import { X } from "lucide-react-native";
+import { Eye, EyeOff, Lock, Mail, X } from "lucide-react-native";
 import { COLORS } from "@/theme";
 import { Button } from "@/components/Button";
 import { ToastMessage } from "@/components/Toast";
 
 interface IModalEditProfile {
-  editModalVisible: boolean;
-  setEditModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  createMemberModal: boolean;
+  onClose: () => void;
 }
 
-export const ModalEditProfile = ({
-  editModalVisible,
-  setEditModalVisible,
+export const ModalCreateMember = ({
+  createMemberModal,
+  onClose,
 }: IModalEditProfile) => {
-  const { member, updateMember } = useContext(AuthContext);
+  const { createMember } = useContext(AuthContext);
 
-  const [memberData, setMemberData] = useState<IMemberState>({
-    email: member?.email || "",
-    phoneNumber: member?.phoneNumber || "",
-    firstName: member?.firstName || "",
-    lastName: member?.lastName || "",
-    bio: member?.bio || "",
-    dateOfBirth: member?.dateOfBirth || 0,
-    street: member?.address?.street || "",
-    number: member?.address?.number || "",
-    city: member?.address?.city || "",
-    state: member?.address?.state || "",
-    zip: member?.address?.zip || "",
-    complement: member?.address?.complement || "",
-    datePayment: member?.paymentInfo?.datePayment?.toString() || "",
-    amount: formatCurrencyBRL(
-      (member?.paymentInfo?.amount?.toString() as string) || "0"
-    ),
-    type: member?.identification?.type || "CPF",
-    numberType: member?.identification?.numberType || "",
+  const [memberData, setMemberData] = useState<
+    IMemberState & { password: string }
+  >({
+    amount: "0",
+    bio: "",
+    city: "",
+    complement: "",
+    dateOfBirth: 0,
+    datePayment: "",
+    email: "",
+    firstName: "",
+    lastName: "",
+    number: "",
+    numberType: "",
+    phoneNumber: "",
+    state: "",
+    street: "",
+    type: "CPF",
+    zip: "",
+    password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleMemberDataChange = (field: string, value: string | number) => {
     setMemberData((prev) => ({
@@ -66,33 +61,30 @@ export const ModalEditProfile = ({
   };
 
   const handleSaveProfile = async () => {
-    await updateMember(memberData)
+    await createMember(memberData)
       .then(() => {
-        ToastMessage.success("Sucesso", "Perfil atualizado com sucesso!");
+        ToastMessage.success("Sucesso", "Usuário criado com sucesso!");
+        onClose();
       })
       .catch(() => {
-        ToastMessage.error("Erro", "Falha ao atualizar perfil.");
+        ToastMessage.error("Erro", "Falha ao criar novo usuário.");
       });
-    setEditModalVisible(false);
   };
 
   return (
     <Modal
-      visible={editModalVisible}
+      visible={createMemberModal}
       animationType="slide"
       transparent
       presentationStyle="overFullScreen"
+      onRequestClose={onClose}
     >
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.header}>
-            <Text style={styles.headerTitle}>Meus dados</Text>
+            <Text style={styles.headerTitle}>Novo usuário</Text>
 
-            <IconButton
-              color={COLORS.white}
-              icon={X}
-              onPress={() => setEditModalVisible(false)}
-            />
+            <IconButton color={COLORS.white} icon={X} onPress={onClose} />
           </View>
 
           <ScrollView
@@ -106,6 +98,28 @@ export const ModalEditProfile = ({
                 value={memberData.email}
                 onChangeText={(v: string) => handleMemberDataChange("email", v)}
                 keyboardType="email-address"
+                autoCapitalize="none"
+              />
+
+              <Input
+                label="Password"
+                value={memberData.password}
+                onChangeText={(v: string) =>
+                  handleMemberDataChange("password", v)
+                }
+                keyboardType="default"
+                secureTextEntry={!showPassword}
+                rightIcon={
+                  <TouchableOpacity
+                    onPress={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff size={20} color={COLORS.muted} />
+                    ) : (
+                      <Eye size={20} color={COLORS.muted} />
+                    )}
+                  </TouchableOpacity>
+                }
               />
 
               <Input
@@ -164,16 +178,16 @@ export const ModalEditProfile = ({
                   onChangeText={(v: string) =>
                     handleMemberDataChange("state", v)
                   }
-                  flex={1}
                   maxLength={2}
+                  autoCapitalize="characters"
                 />
+
                 <Input
                   label="Cidade"
                   value={memberData.city}
                   onChangeText={(v: string) =>
                     handleMemberDataChange("city", v)
                   }
-                  flex={1}
                 />
               </Row>
               <Input
@@ -190,7 +204,6 @@ export const ModalEditProfile = ({
                   onChangeText={(v: string) =>
                     handleMemberDataChange("number", v)
                   }
-                  flex={1}
                   keyboardType="numeric"
                 />
                 <Input
@@ -199,7 +212,6 @@ export const ModalEditProfile = ({
                   onChangeText={(v: string) =>
                     handleMemberDataChange("complement", v)
                   }
-                  flex={1}
                 />
               </Row>
             </Card>

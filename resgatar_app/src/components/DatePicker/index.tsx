@@ -3,7 +3,7 @@ import { Platform, TouchableOpacity, View, Text } from "react-native";
 import { useState } from "react";
 import { formatUTCToDateBR } from "@/utils/helper";
 import { styles } from "./styles";
-import { COLORS } from "@/theme/colors";
+import { COLORS } from "@/theme";
 
 interface BirthdayPickerProps {
   date: number;

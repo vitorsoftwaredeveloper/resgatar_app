@@ -11,7 +11,7 @@ import {
   getStoredMember,
   removeMember,
 } from "@/storage/asyncStorage";
-import { IMember, IMemberState, IMemberWithContribution } from "@/types/Member";
+import { IMemberState, IMemberWithContribution } from "@/types/Member";
 
 interface AuthContextData {
   isLoggedIn: boolean;
@@ -21,6 +21,9 @@ interface AuthContextData {
   changePassword: (oldPassword: string, newPassword: string) => Promise<void>;
   updateMember: (member: IMemberState) => Promise<void>;
   reloadMemberData: () => Promise<void>;
+  createMember: (member: IMemberState & { password: string }) => Promise<void>;
+  listMembers: () => Promise<void>;
+  removeMember: (memberId: string) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextData>(
@@ -55,7 +58,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     } catch {
       setMember(null);
-      await removeMember();
     }
   }
 
@@ -67,12 +69,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         options: {
           authFlowType: "USER_PASSWORD_AUTH",
         },
+      }).then(async () => {
+        const memberData = await MemberServices.getMember();
+        setMember(memberData);
+        await saveMember(memberData);
       });
-
-      const memberData = await MemberServices.getMember();
-
-      setMember(memberData);
-      await saveMember(memberData);
     } catch (error) {
       setMember(null);
       throw error;
@@ -84,7 +85,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       await signOut();
     } finally {
-      await removeMember();
       setMember(null);
     }
   }
@@ -92,6 +92,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   async function updateMember(memberCurrent: IMemberState) {
     try {
       const formatMember = {
+        _id: member?._id as string,
         firstName: memberCurrent.firstName.trim(),
         lastName: memberCurrent.lastName.trim(),
         email: memberCurrent.email.trim(),
@@ -131,6 +132,59 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }
 
+  async function createMember(newMember: IMemberState & { password: string }) {
+    try {
+      const formatMember = {
+        firstName: newMember.firstName.trim(),
+        lastName: newMember.lastName.trim(),
+        email: newMember.email.trim(),
+        phoneNumber: newMember.phoneNumber,
+        paymentInfo: {
+          datePayment: parseInt(newMember.datePayment),
+          amount: newMember.amount
+            .replace("R$", "")
+            .replace(/\./g, "")
+            .replace(",", ".")
+            .trim(),
+        },
+        identification: {
+          type: newMember.type as "CPF" | "CNPJ",
+          numberType: newMember.numberType,
+        },
+        bio: newMember.bio,
+        dateOfBirth: newMember.dateOfBirth,
+        address: {
+          street: newMember.street.trim(),
+          number: newMember.number.trim(),
+          city: newMember.city.trim(),
+          state: newMember.state.trim(),
+          zip: newMember.zip,
+          complement: newMember.complement.trim(),
+        },
+        password: newMember.password,
+      };
+
+      await MemberServices.createMember(formatMember);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async function listMembers() {
+    try {
+      return await MemberServices.listMembers();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async function removeMember(memberId: string) {
+    try {
+      await MemberServices.removeMember(memberId);
+    } catch (error) {
+      throw error;
+    }
+  }
   async function reloadMemberData() {
     const memberData = await MemberServices.getMember();
     setMember(memberData);
@@ -158,6 +212,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         changePassword,
         updateMember,
         reloadMemberData,
+        createMember,
+        listMembers,
+        removeMember,
       }}
     >
       {children}

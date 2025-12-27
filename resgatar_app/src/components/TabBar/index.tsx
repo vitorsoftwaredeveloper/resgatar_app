@@ -3,24 +3,38 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
-import { Home, FileText, User } from "lucide-react-native";
-import { Badge } from "../Badge";
-import { styles, TAB_WIDTH, ACTIVE_COLOR, INACTIVE_COLOR } from "./styles";
+import { Home, FileText, User, Settings } from "lucide-react-native";
+import {
+  styles,
+  TAB_WIDTH,
+  ACTIVE_COLOR,
+  INACTIVE_COLOR,
+  TAB_WIDTH_ADMIN,
+} from "./styles";
 
-export function TabBar({ state, navigation }: any) {
+export function TabBar({ state, navigation, isAdmin }: any) {
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
       {
-        translateX: withTiming(state.index * TAB_WIDTH, {
-          duration: 250,
-        }),
+        translateX: withTiming(
+          state.index * (isAdmin ? TAB_WIDTH_ADMIN : TAB_WIDTH),
+          {
+            duration: 250,
+          }
+        ),
       },
     ],
   }));
 
   return (
     <View style={styles.container}>
-      <Animated.View style={[styles.indicator, animatedStyle]} />
+      <Animated.View
+        style={[
+          styles.indicator,
+          isAdmin && styles.indicatorAdmin,
+          animatedStyle,
+        ]}
+      />
 
       <View style={styles.row}>
         {state.routes.map((route: any, index: number) => {
@@ -32,25 +46,27 @@ export function TabBar({ state, navigation }: any) {
             Dashboard: <Home size={24} color={iconColor} />,
             Bills: <FileText size={24} color={iconColor} />,
             Profile: <User size={24} color={iconColor} />,
+            ...(isAdmin && {
+              Settings: <Settings size={24} color={iconColor} />,
+            }),
           };
 
           return (
             <Pressable
               key={route.key}
               onPress={() => navigation.navigate(route.name)}
-              style={styles.tab}
+              style={isAdmin ? styles.tabAdmin : styles.tab}
             >
-              <View>
-                {icons[route.name]}
-                {/* {route.name === "Bills" && <Badge value={3} />} */}
-              </View>
+              <View>{icons[route.name]}</View>
 
               <Text style={[styles.label, { color: iconColor }]}>
                 {route.name === "Dashboard"
                   ? "Início"
                   : route.name === "Bills"
-                  ? "Faturas"
-                  : "Perfil"}
+                  ? "Contribuições"
+                  : route.name === "Profile"
+                  ? "Perfil"
+                  : "Configurações"}
               </Text>
             </Pressable>
           );

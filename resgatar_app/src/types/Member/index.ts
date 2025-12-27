@@ -18,6 +18,7 @@ interface IMemberState {
 }
 
 interface IMember {
+  _id: string;
   email: string;
   phoneNumber: string;
   firstName: string;

@@ -8,7 +8,7 @@ import { LoadingContext } from "@/context/LoadingContext";
 
 const Stack = createNativeStackNavigator();
 const AppNavigator = () => {
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, member } = useContext(AuthContext);
   const { loading } = useContext(LoadingContext);
 
   if (loading) {
@@ -20,7 +20,9 @@ const AppNavigator = () => {
       {!isLoggedIn ? (
         <Stack.Screen name="Login" component={LoginScreen} />
       ) : (
-        <Stack.Screen name="Home" component={BottomTabs} />
+        <Stack.Screen name="Home">
+          {() => <BottomTabs isAdmin={member?.role === "admin"} />}
+        </Stack.Screen>
       )}
     </Stack.Navigator>
   );

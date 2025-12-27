@@ -1,7 +1,7 @@
 import { Text, Pressable } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { styles } from "./styles";
-import { COLORS } from "@/theme/colors";
+import { COLORS } from "@/theme";
 
 export function CustomTabBarItem({
   label,
