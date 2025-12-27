@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { styles } from "./styles";
-import { View, Text, FlatList } from "react-native";
+import { FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ContributionItem } from "@/components/ContributionItem";
 import { PixPaymentModal } from "./PixPaymentModal";

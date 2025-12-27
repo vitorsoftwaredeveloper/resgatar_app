@@ -21,12 +21,12 @@ import { ToastMessage } from "@/components/Toast";
 
 interface IModalEditProfile {
   createMemberModal: boolean;
-  setCreateMemberModal: React.Dispatch<React.SetStateAction<boolean>>;
+  onClose: () => void;
 }
 
 export const ModalCreateMember = ({
   createMemberModal,
-  setCreateMemberModal,
+  onClose,
 }: IModalEditProfile) => {
   const { createMember } = useContext(AuthContext);
 
@@ -64,7 +64,7 @@ export const ModalCreateMember = ({
     await createMember(memberData)
       .then(() => {
         ToastMessage.success("Sucesso", "Usuário criado com sucesso!");
-        setCreateMemberModal(false);
+        onClose();
       })
       .catch(() => {
         ToastMessage.error("Erro", "Falha ao criar novo usuário.");
@@ -77,17 +77,14 @@ export const ModalCreateMember = ({
       animationType="slide"
       transparent
       presentationStyle="overFullScreen"
+      onRequestClose={onClose}
     >
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.header}>
             <Text style={styles.headerTitle}>Novo usuário</Text>
 
-            <IconButton
-              color={COLORS.white}
-              icon={X}
-              onPress={() => setCreateMemberModal(false)}
-            />
+            <IconButton color={COLORS.white} icon={X} onPress={onClose} />
           </View>
 
           <ScrollView

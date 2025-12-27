@@ -18,6 +18,7 @@ export const THEME = {
   },
   SPACING: {
     xs: 6,
+    xxs: 8,
     sm: 10,
     md: 16,
     lg: 20,
@@ -28,6 +29,7 @@ export const THEME = {
     sm: 10,
     md: 16,
     lg: 22,
+    xl: 28,
   },
 
   TYPOGRAPHY: {
