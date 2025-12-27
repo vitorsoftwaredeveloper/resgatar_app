@@ -114,9 +114,9 @@ export const ModalCreateMember = ({
                     onPress={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff size={20} color={COLORS.muted} />
+                      <Eye size={24} color={COLORS.muted} />
                     ) : (
-                      <Eye size={20} color={COLORS.muted} />
+                      <EyeOff size={24} color={COLORS.muted} />
                     )}
                   </TouchableOpacity>
                 }
