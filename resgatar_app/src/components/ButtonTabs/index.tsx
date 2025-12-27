@@ -14,7 +14,7 @@ export const BottomTabs = ({ isAdmin }: IButtonTabsProps) => {
   return (
     <Tab.Navigator
       screenOptions={{ headerShown: false }}
-      tabBar={(props) => <TabBar {...props} />}
+      tabBar={(props) => <TabBar isAdmin={isAdmin} {...props} />}
     >
       <Tab.Screen name="Dashboard" component={DashboardScreen} />
       <Tab.Screen name="Bills" component={BillsScreen} />
