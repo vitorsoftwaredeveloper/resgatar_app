@@ -40,7 +40,7 @@ export function DashboardScreen() {
       setLoading(true);
 
       const response = await NotificationServices.listNotifications();
-      setData([]);
+      setData(response);
     } catch (error: any) {
       ToastMessage.error(
         "Não foi possível carregar as notificações",

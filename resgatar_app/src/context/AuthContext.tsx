@@ -11,7 +11,10 @@ import {
   getStoredMember,
   removeMember,
 } from "@/storage/asyncStorage";
-import { IMember, IMemberState, IMemberWithContribution } from "@/types/Member";
+import { IMemberState, IMemberWithContribution } from "@/types/Member";
+import * as Notifications from "expo-notifications";
+import * as Device from "expo-device";
+import { Platform } from "react-native";
 
 interface AuthContextData {
   isLoggedIn: boolean;
@@ -21,6 +24,7 @@ interface AuthContextData {
   changePassword: (oldPassword: string, newPassword: string) => Promise<void>;
   updateMember: (member: IMemberState) => Promise<void>;
   reloadMemberData: () => Promise<void>;
+  createMember: (member: IMemberState & { password: string }) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextData>(
@@ -131,6 +135,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }
 
+  async function createMember(newMember: IMemberState & { password: string }) {
+    try {
+      const formatMember = {
+        firstName: newMember.firstName.trim(),
+        lastName: newMember.lastName.trim(),
+        email: newMember.email.trim(),
+        phoneNumber: newMember.phoneNumber,
+        paymentInfo: {
+          datePayment: parseInt(newMember.datePayment),
+          amount: newMember.amount
+            .replace("R$", "")
+            .replace(/\./g, "")
+            .replace(",", ".")
+            .trim(),
+        },
+        identification: {
+          type: newMember.type as "CPF" | "CNPJ",
+          numberType: newMember.numberType,
+        },
+        bio: newMember.bio,
+        dateOfBirth: newMember.dateOfBirth,
+        address: {
+          street: newMember.street.trim(),
+          number: newMember.number.trim(),
+          city: newMember.city.trim(),
+          state: newMember.state.trim(),
+          zip: newMember.zip,
+          complement: newMember.complement.trim(),
+        },
+        password: newMember.password,
+        tokenPushNotification: "teste",
+      };
+
+      await MemberServices.createMember(formatMember);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async function reloadMemberData() {
     const memberData = await MemberServices.getMember();
     setMember(memberData);
@@ -158,6 +201,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         changePassword,
         updateMember,
         reloadMemberData,
+        createMember,
       }}
     >
       {children}

@@ -3,7 +3,7 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
-import { Home, FileText, User } from "lucide-react-native";
+import { Home, FileText, User, Settings } from "lucide-react-native";
 import { styles, TAB_WIDTH, ACTIVE_COLOR, INACTIVE_COLOR } from "./styles";
 
 export function TabBar({ state, navigation }: any) {
@@ -31,6 +31,7 @@ export function TabBar({ state, navigation }: any) {
             Dashboard: <Home size={24} color={iconColor} />,
             Bills: <FileText size={24} color={iconColor} />,
             Profile: <User size={24} color={iconColor} />,
+            Settings: <Settings size={24} color={iconColor} />,
           };
 
           return (
@@ -46,7 +47,9 @@ export function TabBar({ state, navigation }: any) {
                   ? "Início"
                   : route.name === "Bills"
                   ? "Contribuições"
-                  : "Perfil"}
+                  : route.name === "Profile"
+                  ? "Perfil"
+                  : "Configuraões"}
               </Text>
             </Pressable>
           );

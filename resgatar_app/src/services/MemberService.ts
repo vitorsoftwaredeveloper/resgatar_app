@@ -22,4 +22,15 @@ export const MemberServices = {
       throw error;
     }
   },
+  createMember: async (
+    member: IMember & { password: string; tokenPushNotification: string }
+  ) => {
+    try {
+      const response = await api.post("/createMember", member);
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao criar membro", error);
+      throw error;
+    }
+  },
 };

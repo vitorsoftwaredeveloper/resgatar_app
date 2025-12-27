@@ -2,7 +2,7 @@ import { StyleSheet, Dimensions } from "react-native";
 
 const { width } = Dimensions.get("window");
 
-export const TAB_WIDTH = width / 3;
+export const TAB_WIDTH = width / 4;
 export const ACTIVE_COLOR = "#6B4F3A";
 export const INACTIVE_COLOR = "#999";
 
