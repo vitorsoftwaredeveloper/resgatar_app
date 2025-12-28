@@ -8,6 +8,8 @@ export const ToastMessage = {
       text2: message,
       position: "top",
       visibilityTime: 3000,
+      text1Style: { fontWeight: "600", fontSize: 16 },
+      text2Style: { fontWeight: "600", fontSize: 14 },
     }),
 
   error: (title: string, message?: string) =>
@@ -17,6 +19,8 @@ export const ToastMessage = {
       text2: message,
       position: "top",
       visibilityTime: 4000,
+      text1Style: { fontWeight: "600", fontSize: 16 },
+      text2Style: { fontWeight: "600", fontSize: 14 },
     }),
 
   warning: (title: string, message?: string) =>
@@ -26,5 +30,7 @@ export const ToastMessage = {
       text2: message,
       position: "top",
       visibilityTime: 3500,
+      text1Style: { fontWeight: "600", fontSize: 16 },
+      text2Style: { fontWeight: "600", fontSize: 14 },
     }),
 };

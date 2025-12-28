@@ -95,11 +95,7 @@ export const ModalEditProfile = ({
             />
           </View>
 
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 70 }}
-          >
-            {/* DADOS PESSOAIS */}
+          <ScrollView showsVerticalScrollIndicator={false}>
             <Card title="Dados pessoais">
               <Input
                 label="Email"
@@ -140,7 +136,6 @@ export const ModalEditProfile = ({
               />
             </Card>
 
-            {/* DATA NASCIMENTO */}
             <Card title="Data de nascimento">
               <BirthdayPicker
                 date={memberData.dateOfBirth}

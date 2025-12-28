@@ -87,10 +87,7 @@ export const ModalCreateMember = ({
             <IconButton color={COLORS.white} icon={X} onPress={onClose} />
           </View>
 
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 70 }}
-          >
+          <ScrollView showsVerticalScrollIndicator={false}>
             {/* DADOS PESSOAIS */}
             <Card title="Dados pessoais">
               <Input
@@ -114,9 +111,9 @@ export const ModalCreateMember = ({
                     onPress={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff size={20} color={COLORS.muted} />
+                      <Eye size={24} color={COLORS.muted} />
                     ) : (
-                      <Eye size={20} color={COLORS.muted} />
+                      <EyeOff size={24} color={COLORS.muted} />
                     )}
                   </TouchableOpacity>
                 }

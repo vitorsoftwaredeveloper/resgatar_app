@@ -4,6 +4,7 @@ import {
   Text,
   ActivityIndicator,
   ButtonProps,
+  View,
 } from "react-native";
 import { styles } from "./styles";
 
@@ -11,6 +12,8 @@ type Props = ButtonProps & {
   title: string;
   variant?: "primary" | "secondary" | "danger";
   styleCustom?: any;
+  leftIcon?: React.ReactNode;
+  rigthtIcon?: React.ReactNode;
 };
 
 export function Button({
@@ -19,6 +22,8 @@ export function Button({
   styleCustom,
   disabled,
   onPress,
+  leftIcon,
+  rigthtIcon,
   ...rest
 }: Props) {
   const [loading, setLoading] = useState(false);
@@ -51,14 +56,18 @@ export function Button({
       {loading ? (
         <ActivityIndicator size="small" color="#FFF" />
       ) : (
-        <Text
-          style={[
-            styles.buttonText,
-            variant !== "secondary" && styles.textOnPrimary,
-          ]}
-        >
-          {title}
-        </Text>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+          {leftIcon && leftIcon}
+          <Text
+            style={[
+              styles.buttonText,
+              variant !== "secondary" && styles.textOnPrimary,
+            ]}
+          >
+            {title}
+          </Text>
+          {rigthtIcon && rigthtIcon}
+        </View>
       )}
     </TouchableOpacity>
   );

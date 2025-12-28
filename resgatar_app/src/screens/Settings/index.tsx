@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { View } from "react-native";
-import { Bell, UserRoundMinus, UserRoundPlus } from "lucide-react-native";
+import { Bell, Send, UserRoundMinus, UserRoundPlus } from "lucide-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../../context/AuthContext";
 import { ModalCreateMember } from "./ModalCreateMember";
@@ -9,12 +9,14 @@ import { ProfileHeaderCard } from "@/components/ProfileHeaderCard";
 import { styles } from "./styles";
 import { DashboardHeader } from "@/components/DashboardHeader";
 import { ModalRemoveMember } from "./ModalRemoveMember";
+import { ModalSendNotification } from "./ModalSendNotification";
 
 export const SettingsScreen = () => {
   const { member } = useContext(AuthContext);
 
   const [createMemberModal, setCreateMemberModal] = useState(false);
   const [openRemoveMember, setOpenRemoveMember] = useState(false);
+  const [openSendNotification, setOpenSendNotification] = useState(false);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -43,8 +45,8 @@ export const SettingsScreen = () => {
           <ProfileMenuItem
             title="Enviar notificação"
             description="Envie novas notificações"
-            onPress={() => {}}
-            icon={<Bell />}
+            onPress={() => setOpenSendNotification(true)}
+            icon={<Send />}
             isLast
           />
         </View>
@@ -58,6 +60,12 @@ export const SettingsScreen = () => {
           <ModalRemoveMember
             visible={openRemoveMember}
             onClose={() => setOpenRemoveMember(false)}
+          />
+        )}
+        {openSendNotification && (
+          <ModalSendNotification
+            visible={openSendNotification}
+            onClose={() => setOpenSendNotification(false)}
           />
         )}
       </View>

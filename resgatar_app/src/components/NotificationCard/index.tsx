@@ -18,14 +18,35 @@ interface Props {
   onShare?: () => void;
 }
 
+const notificationConfig = {
+  info: {
+    label: "Comunicado",
+    icon: "megaphone-outline",
+    tagBg: "#EDF3FF",
+    tagText: "#3B6DF6",
+  },
+  alert: {
+    label: "Urgente",
+    icon: "alert-circle-outline",
+    tagBg: "#FDECEC",
+    tagText: "#E53935",
+  },
+  warning: {
+    label: "Aviso",
+    icon: "warning-outline",
+    tagBg: "#FFF6E5",
+    tagText: "#E6A23C",
+  },
+};
+
 const getTagLabel = (type: string) => {
   switch (type) {
     case "info":
       return "Comunicado";
-    case "success":
-      return "Lembrete";
+    case "alert":
+      return "Urgente";
     case "warning":
-      return "Alerta";
+      return "Aviso";
     default:
       return "Comunicado";
   }
@@ -35,10 +56,10 @@ const getTagIcon = (type: string) => {
   switch (type) {
     case "info":
       return "megaphone-outline";
-    case "success":
-      return "time-outline";
-    case "warning":
+    case "alert":
       return "alert-circle-outline";
+    case "warning":
+      return "warning-outline";
     default:
       return "megaphone-outline";
   }
@@ -52,9 +73,7 @@ export const NotificationCard = ({
   const animatedHeight = useSharedValue(0);
   const rotate = useSharedValue(0);
   const [contentHeight, setContentHeight] = useState(0);
-
-  const tagLabel = getTagLabel(notification.type);
-  const tagIcon = getTagIcon(notification.type);
+  const config = notificationConfig[notification.type];
 
   const handleContentLayout = (event: LayoutChangeEvent) => {
     const { height } = event.nativeEvent.layout;
@@ -96,16 +115,13 @@ export const NotificationCard = ({
         expanded ? "Tocar para recolher" : "Tocar para expandir"
       }
     >
-      {/* Conteúdo central */}
       <View style={styles.textContainer}>
-        {/* Header com título e botão */}
         <View style={styles.header}>
           <View style={styles.titleRow}>
             <Text style={styles.title} numberOfLines={expanded ? undefined : 1}>
-              {notification.title}
+              {notification.title || "Título"}
             </Text>
 
-            {/* Botão de expandir */}
             <View style={styles.toggleButton}>
               <Animated.View style={arrowStyle}>
                 <Ionicons name="chevron-down" size={20} color="#8B7969" />
@@ -113,7 +129,6 @@ export const NotificationCard = ({
             </View>
           </View>
 
-          {/* Footer quando colapsado */}
           {!expanded && (
             <View style={styles.footerLeft}>
               {notification.isNew && (
@@ -130,39 +145,38 @@ export const NotificationCard = ({
           )}
         </View>
 
-        {/* Divider superior */}
-        {expanded && <View style={styles.divider} />}
-
-        {/* Tag de tipo (Comunicado, Lembrete, Alerta) */}
         {expanded && (
-          <View style={styles.tagContainer}>
+          <View
+            style={[styles.tagContainer, { backgroundColor: config.tagBg }]}
+          >
             <Ionicons
-              name={tagIcon as any}
+              name={config.icon as any}
               size={16}
-              color="#6B4E3D"
+              color={config.tagText}
               style={styles.tagIcon}
             />
-            <Text style={styles.tagLabel}>{tagLabel}</Text>
+            <Text style={[styles.tagLabel, { color: config.tagText }]}>
+              {config.label}
+            </Text>
           </View>
         )}
 
-        {/* Preview da descrição */}
+        {expanded && <View style={styles.divider} />}
+
         {!expanded && (
           <Text style={styles.descriptionPreview} numberOfLines={2}>
-            {notification.description}
+            {notification.description || "Descrição da notificação"}
           </Text>
         )}
 
-        {/* Conteúdo expandido */}
         <Animated.View style={[styles.expandable, animatedStyle]}>
           <View onLayout={handleContentLayout}>
             <Text style={styles.descriptionFull}>
-              {notification.description}
+              {notification.description || "Descrição da notificação"}
             </Text>
           </View>
         </Animated.View>
 
-        {/* Conteúdo oculto para medição */}
         {contentHeight === 0 && (
           <View style={styles.hiddenMeasure} onLayout={handleContentLayout}>
             <Text style={styles.descriptionFull}>
@@ -171,7 +185,6 @@ export const NotificationCard = ({
           </View>
         )}
 
-        {/* Divider inferior e footer expandido */}
         {expanded && (
           <>
             <View style={styles.divider} />

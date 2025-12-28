@@ -17,18 +17,16 @@ export const styles = StyleSheet.create({
     elevation: 2,
   },
 
-  // Estilos de borda por tipo
   info: {
-    borderLeftColor: COLORS.primary,
+    borderLeftColor: COLORS.info,
   },
-  success: {
-    borderLeftColor: COLORS.success,
+  alert: {
+    borderLeftColor: COLORS.error,
   },
   warning: {
     borderLeftColor: COLORS.waiting,
   },
 
-  // Container do ícone à esquerda
   iconContainer: {
     width: 44,
     height: 44,
@@ -40,20 +38,18 @@ export const styles = StyleSheet.create({
   infoIcon: {
     backgroundColor: "#F0F4F8",
   },
-  successIcon: {
-    backgroundColor: "#E8F9F4",
+  alertIcon: {
+    backgroundColor: "#FDECEC",
   },
   warningIcon: {
     backgroundColor: "#FFF4E8",
   },
 
-  // Container de texto
   textContainer: {
     flex: 1,
     paddingRight: 8,
   },
 
-  // Header
   header: {
     marginBottom: 6,
   },
@@ -70,7 +66,6 @@ export const styles = StyleSheet.create({
     marginRight: 8,
   },
 
-  // Badge "Novo"
   newBadge: {
     flexDirection: "row",
     alignItems: "center",
@@ -87,41 +82,36 @@ export const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
 
-  // Data
   date: {
     fontSize: 13,
     color: "#9B8678",
     fontWeight: "500",
   },
 
-  // Divider
   divider: {
     height: 1,
     backgroundColor: "#E8DDD4",
     marginVertical: 12,
   },
 
-  // Tag (Comunicado, Lembrete, Alerta)
   tagContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F3EEE9",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
     alignSelf: "flex-start",
     marginBottom: 12,
   },
-  tagIcon: {
-    marginRight: 6,
-  },
   tagLabel: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#6B4E3D",
   },
 
-  // Descrição preview (colapsado)
+  tagIcon: {
+    marginRight: 6,
+  },
+
   descriptionPreview: {
     color: "#7A6A5E",
     fontSize: 14,
@@ -129,26 +119,22 @@ export const styles = StyleSheet.create({
     marginTop: 4,
   },
 
-  // Descrição completa (expandido)
   descriptionFull: {
     color: "#4A3F35",
     fontSize: 14,
     lineHeight: 22,
   },
 
-  // Animação de expansão
   expandable: {
     overflow: "hidden",
   },
 
-  // Elemento oculto para medição
   hiddenMeasure: {
     position: "absolute",
     opacity: 0,
     zIndex: -1,
   },
 
-  // Footer
   footer: {
     flexDirection: "row",
     alignItems: "center",
@@ -166,7 +152,6 @@ export const styles = StyleSheet.create({
     fontWeight: "500",
   },
 
-  // Botão compartilhar
   shareButton: {
     flexDirection: "row",
     alignItems: "center",
@@ -182,7 +167,6 @@ export const styles = StyleSheet.create({
     color: "#6B4E3D",
   },
 
-  // Botão de toggle
   toggleButton: {
     width: 32,
     height: 32,

@@ -1,4 +1,4 @@
-type INotificationType = "info" | "success" | "warning";
+type INotificationType = "info" | "alert" | "warning";
 
 interface INotification {
   _id: string;

@@ -14,6 +14,7 @@ export const THEME = {
     waiting: "#E0B96A",
     softBrown: "#EDE6DE",
     success: "#1E7F43",
+    info: "#3B6DF6",
     successBackground: "#E6F4EA",
   },
   SPACING: {
