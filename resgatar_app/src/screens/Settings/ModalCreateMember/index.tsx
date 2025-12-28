@@ -87,10 +87,7 @@ export const ModalCreateMember = ({
             <IconButton color={COLORS.white} icon={X} onPress={onClose} />
           </View>
 
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 70 }}
-          >
+          <ScrollView showsVerticalScrollIndicator={false}>
             {/* DADOS PESSOAIS */}
             <Card title="Dados pessoais">
               <Input

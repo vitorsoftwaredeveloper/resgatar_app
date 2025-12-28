@@ -5,7 +5,11 @@ import { INotification } from "@/types/Notification";
 export const NotificationServices = {
   createNotification: async (payload: INotification): Promise<ICharge> => {
     try {
-      const response = await api.post("/notifications", payload);
+      const response = await api.post("/notifications", {
+        title: payload.title,
+        description: payload.description,
+        type: payload.type,
+      });
       const { data } = response.data;
 
       return data;

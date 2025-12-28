@@ -138,10 +138,6 @@ export const styles = StyleSheet.create({
     fontWeight: "700",
   },
 
-  footer: {
-    padding: 16,
-    backgroundColor: COLORS.background,
-  },
   saveButton: {
     backgroundColor: COLORS.primary,
     borderRadius: 28,
@@ -152,5 +148,10 @@ export const styles = StyleSheet.create({
     color: "#FFF",
     fontSize: 18,
     fontWeight: "700",
+  },
+
+  footer: {
+    padding: 16,
+    backgroundColor: COLORS.background,
   },
 });
