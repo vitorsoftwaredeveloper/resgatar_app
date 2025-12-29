@@ -201,8 +201,8 @@ export const styles = StyleSheet.create({
     borderLeftWidth: 6,
     borderRightWidth: 6,
     borderTopWidth: 6,
-    borderLeftColor: "transparent",
-    borderRightColor: "transparent",
+    borderLeftColor: "#00000000",
+    borderRightColor: "#00000000",
     borderTopColor: COLORS.primary,
   },
 });

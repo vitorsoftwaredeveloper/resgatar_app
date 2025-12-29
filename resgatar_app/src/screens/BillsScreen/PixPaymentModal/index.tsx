@@ -1,16 +1,20 @@
 import React, { useContext, useState } from "react";
-import { View, Text, Pressable } from "react-native";
-import { Modal } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  Modal,
+  Animated,
+  Clipboard,
+} from "react-native";
 import { X, Copy, QrCode } from "lucide-react-native";
 import { styles } from "./styles";
 import { ChargeContext } from "@/context/ChargeContext";
 import QRCode from "react-native-qrcode-svg";
-import { Animated } from "react-native";
 import { useEffect, useRef } from "react";
 import { IconButton } from "@/components/IconButton";
 import { TRANSACTION_STATUS } from "@/types/Charge";
 import { AuthContext } from "@/context/AuthContext";
-import { Clipboard } from "react-native";
 
 interface PixPaymentModalProps {
   visible: boolean;
@@ -143,7 +147,7 @@ export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
                 value={charge.transactionData.qrCode}
                 size={200}
                 color="#3E3328"
-                backgroundColor="transparent"
+                backgroundColor="#00000000"
               />
             </View>
           </View>

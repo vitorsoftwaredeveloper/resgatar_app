@@ -1,12 +1,5 @@
 import React, { useContext, useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Alert,
-  Modal,
-} from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Modal } from "react-native";
 import {
   formatCEP,
   formatCNPJCPF,
@@ -69,11 +62,11 @@ export const ModalEditProfile = ({
     await updateMember(memberData)
       .then(() => {
         ToastMessage.success("Sucesso", "Perfil atualizado com sucesso!");
+        setEditModalVisible(false);
       })
       .catch(() => {
         ToastMessage.error("Erro", "Falha ao atualizar perfil.");
       });
-    setEditModalVisible(false);
   };
 
   return (

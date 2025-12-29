@@ -20,7 +20,6 @@ import { DashboardHeader } from "@/components/DashboardHeader";
 
 export const ProfileScreen = () => {
   const { logout, member } = useContext(AuthContext);
-
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
 

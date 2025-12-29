@@ -31,9 +31,7 @@ export const BillsScreen = () => {
   const [modalPayVisible, setModalPayVisible] = useState(false);
 
   const handlePay = async (item: any) => {
-    await createCharge(
-      Number(item.value.replace("R$", "").replace(",", "."))
-    ).then(() => {
+    await createCharge(item.value.replace("R$", "").trim()).then(() => {
       setModalPayVisible(true);
     });
   };
