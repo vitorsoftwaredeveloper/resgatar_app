@@ -1,96 +1,134 @@
 import React, { useContext, useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Alert,
-  Modal,
-  TextInput,
-} from "react-native";
-import { X } from "lucide-react-native";
+import { View, Text, ScrollView, TouchableOpacity, Modal } from "react-native";
 import { styles } from "./styles";
-import { Button } from "@/components/Button";
+import { Input } from "@/components/Input";
 import { AuthContext } from "@/context/AuthContext";
+import { Card } from "@/components/Card";
+import { IconButton } from "@/components/IconButton";
+import { Eye, EyeOff, X } from "lucide-react-native";
+import { COLORS } from "@/theme";
+import { Button } from "@/components/Button";
+import { ToastMessage } from "@/components/Toast";
 
-interface IModalUpdatePasswordProps {
+interface IModalUpdatePassword {
   passwordModalVisible: boolean;
-  setPasswordModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  onClose: () => void;
 }
 
 export const ModalUpdatePassword = ({
   passwordModalVisible,
-  setPasswordModalVisible,
-}: IModalUpdatePasswordProps) => {
+  onClose,
+}: IModalUpdatePassword) => {
   const { changePassword } = useContext(AuthContext);
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordData, setPasswordData] = useState({
+    password: "",
+    confirmPassword: "",
+  });
 
-  const handleChangePassword = async () => {
-    if (!currentPassword || !newPassword || !confirmPassword) {
-      Alert.alert("Erro", "Preencha todos os campos.");
+  const [showPassword, setShowPassword] = useState<{
+    password: boolean;
+    confirmPassword: boolean;
+  }>({
+    password: false,
+    confirmPassword: false,
+  });
+
+  const handlePasswordDataChange = (field: string, value: string | number) => {
+    setPasswordData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
+  };
+
+  const handleShowPassword = (field: string) => {
+    setShowPassword((prevData: any) => ({
+      ...prevData,
+      [field]: !prevData[field],
+    }));
+  };
+
+  const handleSavePassword = async () => {
+    if (passwordData.password !== passwordData.confirmPassword) {
+      ToastMessage.error("Erro", "Senhas diferentes");
       return;
     }
-    if (newPassword !== confirmPassword) {
-      Alert.alert("Erro", "A nova senha e a confirmação não coincidem.");
-      return;
-    }
-    try {
-      await changePassword(currentPassword, newPassword);
-      Alert.alert("Sucesso", "Senha alterada com sucesso!");
-      setPasswordModalVisible(false);
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-    } catch (error) {
-      Alert.alert("Erro", "Falha ao alterar senha. Verifique a senha atual.");
-      console.error(error);
-    }
+
+    await changePassword(passwordData.password)
+      .then(() => {
+        ToastMessage.success("Senha alterada com sucesso");
+        onClose();
+      })
+      .catch(() => {
+        ToastMessage.error("Erro ao alterar senha");
+      });
   };
 
   return (
     <Modal
       visible={passwordModalVisible}
       animationType="slide"
-      onRequestClose={() => setPasswordModalVisible(false)}
+      transparent
+      presentationStyle="overFullScreen"
+      onRequestClose={onClose}
     >
-      <View style={styles.modalContainer}>
-        <View style={styles.modalHeader}>
-          <Text style={styles.modalTitle}>Alterar Senha</Text>
-          <TouchableOpacity onPress={() => setPasswordModalVisible(false)}>
-            <X color="#FFFFFF" size={24} />
-          </TouchableOpacity>
+      <View style={styles.overlay}>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>Minha senha</Text>
+
+            <IconButton color={COLORS.white} icon={X} onPress={onClose} />
+          </View>
+
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <Card title="Senha">
+              <Input
+                label="Nova senha"
+                value={passwordData.password}
+                onChangeText={(v: string) =>
+                  handlePasswordDataChange("password", v)
+                }
+                keyboardType="default"
+                secureTextEntry={!showPassword.password}
+                rightIcon={
+                  <TouchableOpacity
+                    onPress={() => handleShowPassword("password")}
+                  >
+                    {showPassword.password ? (
+                      <Eye size={24} color={COLORS.muted} />
+                    ) : (
+                      <EyeOff size={24} color={COLORS.muted} />
+                    )}
+                  </TouchableOpacity>
+                }
+              />
+
+              <Input
+                label="Confirmar senha"
+                value={passwordData.confirmPassword}
+                onChangeText={(v: string) =>
+                  handlePasswordDataChange("confirmPassword", v)
+                }
+                keyboardType="default"
+                secureTextEntry={!showPassword.confirmPassword}
+                rightIcon={
+                  <TouchableOpacity
+                    onPress={() => handleShowPassword("confirmPassword")}
+                  >
+                    {showPassword.confirmPassword ? (
+                      <Eye size={24} color={COLORS.muted} />
+                    ) : (
+                      <EyeOff size={24} color={COLORS.muted} />
+                    )}
+                  </TouchableOpacity>
+                }
+              />
+            </Card>
+          </ScrollView>
+
+          <View style={styles.footer}>
+            <Button title="Salvar" onPress={handleSavePassword} />
+          </View>
         </View>
-
-        <TextInput
-          style={styles.input}
-          placeholder="Senha Atual"
-          value={currentPassword}
-          onChangeText={setCurrentPassword}
-          secureTextEntry
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="Nova Senha"
-          value={newPassword}
-          onChangeText={setNewPassword}
-          secureTextEntry
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="Confirmar Nova Senha"
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry
-        />
-
-        <Button title="Alterar Senha" onPress={handleChangePassword} />
-        <Button
-          title="Cancelar"
-          onPress={() => setPasswordModalVisible(false)}
-        />
       </View>
     </Modal>
   );

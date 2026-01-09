@@ -42,6 +42,14 @@ export const ProfileScreen = () => {
           />
 
           <ProfileMenuItem
+            title="Alterar senha"
+            description="Atualize sua senha de login do aplicativo"
+            onPress={() => setPasswordModalVisible(true)}
+            icon={<Lock />}
+            isLast
+          />
+
+          {/* <ProfileMenuItem
             title="Minhas notificações"
             description="Acompanhe suas notificações"
             onPress={() => {}}
@@ -68,7 +76,7 @@ export const ProfileScreen = () => {
             onPress={() => {}}
             icon={<Church />}
             isLast
-          />
+          /> */}
         </View>
 
         <TouchableOpacity style={styles.logout} onPress={logout}>
@@ -78,14 +86,14 @@ export const ProfileScreen = () => {
         {editModalVisible && (
           <ModalEditProfile
             editModalVisible={editModalVisible}
-            setEditModalVisible={setEditModalVisible}
+            onClose={() => setEditModalVisible(false)}
           />
         )}
 
         {passwordModalVisible && (
           <ModalUpdatePassword
             passwordModalVisible={passwordModalVisible}
-            setPasswordModalVisible={setPasswordModalVisible}
+            onClose={() => setPasswordModalVisible(false)}
           />
         )}
       </View>

@@ -21,12 +21,12 @@ import { ToastMessage } from "@/components/Toast";
 
 interface IModalEditProfile {
   editModalVisible: boolean;
-  setEditModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  onClose: () => void;
 }
 
 export const ModalEditProfile = ({
   editModalVisible,
-  setEditModalVisible,
+  onClose,
 }: IModalEditProfile) => {
   const { member, updateMember } = useContext(AuthContext);
 
@@ -62,7 +62,7 @@ export const ModalEditProfile = ({
     await updateMember(memberData)
       .then(() => {
         ToastMessage.success("Sucesso", "Perfil atualizado com sucesso!");
-        setEditModalVisible(false);
+        onClose();
       })
       .catch(() => {
         ToastMessage.error("Erro", "Falha ao atualizar perfil.");
@@ -75,17 +75,14 @@ export const ModalEditProfile = ({
       animationType="slide"
       transparent
       presentationStyle="overFullScreen"
+      onRequestClose={onClose}
     >
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.header}>
             <Text style={styles.headerTitle}>Meus dados</Text>
 
-            <IconButton
-              color={COLORS.white}
-              icon={X}
-              onPress={() => setEditModalVisible(false)}
-            />
+            <IconButton color={COLORS.white} icon={X} onPress={onClose} />
           </View>
 
           <ScrollView showsVerticalScrollIndicator={false}>
