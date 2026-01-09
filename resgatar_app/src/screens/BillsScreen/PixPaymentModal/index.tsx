@@ -70,7 +70,11 @@ export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
   }, [visible]);
 
   useEffect(() => {
-    let active = true;
+    let active = false;
+
+    setTimeout(() => {
+      active = true;
+    }, 3000);
 
     const poll = async () => {
       if (!active) return;

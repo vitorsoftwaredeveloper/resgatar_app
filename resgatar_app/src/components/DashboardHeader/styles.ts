@@ -1,3 +1,4 @@
+import { COLORS } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -33,7 +34,10 @@ export const styles = StyleSheet.create({
   avatar: {
     width: 36,
     height: 36,
-    borderRadius: 18,
-    backgroundColor: "rgba(255,255,255,0.25)",
+    alignItems: "center",
+    marginRight: 12,
+    justifyContent: "center",
+    borderRadius: 20,
+    backgroundColor: COLORS.muted,
   },
 });
