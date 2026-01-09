@@ -1,12 +1,5 @@
 import React, { useContext, useState } from "react";
-import {
-  View,
-  Text,
-  Pressable,
-  Modal,
-  Animated,
-  Clipboard,
-} from "react-native";
+import { View, Text, Pressable, Animated, Clipboard } from "react-native";
 import { X, Copy, QrCode } from "lucide-react-native";
 import { styles } from "./styles";
 import { ChargeContext } from "@/context/ChargeContext";
@@ -15,6 +8,7 @@ import { useEffect, useRef } from "react";
 import { IconButton } from "@/components/IconButton";
 import { TRANSACTION_STATUS } from "@/types/Charge";
 import { AuthContext } from "@/context/AuthContext";
+import { ModalBase } from "@/components/ModalBase";
 
 interface PixPaymentModalProps {
   visible: boolean;
@@ -103,7 +97,7 @@ export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
   }, [charge.status]);
 
   return (
-    <Modal visible={visible} onRequestClose={onClose} style={styles.modal}>
+    <ModalBase onClose={onClose} visible={visible}>
       <Animated.View
         style={[
           styles.container,
@@ -200,6 +194,6 @@ export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
           </View>
         </View>
       </Animated.View>
-    </Modal>
+    </ModalBase>
   );
 }

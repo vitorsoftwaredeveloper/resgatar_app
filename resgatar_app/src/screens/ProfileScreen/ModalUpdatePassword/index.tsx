@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Modal } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { styles } from "./styles";
 import { Input } from "@/components/Input";
 import { AuthContext } from "@/context/AuthContext";
@@ -9,6 +9,7 @@ import { Eye, EyeOff, X } from "lucide-react-native";
 import { COLORS } from "@/theme";
 import { Button } from "@/components/Button";
 import { ToastMessage } from "@/components/Toast";
+import { ModalBase } from "@/components/ModalBase";
 
 interface IModalUpdatePassword {
   passwordModalVisible: boolean;
@@ -64,13 +65,7 @@ export const ModalUpdatePassword = ({
   };
 
   return (
-    <Modal
-      visible={passwordModalVisible}
-      animationType="slide"
-      transparent
-      presentationStyle="overFullScreen"
-      onRequestClose={onClose}
-    >
+    <ModalBase visible={passwordModalVisible} onClose={onClose}>
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.header}>
@@ -130,6 +125,6 @@ export const ModalUpdatePassword = ({
           </View>
         </View>
       </View>
-    </Modal>
+    </ModalBase>
   );
 };

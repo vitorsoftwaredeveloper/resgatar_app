@@ -1,7 +1,9 @@
 import React from "react";
-import { Modal, View, Text, Pressable } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { styles } from "./styles";
 import { Button } from "../Button";
+import Modal from "react-native-modal";
+import { ModalBase } from "../ModalBase";
 
 type DialogAction = {
   label: string;
@@ -13,7 +15,7 @@ type DialogProps = {
   visible: boolean;
   title?: string;
   description?: string;
-  onClose?: () => void;
+  onClose: () => void;
   actions?: DialogAction[];
 };
 
@@ -25,12 +27,7 @@ export function Dialog({
   actions = [],
 }: DialogProps) {
   return (
-    <Modal
-      transparent
-      animationType="fade"
-      visible={visible}
-      onRequestClose={onClose}
-    >
+    <ModalBase onClose={onClose} visible={visible}>
       <Pressable style={styles.overlay} onPress={onClose}>
         <Pressable style={styles.container} onPress={() => {}}>
           {description && <Text style={styles.description}>{description}</Text>}
@@ -51,6 +48,6 @@ export function Dialog({
           </View>
         </Pressable>
       </Pressable>
-    </Modal>
+    </ModalBase>
   );
 }

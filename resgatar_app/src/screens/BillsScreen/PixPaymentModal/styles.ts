@@ -2,11 +2,6 @@ import { COLORS } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-  modal: {
-    justifyContent: "center",
-    margin: 16,
-  },
-
   container: {
     height: "100%",
     backgroundColor: COLORS.softBrown,
