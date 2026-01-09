@@ -1,6 +1,6 @@
 const COLORS = {
   background: "#F6F1EB",
-  card: "#FFFFFF",
+  card: "##FFFFFFFF",
   primary: "#6B4F3A",
   text: "#3E2F23",
   muted: "#9E8E80",
@@ -8,7 +8,7 @@ const COLORS = {
   border: "#DED6CC",
   inputBg: "#FBF8F4",
   black: "#000000",
-  white: "#FFFFFF",
+  white: "##FFFFFFFF",
   error: "#E53935",
   waiting: "#E0B96A",
   softBrown: "#EDE6DE",

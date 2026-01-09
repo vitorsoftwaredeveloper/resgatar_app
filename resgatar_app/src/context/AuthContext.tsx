@@ -99,17 +99,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         phoneNumber: memberCurrent.phoneNumber,
         paymentInfo: {
           datePayment: parseInt(memberCurrent.datePayment),
-          amount: memberCurrent.amount
-            .replace("R$", "")
-            .replace(/\./g, "")
-            .replace(",", "."),
+          amount: memberCurrent.amount.replace("R$", "").trim(),
         },
         identification: {
           type: memberCurrent.type as "CPF" | "CNPJ",
           numberType: memberCurrent.numberType,
         },
         bio: memberCurrent.bio,
-        dateOfBirth: memberCurrent.dateOfBirth,
+        dateOfBirth: Number(memberCurrent.dateOfBirth),
         address: {
           street: memberCurrent.street.trim(),
           number: memberCurrent.number.trim(),
@@ -118,17 +115,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           zip: memberCurrent.zip,
           complement: memberCurrent.complement.trim(),
         },
-        contributions: member?.contributions as any,
       };
 
       await MemberServices.editMember(formatMember);
 
-      setMember(formatMember);
-      await saveMember(formatMember);
+      await reloadMemberData();
     } catch (error) {
-      setMember(null);
       throw error;
-    } finally {
     }
   }
 
@@ -141,11 +134,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         phoneNumber: newMember.phoneNumber,
         paymentInfo: {
           datePayment: parseInt(newMember.datePayment),
-          amount: newMember.amount
-            .replace("R$", "")
-            .replace(/\./g, "")
-            .replace(",", ".")
-            .trim(),
+          amount: newMember.amount.replace("R$", "").trim(),
         },
         identification: {
           type: newMember.type as "CPF" | "CNPJ",

@@ -31,9 +31,7 @@ export const BillsScreen = () => {
   const [modalPayVisible, setModalPayVisible] = useState(false);
 
   const handlePay = async (item: any) => {
-    await createCharge(
-      Number(item.value.replace("R$", "").replace(",", "."))
-    ).then(() => {
+    await createCharge(item.value.replace("R$", "").trim()).then(() => {
       setModalPayVisible(true);
     });
   };
@@ -44,8 +42,8 @@ export const BillsScreen = () => {
 
       <FlatList
         contentContainerStyle={styles.list}
-        data={Object.entries(member?.contributions.months || {})
-          .map(([month, { paid, value, paidAt }], index) => ({
+        data={Object.entries(member?.contributions.months || {}).map(
+          ([month, { paid, value, paidAt }], index) => ({
             id: `${index}`,
             month: MONTH[month],
             value: paid
@@ -53,12 +51,12 @@ export const BillsScreen = () => {
               : `R$ ${member?.paymentInfo.amount}`.replace(".", ","),
             description: paid
               ? `Pago em ${formatUTCToDateBR(new Date(paidAt).getTime())}`
-              : "Vence em 10/12/2024",
+              : "Pagamento a ser realizado",
             status: paid
               ? TRANSACTION_STATUS.APPROVED
               : TRANSACTION_STATUS.PENDING,
-          }))
-          .reverse()}
+          })
+        )}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <ContributionItem data={item} onPay={() => handlePay(item)} />

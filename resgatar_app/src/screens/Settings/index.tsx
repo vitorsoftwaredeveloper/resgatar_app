@@ -23,10 +23,6 @@ export const SettingsScreen = () => {
       <DashboardHeader name={member?.firstName as string} />
 
       <View style={styles.content}>
-        <ProfileHeaderCard
-          name={`${member?.firstName} ${member?.lastName}`}
-          document={`${member?.identification?.type}: ${member?.identification?.numberType}`}
-        />
         <View style={styles.menuCard}>
           <ProfileMenuItem
             title="Cadastrar novo usuário"
@@ -44,7 +40,7 @@ export const SettingsScreen = () => {
 
           <ProfileMenuItem
             title="Enviar notificação"
-            description="Envie novas notificações"
+            description="Envie notificações para os memrbros da comunidade"
             onPress={() => setOpenSendNotification(true)}
             icon={<Send />}
             isLast
