@@ -1,14 +1,6 @@
 import React, { useContext, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import {
-  User,
-  Lock,
-  LogOut,
-  ChevronRight,
-  Bell,
-  ClipboardList,
-  Church,
-} from "lucide-react-native";
+import { View, Text, TouchableOpacity } from "react-native";
+import { User, Lock } from "lucide-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../../context/AuthContext";
 import { ModalEditProfile } from "./ModalEditProfile";

@@ -43,7 +43,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   async function checkSession() {
     try {
       //Verifica sessão Cognito (persistida pelo Amplify)
-
       await getCurrentUser();
 
       const storedMember = await getStoredMember();
