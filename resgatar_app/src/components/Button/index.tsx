@@ -10,7 +10,7 @@ import { styles } from "./styles";
 
 type Props = ButtonProps & {
   title: string;
-  variant?: "primary" | "secondary" | "danger";
+  variant?: "primary" | "secondary";
   styleCustom?: any;
   leftIcon?: React.ReactNode;
   rigthtIcon?: React.ReactNode;
@@ -61,7 +61,8 @@ export function Button({
           <Text
             style={[
               styles.buttonText,
-              variant !== "secondary" && styles.textOnPrimary,
+              variant === "primary" && styles.textOnPrimary,
+              variant === "secondary" && styles.textOnSecondary,
             ]}
           >
             {title}

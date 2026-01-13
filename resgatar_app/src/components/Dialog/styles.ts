@@ -39,7 +39,7 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     width: 110,
   },
-  dangerButton: {
+  primaryButton: {
     backgroundColor: COLORS.primary,
   },
   secondaryButton: {

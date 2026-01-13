@@ -63,7 +63,9 @@ export const ModalEditProfile = ({
     await updateMember(memberData)
       .then(() => {
         ToastMessage.success("Sucesso", "Perfil atualizado com sucesso!");
-        onClose();
+        setTimeout(() => {
+          onClose();
+        }, 2000);
       })
       .catch(() => {
         ToastMessage.error("Erro", "Falha ao atualizar perfil.");

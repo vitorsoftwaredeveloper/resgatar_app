@@ -113,7 +113,7 @@ export const ProfileScreen = () => {
               {
                 label: "sair",
                 onPress: handleLgout,
-                variant: "danger",
+                variant: "primary",
               },
             ]}
           />

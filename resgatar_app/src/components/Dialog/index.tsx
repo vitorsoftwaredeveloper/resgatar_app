@@ -7,7 +7,7 @@ import { ModalBase } from "../ModalBase";
 type DialogAction = {
   label: string;
   onPress: () => void;
-  variant?: "primary" | "danger" | "secondary";
+  variant?: "primary" | "secondary";
 };
 
 type DialogProps = {
@@ -40,7 +40,7 @@ export function Dialog({
                 onPress={action.onPress}
                 styleCustom={[
                   styles.button,
-                  action.variant === "danger" && styles.dangerButton,
+                  action.variant === "primary" && styles.primaryButton,
                   action.variant === "secondary" && styles.secondaryButton,
                 ]}
               />

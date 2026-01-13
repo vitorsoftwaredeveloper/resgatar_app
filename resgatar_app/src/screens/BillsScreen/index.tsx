@@ -36,6 +36,8 @@ export const BillsScreen = () => {
     });
   };
 
+  const handleShare = async (item: any) => {};
+
   return (
     <SafeAreaView style={styles.container}>
       <DashboardHeader name={member?.firstName as string} />
@@ -59,7 +61,11 @@ export const BillsScreen = () => {
         )}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <ContributionItem data={item} onPay={() => handlePay(item)} />
+          <ContributionItem
+            data={item}
+            onPay={() => handlePay(item)}
+            onShare={() => handleShare(item)}
+          />
         )}
       />
 

@@ -20,10 +20,6 @@ export const styles = StyleSheet.create({
     borderColor: COLORS.background,
   },
 
-  danger: {
-    backgroundColor: COLORS.background,
-  },
-
   buttonText: {
     fontSize: 16,
     fontWeight: "600",
@@ -32,6 +28,10 @@ export const styles = StyleSheet.create({
 
   textOnPrimary: {
     color: COLORS.background,
+  },
+
+  textOnSecondary: {
+    color: COLORS.text,
   },
 
   disabled: {
