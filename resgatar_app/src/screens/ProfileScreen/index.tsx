@@ -9,11 +9,18 @@ import { ProfileMenuItem } from "@/components/ProfileMenuItem";
 import { ProfileHeaderCard } from "@/components/ProfileHeaderCard";
 import { styles } from "./styles";
 import { DashboardHeader } from "@/components/DashboardHeader";
+import { Dialog } from "@/components/Dialog";
 
 export const ProfileScreen = () => {
   const { logout, member } = useContext(AuthContext);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
+  const [dialogLogoutVisible, setDialogLogoutVisible] = useState(false);
+
+  const handleLgout = async () => {
+    await logout();
+    setDialogLogoutVisible(false);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -71,7 +78,10 @@ export const ProfileScreen = () => {
           /> */}
         </View>
 
-        <TouchableOpacity style={styles.logout} onPress={logout}>
+        <TouchableOpacity
+          style={styles.logout}
+          onPress={() => setDialogLogoutVisible(true)}
+        >
           <Text style={styles.logoutText}>⎋ Sair</Text>
         </TouchableOpacity>
 
@@ -86,6 +96,26 @@ export const ProfileScreen = () => {
           <ModalUpdatePassword
             passwordModalVisible={passwordModalVisible}
             onClose={() => setPasswordModalVisible(false)}
+          />
+        )}
+
+        {dialogLogoutVisible && (
+          <Dialog
+            visible={dialogLogoutVisible}
+            title="Tem certeza que deseja sair?"
+            onClose={() => setDialogLogoutVisible(false)}
+            actions={[
+              {
+                label: "cancelar",
+                onPress: () => setDialogLogoutVisible(false),
+                variant: "secondary",
+              },
+              {
+                label: "sair",
+                onPress: handleLgout,
+                variant: "danger",
+              },
+            ]}
           />
         )}
       </View>

@@ -2,7 +2,6 @@ import React from "react";
 import { View, Text, Pressable } from "react-native";
 import { styles } from "./styles";
 import { Button } from "../Button";
-import Modal from "react-native-modal";
 import { ModalBase } from "../ModalBase";
 
 type DialogAction = {
@@ -30,6 +29,7 @@ export function Dialog({
     <ModalBase onClose={onClose} visible={visible}>
       <Pressable style={styles.overlay} onPress={onClose}>
         <Pressable style={styles.container} onPress={() => {}}>
+          {title && <Text style={styles.title}>{title}</Text>}
           {description && <Text style={styles.description}>{description}</Text>}
 
           <View style={styles.actions}>
