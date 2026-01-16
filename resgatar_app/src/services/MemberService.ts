@@ -1,3 +1,4 @@
+import { updatePassword } from "aws-amplify/auth";
 import { api } from "./api";
 import { IMember, IMemberWithContribution } from "@/types/Member";
 
@@ -54,6 +55,19 @@ export const MemberServices = {
       return data;
     } catch (error) {
       console.error("Erro ao remover membro", error);
+      throw error;
+    }
+  },
+  updatePassword: async (memberId: string, password: string) => {
+    try {
+      const response = await api.put(`/members/${memberId}/password`, {
+        password,
+      });
+      const { data } = response.data;
+
+      return data;
+    } catch (error) {
+      console.error("Erro ao atualizar senha", error);
       throw error;
     }
   },

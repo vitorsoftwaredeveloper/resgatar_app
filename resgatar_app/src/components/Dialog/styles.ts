@@ -17,13 +17,13 @@ export const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "600",
-    marginBottom: 8,
+    marginBottom: 20,
     color: COLORS.text,
   },
   description: {
-    fontSize: 14,
+    fontSize: 16,
     color: COLORS.primary,
     marginBottom: 20,
     lineHeight: 20,
@@ -39,7 +39,7 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     width: 110,
   },
-  dangerButton: {
+  primaryButton: {
     backgroundColor: COLORS.primary,
   },
   secondaryButton: {

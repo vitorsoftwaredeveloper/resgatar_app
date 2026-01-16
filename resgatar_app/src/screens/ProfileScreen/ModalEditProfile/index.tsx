@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Modal } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import {
   formatCEP,
   formatCNPJCPF,
@@ -18,15 +18,16 @@ import { X } from "lucide-react-native";
 import { COLORS } from "@/theme";
 import { Button } from "@/components/Button";
 import { ToastMessage } from "@/components/Toast";
+import { ModalBase } from "@/components/ModalBase";
 
 interface IModalEditProfile {
   editModalVisible: boolean;
-  setEditModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  onClose: () => void;
 }
 
 export const ModalEditProfile = ({
   editModalVisible,
-  setEditModalVisible,
+  onClose,
 }: IModalEditProfile) => {
   const { member, updateMember } = useContext(AuthContext);
 
@@ -62,7 +63,9 @@ export const ModalEditProfile = ({
     await updateMember(memberData)
       .then(() => {
         ToastMessage.success("Sucesso", "Perfil atualizado com sucesso!");
-        setEditModalVisible(false);
+        setTimeout(() => {
+          onClose();
+        }, 2000);
       })
       .catch(() => {
         ToastMessage.error("Erro", "Falha ao atualizar perfil.");
@@ -70,22 +73,13 @@ export const ModalEditProfile = ({
   };
 
   return (
-    <Modal
-      visible={editModalVisible}
-      animationType="slide"
-      transparent
-      presentationStyle="overFullScreen"
-    >
+    <ModalBase onClose={onClose} visible={editModalVisible}>
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.header}>
             <Text style={styles.headerTitle}>Meus dados</Text>
 
-            <IconButton
-              color={COLORS.white}
-              icon={X}
-              onPress={() => setEditModalVisible(false)}
-            />
+            <IconButton color={COLORS.white} icon={X} onPress={onClose} />
           </View>
 
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -289,6 +283,6 @@ export const ModalEditProfile = ({
           </View>
         </View>
       </View>
-    </Modal>
+    </ModalBase>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Modal } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import {
   formatCEP,
   formatCNPJCPF,
@@ -14,10 +14,11 @@ import { IMemberState } from "@/types/Member";
 import { Card } from "@/components/Card";
 import { Row } from "@/components/Row";
 import { IconButton } from "@/components/IconButton";
-import { Eye, EyeOff, Lock, Mail, X } from "lucide-react-native";
+import { Eye, EyeOff, X } from "lucide-react-native";
 import { COLORS } from "@/theme";
 import { Button } from "@/components/Button";
 import { ToastMessage } from "@/components/Toast";
+import { ModalBase } from "@/components/ModalBase";
 
 interface IModalEditProfile {
   createMemberModal: boolean;
@@ -64,7 +65,9 @@ export const ModalCreateMember = ({
     await createMember(memberData)
       .then(() => {
         ToastMessage.success("Sucesso", "Usuário criado com sucesso!");
-        onClose();
+        setTimeout(() => {
+          onClose();
+        }, 2000);
       })
       .catch(() => {
         ToastMessage.error("Erro", "Falha ao criar novo usuário.");
@@ -72,13 +75,7 @@ export const ModalCreateMember = ({
   };
 
   return (
-    <Modal
-      visible={createMemberModal}
-      animationType="slide"
-      transparent
-      presentationStyle="overFullScreen"
-      onRequestClose={onClose}
-    >
+    <ModalBase onClose={onClose} visible={createMemberModal}>
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.header}>
@@ -310,6 +307,6 @@ export const ModalCreateMember = ({
           </View>
         </View>
       </View>
-    </Modal>
+    </ModalBase>
   );
 };

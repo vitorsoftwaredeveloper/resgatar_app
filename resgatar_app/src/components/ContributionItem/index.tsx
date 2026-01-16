@@ -1,9 +1,10 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text } from "react-native";
 import { styles } from "./styles";
 import { TRANSACTION_STATUS } from "@/types/Charge";
 import { Button } from "../Button";
-import { FileText } from "lucide-react-native";
+import { DollarSign, FileText, Share2 } from "lucide-react-native";
+import { COLORS } from "@/theme";
 
 interface Contribution {
   id: string;
@@ -20,9 +21,10 @@ export interface ContributionItemProps {
 interface Props {
   data: Contribution;
   onPay?: () => void;
+  onShare?: () => void;
 }
 
-export function ContributionItem({ data, onPay }: Props) {
+export function ContributionItem({ data, onPay, onShare }: Props) {
   const isPending = data.status === TRANSACTION_STATUS.PENDING;
 
   return (
@@ -55,11 +57,21 @@ export function ContributionItem({ data, onPay }: Props) {
         </View>
       </View>
 
-      {isPending && (
+      {isPending ? (
         <Button
-          title="Pagar agora"
+          title="Pagar"
           onPress={onPay}
           styleCustom={{ marginTop: 16 }}
+          leftIcon={<DollarSign size={20} color={COLORS.white} />}
+        />
+      ) : (
+        <Button
+          title="Compartilhar"
+          onPress={onShare}
+          styleCustom={{ marginTop: 16 }}
+          leftIcon={<Share2 size={20} color={COLORS.text} />}
+          variant="secondary"
+          loadingEffect={false}
         />
       )}
     </View>

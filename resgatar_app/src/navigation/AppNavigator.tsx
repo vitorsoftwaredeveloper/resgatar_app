@@ -3,17 +3,12 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AuthContext } from "@/context/AuthContext";
 import { LoginScreen } from "@/screens/LoginScreen";
 import { BottomTabs } from "@/components/ButtonTabs";
-import { LoadingScreen } from "@/screens/LoadingScreen";
-import { LoadingContext } from "@/context/LoadingContext";
+import { RootStackParamList } from "@/navigation/types";
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
 const AppNavigator = () => {
   const { isLoggedIn, member } = useContext(AuthContext);
-  const { loading } = useContext(LoadingContext);
-
-  if (loading) {
-    return <LoadingScreen title="Aguarde..." />;
-  }
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>

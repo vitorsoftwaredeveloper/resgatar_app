@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "resgatar_app",
+    "name": "Resgatar",
     "slug": "resgatar_app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,10 +8,13 @@
     "scheme": "resgatarapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "jsEngine": "hermes",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.vitorsoftwaredeveloper.resgatar-app"
     },
     "android": {
+      "label": "Resgatar",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -19,10 +22,11 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.vitorsoftwaredeveloper.resgatar_app"
     },
     "web": {
-      "output": "static",
+      "output": "single",
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [

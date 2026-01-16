@@ -18,7 +18,7 @@ interface AuthContextData {
   member: IMemberWithContribution | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  changePassword: (oldPassword: string, newPassword: string) => Promise<void>;
+  changePassword: (memberId: string, newPassword: string) => Promise<void>;
   updateMember: (member: IMemberState) => Promise<void>;
   reloadMemberData: () => Promise<void>;
   createMember: (member: IMemberState & { password: string }) => Promise<void>;
@@ -43,7 +43,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   async function checkSession() {
     try {
       //Verifica sessão Cognito (persistida pelo Amplify)
-
       await getCurrentUser();
 
       const storedMember = await getStoredMember();
@@ -180,12 +179,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     await saveMember(memberData);
   }
 
-  async function changePassword(oldPassword: string, newPassword: string) {
+  async function changePassword(memberId: string, newPassword: string) {
     try {
-      await updatePassword({
-        oldPassword,
-        newPassword,
-      });
+      await MemberServices.updatePassword(memberId, newPassword);
     } catch (error) {
       throw error;
     }

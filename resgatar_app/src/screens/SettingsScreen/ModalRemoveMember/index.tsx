@@ -1,22 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  Modal,
-  View,
-  Text,
-  Pressable,
-  ScrollView,
-  FlatList,
-} from "react-native";
+import { View, Text, FlatList } from "react-native";
 import { Dialog } from "@/components/Dialog";
 import { RemoveMemberSkeleton } from "@/components/Skeleton/RemoveMemberSkeleton";
-import { X } from "lucide-react-native";
+import { Trash2, X } from "lucide-react-native";
 import { styles } from "./styles";
 import { AuthContext } from "@/context/AuthContext";
 import { IMember } from "@/types/Member";
 import { ToastMessage } from "@/components/Toast";
 import { IconButton } from "@/components/IconButton";
 import { COLORS } from "@/theme";
-import { RemoveMemberCard } from "@/components/RemoveMemberCard";
+import { SettingsMemberCard } from "@/components/SettingsMemberCard";
+import { ModalBase } from "@/components/ModalBase";
 
 type Props = {
   visible: boolean;
@@ -54,6 +48,9 @@ export function ModalRemoveMember({ visible, onClose }: Props) {
     await removeMember(selectedMember._id)
       .then(() => {
         ToastMessage.success("Sucesso", "Usuário removido com sucesso!");
+        setTimeout(() => {
+          onClose();
+        }, 2000);
       })
       .catch(() => {
         ToastMessage.error("Erro", "Falha ao remover usuário.");
@@ -61,7 +58,6 @@ export function ModalRemoveMember({ visible, onClose }: Props) {
       .finally(() => {
         setSelectedMember(null);
         setOpenDialog(false);
-        onClose();
       });
   }
 
@@ -71,13 +67,7 @@ export function ModalRemoveMember({ visible, onClose }: Props) {
   };
 
   return (
-    <Modal
-      visible={visible}
-      onRequestClose={onClose}
-      animationType="slide"
-      transparent
-      presentationStyle="overFullScreen"
-    >
+    <ModalBase onClose={onClose} visible={visible}>
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.header}>
@@ -95,7 +85,12 @@ export function ModalRemoveMember({ visible, onClose }: Props) {
               loading ? (
                 <RemoveMemberSkeleton />
               ) : (
-                <RemoveMemberCard member={item} onRemove={handleSelectMember} />
+                <SettingsMemberCard
+                  member={item}
+                  onAction={handleSelectMember}
+                  iconAction={<Trash2 size={20} color={COLORS.error} />}
+                  variant="delete"
+                />
               )
             }
             contentContainerStyle={styles.listContent}
@@ -117,11 +112,11 @@ export function ModalRemoveMember({ visible, onClose }: Props) {
           },
           {
             label: "remover",
-            variant: "danger",
+            variant: "primary",
             onPress: handleConfirmRemove,
           },
         ]}
       />
-    </Modal>
+    </ModalBase>
   );
 }

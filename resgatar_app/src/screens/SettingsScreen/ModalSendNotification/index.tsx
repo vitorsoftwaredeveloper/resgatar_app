@@ -1,22 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
-import {
-  Modal,
-  View,
-  Text,
-  Pressable,
-  ScrollView,
-  FlatList,
-} from "react-native";
-import { Dialog } from "@/components/Dialog";
-import {
-  AlertTriangle,
-  CheckCircle,
-  CircleAlert,
-  Info,
-  Send,
-  Siren,
-  X,
-} from "lucide-react-native";
+import React, { useState } from "react";
+import { View, Text } from "react-native";
+import { AlertTriangle, CircleAlert, Info, Send, X } from "lucide-react-native";
 import { styles } from "./styles";
 import { IconButton } from "@/components/IconButton";
 import { COLORS } from "@/theme";
@@ -28,6 +12,7 @@ import { TypeButton } from "@/components/TypeButton";
 import { Button } from "@/components/Button";
 import { NotificationServices } from "@/services/NotificationService";
 import { ToastMessage } from "@/components/Toast";
+import { ModalBase } from "@/components/ModalBase";
 
 type Props = {
   visible: boolean;
@@ -56,7 +41,9 @@ export function ModalSendNotification({ visible, onClose }: Props) {
     await NotificationServices.createNotification(notification)
       .then(() => {
         ToastMessage.success("Notificação enviada com sucesso");
-        onClose();
+        setTimeout(() => {
+          onClose();
+        }, 2000);
       })
       .catch(() => {
         ToastMessage.error("Erro ao enviar notificação");
@@ -64,13 +51,7 @@ export function ModalSendNotification({ visible, onClose }: Props) {
   };
 
   return (
-    <Modal
-      visible={visible}
-      onRequestClose={onClose}
-      animationType="slide"
-      transparent
-      presentationStyle="overFullScreen"
-    >
+    <ModalBase onClose={onClose} visible={visible}>
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.header}>
@@ -157,6 +138,6 @@ export function ModalSendNotification({ visible, onClose }: Props) {
           />
         </View>
       </View>
-    </Modal>
+    </ModalBase>
   );
 }

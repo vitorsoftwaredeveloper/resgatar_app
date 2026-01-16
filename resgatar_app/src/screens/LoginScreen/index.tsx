@@ -3,7 +3,6 @@ import { View, Text, Alert, TouchableOpacity } from "react-native";
 import { AuthContext } from "@/context/AuthContext";
 import { Input } from "@/components/Input";
 import { Button } from "@/components/Button";
-import { LoadingContext } from "@/context/LoadingContext";
 import { Eye, EyeOff, LogIn, Mail } from "lucide-react-native";
 import { styles } from "./styles";
 import { COLORS } from "@/theme";
@@ -11,7 +10,7 @@ import { ToastMessage } from "@/components/Toast";
 
 export const LoginScreen = () => {
   const { login } = useContext(AuthContext);
-  const { loading } = useContext(LoadingContext);
+  const [loading, setLoading] = useState(false);
 
   const [credentials, setCredentials] = useState({
     email: "",
@@ -20,8 +19,11 @@ export const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
+    setLoading(true);
     if (!credentials.email || !credentials.password) {
       ToastMessage.error("Erro", "Preencha todos os campos.");
+      setLoading(false);
+
       return;
     }
 
@@ -30,6 +32,7 @@ export const LoginScreen = () => {
     } catch (error: any) {
       ToastMessage.error("Erro", "Usuário ou senha incorretos.");
     }
+    setLoading(false);
   };
 
   return (
@@ -70,9 +73,9 @@ export const LoginScreen = () => {
         <Button
           title={"Entrar"}
           onPress={handleLogin}
-          disabled={loading}
           styleCustom={styles.submitButton}
           leftIcon={<LogIn size={20} color="#FFF" />}
+          loadingEffect={loading}
         />
 
         <View style={styles.footer}>

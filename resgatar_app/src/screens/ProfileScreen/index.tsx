@@ -1,14 +1,6 @@
 import React, { useContext, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import {
-  User,
-  Lock,
-  LogOut,
-  ChevronRight,
-  Bell,
-  ClipboardList,
-  Church,
-} from "lucide-react-native";
+import { View, Text, TouchableOpacity } from "react-native";
+import { User, Lock } from "lucide-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../../context/AuthContext";
 import { ModalEditProfile } from "./ModalEditProfile";
@@ -17,11 +9,18 @@ import { ProfileMenuItem } from "@/components/ProfileMenuItem";
 import { ProfileHeaderCard } from "@/components/ProfileHeaderCard";
 import { styles } from "./styles";
 import { DashboardHeader } from "@/components/DashboardHeader";
+import { Dialog } from "@/components/Dialog";
 
 export const ProfileScreen = () => {
   const { logout, member } = useContext(AuthContext);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
+  const [dialogLogoutVisible, setDialogLogoutVisible] = useState(false);
+
+  const handleLgout = async () => {
+    await logout();
+    setDialogLogoutVisible(false);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -42,6 +41,14 @@ export const ProfileScreen = () => {
           />
 
           <ProfileMenuItem
+            title="Atualizar senha"
+            description="Atualize sua senha de login do aplicativo"
+            onPress={() => setPasswordModalVisible(true)}
+            icon={<Lock />}
+            isLast
+          />
+
+          {/* <ProfileMenuItem
             title="Minhas notificações"
             description="Acompanhe suas notificações"
             onPress={() => {}}
@@ -68,24 +75,47 @@ export const ProfileScreen = () => {
             onPress={() => {}}
             icon={<Church />}
             isLast
-          />
+          /> */}
         </View>
 
-        <TouchableOpacity style={styles.logout} onPress={logout}>
+        <TouchableOpacity
+          style={styles.logout}
+          onPress={() => setDialogLogoutVisible(true)}
+        >
           <Text style={styles.logoutText}>⎋ Sair</Text>
         </TouchableOpacity>
 
         {editModalVisible && (
           <ModalEditProfile
             editModalVisible={editModalVisible}
-            setEditModalVisible={setEditModalVisible}
+            onClose={() => setEditModalVisible(false)}
           />
         )}
 
         {passwordModalVisible && (
           <ModalUpdatePassword
             passwordModalVisible={passwordModalVisible}
-            setPasswordModalVisible={setPasswordModalVisible}
+            onClose={() => setPasswordModalVisible(false)}
+          />
+        )}
+
+        {dialogLogoutVisible && (
+          <Dialog
+            visible={dialogLogoutVisible}
+            title="Tem certeza que deseja sair?"
+            onClose={() => setDialogLogoutVisible(false)}
+            actions={[
+              {
+                label: "cancelar",
+                onPress: () => setDialogLogoutVisible(false),
+                variant: "secondary",
+              },
+              {
+                label: "sair",
+                onPress: handleLgout,
+                variant: "primary",
+              },
+            ]}
           />
         )}
       </View>
