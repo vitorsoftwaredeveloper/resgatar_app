@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, Text, Pressable, Animated, Clipboard } from "react-native";
+import { View, Text, Pressable, Animated } from "react-native";
 import { X, Copy, QrCode } from "lucide-react-native";
 import { styles } from "./styles";
 import { ChargeContext } from "@/context/ChargeContext";
@@ -9,6 +9,7 @@ import { IconButton } from "@/components/IconButton";
 import { TRANSACTION_STATUS } from "@/types/Charge";
 import { AuthContext } from "@/context/AuthContext";
 import { ModalBase } from "@/components/ModalBase";
+import Clipboard from "@react-native-clipboard/clipboard";
 
 interface PixPaymentModalProps {
   visible: boolean;
