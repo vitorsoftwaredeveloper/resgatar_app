@@ -14,7 +14,7 @@ import { IMemberState } from "@/types/Member";
 import { Card } from "@/components/Card";
 import { Row } from "@/components/Row";
 import { IconButton } from "@/components/IconButton";
-import { Eye, EyeOff, Lock, Mail, X } from "lucide-react-native";
+import { Eye, EyeOff, X } from "lucide-react-native";
 import { COLORS } from "@/theme";
 import { Button } from "@/components/Button";
 import { ToastMessage } from "@/components/Toast";

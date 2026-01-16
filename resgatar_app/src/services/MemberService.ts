@@ -58,14 +58,16 @@ export const MemberServices = {
       throw error;
     }
   },
-  updatePassword: async (password: string) => {
+  updatePassword: async (memberId: string, password: string) => {
     try {
-      const response = await api.put(`/members/password`, { password });
+      const response = await api.put(`/members/${memberId}/password`, {
+        password,
+      });
       const { data } = response.data;
 
       return data;
     } catch (error) {
-      console.error("Erro ao remover membro", error);
+      console.error("Erro ao atualizar senha", error);
       throw error;
     }
   },

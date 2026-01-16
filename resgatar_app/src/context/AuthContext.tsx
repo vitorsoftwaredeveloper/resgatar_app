@@ -18,7 +18,7 @@ interface AuthContextData {
   member: IMemberWithContribution | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  changePassword: (newPassword: string) => Promise<void>;
+  changePassword: (memberId: string, newPassword: string) => Promise<void>;
   updateMember: (member: IMemberState) => Promise<void>;
   reloadMemberData: () => Promise<void>;
   createMember: (member: IMemberState & { password: string }) => Promise<void>;
@@ -179,9 +179,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     await saveMember(memberData);
   }
 
-  async function changePassword(newPassword: string) {
+  async function changePassword(memberId: string, newPassword: string) {
     try {
-      await MemberServices.updatePassword(newPassword);
+      await MemberServices.updatePassword(memberId, newPassword);
     } catch (error) {
       throw error;
     }

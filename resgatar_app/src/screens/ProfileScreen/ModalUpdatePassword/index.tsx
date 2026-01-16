@@ -14,37 +14,25 @@ import { ModalBase } from "@/components/ModalBase";
 interface IModalUpdatePassword {
   passwordModalVisible: boolean;
   onClose: () => void;
+  memberIdPasswordWillBeChanged?: string;
 }
 
 export const ModalUpdatePassword = ({
   passwordModalVisible,
   onClose,
+  memberIdPasswordWillBeChanged,
 }: IModalUpdatePassword) => {
-  const { changePassword } = useContext(AuthContext);
+  const { changePassword, member } = useContext(AuthContext);
   const [passwordData, setPasswordData] = useState({
     password: "",
     confirmPassword: "",
   });
-
-  const [showPassword, setShowPassword] = useState<{
-    password: boolean;
-    confirmPassword: boolean;
-  }>({
-    password: false,
-    confirmPassword: false,
-  });
+  const [showPassword, setShowPassword] = useState(false);
 
   const handlePasswordDataChange = (field: string, value: string | number) => {
     setPasswordData((prevData) => ({
       ...prevData,
       [field]: value,
-    }));
-  };
-
-  const handleShowPassword = (field: string) => {
-    setShowPassword((prevData: any) => ({
-      ...prevData,
-      [field]: !prevData[field],
     }));
   };
 
@@ -54,13 +42,20 @@ export const ModalUpdatePassword = ({
       return;
     }
 
-    await changePassword(passwordData.password)
+    await changePassword(
+      memberIdPasswordWillBeChanged
+        ? memberIdPasswordWillBeChanged
+        : (member?._id as string),
+      passwordData.password
+    )
       .then(() => {
         ToastMessage.success("Senha alterada com sucesso");
-        onClose();
+        setTimeout(() => {
+          onClose();
+        }, 2000);
       })
       .catch(() => {
-        ToastMessage.error("Erro ao alterar senha");
+        ToastMessage.error("Erro ao atualizar senha");
       });
   };
 
@@ -69,7 +64,7 @@ export const ModalUpdatePassword = ({
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.header}>
-            <Text style={styles.headerTitle}>Minha senha</Text>
+            <Text style={styles.headerTitle}>Atualizar senha</Text>
 
             <IconButton color={COLORS.white} icon={X} onPress={onClose} />
           </View>
@@ -83,12 +78,12 @@ export const ModalUpdatePassword = ({
                   handlePasswordDataChange("password", v)
                 }
                 keyboardType="default"
-                secureTextEntry={!showPassword.password}
+                secureTextEntry={!showPassword}
                 rightIcon={
                   <TouchableOpacity
-                    onPress={() => handleShowPassword("password")}
+                    onPress={() => setShowPassword((prev) => !prev)}
                   >
-                    {showPassword.password ? (
+                    {showPassword ? (
                       <Eye size={24} color={COLORS.muted} />
                     ) : (
                       <EyeOff size={24} color={COLORS.muted} />
@@ -104,12 +99,12 @@ export const ModalUpdatePassword = ({
                   handlePasswordDataChange("confirmPassword", v)
                 }
                 keyboardType="default"
-                secureTextEntry={!showPassword.confirmPassword}
+                secureTextEntry={!showPassword}
                 rightIcon={
                   <TouchableOpacity
-                    onPress={() => handleShowPassword("confirmPassword")}
+                    onPress={() => setShowPassword((prev) => !prev)}
                   >
-                    {showPassword.confirmPassword ? (
+                    {showPassword ? (
                       <Eye size={24} color={COLORS.muted} />
                     ) : (
                       <EyeOff size={24} color={COLORS.muted} />

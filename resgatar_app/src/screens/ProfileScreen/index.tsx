@@ -41,7 +41,7 @@ export const ProfileScreen = () => {
           />
 
           <ProfileMenuItem
-            title="Alterar senha"
+            title="Atualizar senha"
             description="Atualize sua senha de login do aplicativo"
             onPress={() => setPasswordModalVisible(true)}
             icon={<Lock />}
