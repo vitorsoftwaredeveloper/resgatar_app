@@ -3,8 +3,10 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AuthContext } from "@/context/AuthContext";
 import { LoginScreen } from "@/screens/LoginScreen";
 import { BottomTabs } from "@/components/ButtonTabs";
+import { RootStackParamList } from "@/navigation/types";
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
 const AppNavigator = () => {
   const { isLoggedIn, member } = useContext(AuthContext);
 

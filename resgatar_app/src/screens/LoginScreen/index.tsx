@@ -10,6 +10,7 @@ import { ToastMessage } from "@/components/Toast";
 
 export const LoginScreen = () => {
   const { login } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
 
   const [credentials, setCredentials] = useState({
     email: "",
@@ -18,8 +19,11 @@ export const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
+    setLoading(true);
     if (!credentials.email || !credentials.password) {
       ToastMessage.error("Erro", "Preencha todos os campos.");
+      setLoading(false);
+
       return;
     }
 
@@ -28,6 +32,7 @@ export const LoginScreen = () => {
     } catch (error: any) {
       ToastMessage.error("Erro", "Usuário ou senha incorretos.");
     }
+    setLoading(false);
   };
 
   return (
@@ -70,6 +75,7 @@ export const LoginScreen = () => {
           onPress={handleLogin}
           styleCustom={styles.submitButton}
           leftIcon={<LogIn size={20} color="#FFF" />}
+          loadingEffect={loading}
         />
 
         <View style={styles.footer}>

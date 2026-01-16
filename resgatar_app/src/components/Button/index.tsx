@@ -14,6 +14,7 @@ type Props = ButtonProps & {
   styleCustom?: any;
   leftIcon?: React.ReactNode;
   rigthtIcon?: React.ReactNode;
+  loadingEffect?: boolean;
 };
 
 export function Button({
@@ -24,6 +25,7 @@ export function Button({
   onPress,
   leftIcon,
   rigthtIcon,
+  loadingEffect = true,
   ...rest
 }: Props) {
   const [loading, setLoading] = useState(false);
@@ -34,7 +36,7 @@ export function Button({
     try {
       setLoading(true);
       // @ts-ignore
-      await onPress(); // 👈 espera a Promise
+      await onPress();
     } finally {
       setLoading(false);
     }
@@ -53,7 +55,7 @@ export function Button({
       ]}
       {...rest}
     >
-      {loading ? (
+      {loading && loadingEffect ? (
         <ActivityIndicator size="small" color="#FFF" />
       ) : (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>

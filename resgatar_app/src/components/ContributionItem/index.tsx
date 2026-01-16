@@ -71,6 +71,7 @@ export function ContributionItem({ data, onPay, onShare }: Props) {
           styleCustom={{ marginTop: 16 }}
           leftIcon={<Share2 size={20} color={COLORS.text} />}
           variant="secondary"
+          loadingEffect={false}
         />
       )}
     </View>
