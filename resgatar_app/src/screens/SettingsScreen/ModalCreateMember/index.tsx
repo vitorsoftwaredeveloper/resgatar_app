@@ -65,7 +65,9 @@ export const ModalCreateMember = ({
     await createMember(memberData)
       .then(() => {
         ToastMessage.success("Sucesso", "Usuário criado com sucesso!");
-        onClose();
+        setTimeout(() => {
+          onClose();
+        }, 2000);
       })
       .catch(() => {
         ToastMessage.error("Erro", "Falha ao criar novo usuário.");

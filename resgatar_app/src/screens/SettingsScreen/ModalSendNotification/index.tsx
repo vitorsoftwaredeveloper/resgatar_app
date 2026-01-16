@@ -41,7 +41,9 @@ export function ModalSendNotification({ visible, onClose }: Props) {
     await NotificationServices.createNotification(notification)
       .then(() => {
         ToastMessage.success("Notificação enviada com sucesso");
-        onClose();
+        setTimeout(() => {
+          onClose();
+        }, 2000);
       })
       .catch(() => {
         ToastMessage.error("Erro ao enviar notificação");

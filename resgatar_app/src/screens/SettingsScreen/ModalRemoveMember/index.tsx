@@ -48,6 +48,9 @@ export function ModalRemoveMember({ visible, onClose }: Props) {
     await removeMember(selectedMember._id)
       .then(() => {
         ToastMessage.success("Sucesso", "Usuário removido com sucesso!");
+        setTimeout(() => {
+          onClose();
+        }, 2000);
       })
       .catch(() => {
         ToastMessage.error("Erro", "Falha ao remover usuário.");
@@ -55,7 +58,6 @@ export function ModalRemoveMember({ visible, onClose }: Props) {
       .finally(() => {
         setSelectedMember(null);
         setOpenDialog(false);
-        onClose();
       });
   }
 

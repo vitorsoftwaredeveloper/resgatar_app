@@ -42,23 +42,6 @@ export function ModalChangePasswordMember({ visible, onClose }: Props) {
     }
   }
 
-  async function handleConfirmRemove() {
-    if (!selectedMember) return;
-
-    await removeMember(selectedMember._id)
-      .then(() => {
-        ToastMessage.success("Sucesso", "Usuário removido com sucesso!");
-      })
-      .catch(() => {
-        ToastMessage.error("Erro", "Falha ao remover usuário.");
-      })
-      .finally(() => {
-        setSelectedMember(null);
-        setOpenChangePassword(false);
-        onClose();
-      });
-  }
-
   const handleSelectMember = (member: IMember) => {
     setSelectedMember(member);
     setOpenChangePassword(true);
