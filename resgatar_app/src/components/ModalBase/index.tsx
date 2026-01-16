@@ -1,6 +1,7 @@
 import Toast from "react-native-toast-message";
 import { styles } from "./styles";
 import { Modal } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface IModalBase {
   visible: boolean;
@@ -21,8 +22,10 @@ export const ModalBase: React.FC<IModalBase> = ({
       transparent
       presentationStyle="overFullScreen"
     >
-      {children}
-      <Toast />
+      <SafeAreaView style={styles.safeArea}>
+        {children}
+        <Toast />
+      </SafeAreaView>
     </Modal>
   );
 };
