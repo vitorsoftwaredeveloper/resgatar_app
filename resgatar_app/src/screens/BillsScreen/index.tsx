@@ -10,6 +10,7 @@ import { AuthContext } from "@/context/AuthContext";
 import { TRANSACTION_STATUS } from "@/types/Charge";
 import { formatUTCToDateBR } from "@/utils/helper";
 import { shareComprovantePDF } from "@/utils/generatePixReceipt";
+import { ToastMessage } from "@/components/Toast";
 
 const MONTH: Record<string, string> = {
   january: "Janeiro",
@@ -33,8 +34,13 @@ export const BillsScreen = () => {
   const [modalPayVisible, setModalPayVisible] = useState(false);
 
   const handlePay = async (item: any) => {
-    await createCharge(item.value.replace("R$", "").trim());
-    setModalPayVisible(true);
+    await createCharge(item.value.replace("R$", "").trim())
+      .then(() => {
+        setModalPayVisible(true);
+      })
+      .catch(() => {
+        ToastMessage.error("Erro ao criar cobrança. Tente novamente.");
+      });
   };
 
   const contributions = useMemo(
@@ -53,9 +59,9 @@ export const BillsScreen = () => {
           status: paid
             ? TRANSACTION_STATUS.APPROVED
             : TRANSACTION_STATUS.PENDING,
-        })
+        }),
       ),
-    [member]
+    [member],
   );
 
   return (

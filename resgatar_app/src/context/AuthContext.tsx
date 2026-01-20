@@ -16,6 +16,7 @@ import { IMemberState, IMemberWithContribution } from "@/types/Member";
 interface AuthContextData {
   isLoggedIn: boolean;
   member: IMemberWithContribution | null;
+  loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   changePassword: (memberId: string, newPassword: string) => Promise<void>;
@@ -27,13 +28,14 @@ interface AuthContextData {
 }
 
 export const AuthContext = createContext<AuthContextData>(
-  {} as AuthContextData
+  {} as AuthContextData,
 );
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [member, setMember] = useState<IMemberWithContribution | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const isLoggedIn = !!member;
 
   useEffect(() => {
@@ -174,9 +176,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }
   async function reloadMemberData() {
+    setLoading(true);
     const memberData = await MemberServices.getMember();
     setMember(memberData);
     await saveMember(memberData);
+    setLoading(false);
   }
 
   async function changePassword(memberId: string, newPassword: string) {
@@ -192,6 +196,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       value={{
         isLoggedIn,
         member,
+        loading,
         login,
         logout,
         changePassword,
