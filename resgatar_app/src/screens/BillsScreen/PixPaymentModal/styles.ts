@@ -7,55 +7,6 @@ export const styles = StyleSheet.create({
     backgroundColor: COLORS.softBrown,
   },
 
-  header: {
-    backgroundColor: COLORS.primary,
-    padding: 24,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
-    color: COLORS.white,
-    marginBottom: 24,
-  },
-
-  qrIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-    backgroundColor: COLORS.mutedBackground,
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 12,
-  },
-
-  qrIconText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "600",
-  },
-
-  title: {
-    fontSize: 22,
-    fontWeight: "600",
-    color: COLORS.white,
-  },
-
-  subtitle: {
-    fontSize: 14,
-    color: COLORS.muted,
-    marginTop: 2,
-  },
-
-  closeButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "#9C7A5C",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
   amountContainer: {
     alignItems: "center",
     marginBottom: 24,
@@ -144,6 +95,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 20,
     marginBottom: 16,
+    marginTop: 16,
   },
 
   badgeText: {
