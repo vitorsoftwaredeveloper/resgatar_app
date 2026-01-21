@@ -3,9 +3,12 @@ import { api } from "./api";
 import { IMember } from "@/types/Member";
 
 export const ChargeServices = {
-  createCharge: async (value: number): Promise<ICharge> => {
+  createCharge: async (value: number, month: number): Promise<ICharge> => {
     try {
-      const response = await api.post("/charges", { transactionAmount: value });
+      const response = await api.post("/charges", {
+        transactionAmount: value,
+        referenceMonth: month,
+      });
       const { data } = response.data;
 
       return data;

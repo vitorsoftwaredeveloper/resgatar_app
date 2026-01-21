@@ -4,12 +4,12 @@ import { ChargeServices } from "@/services/ChargeService";
 
 interface ChargeContextData {
   charge: ICharge;
-  createCharge: (value: number) => Promise<void>;
+  createCharge: (value: number, month: number) => Promise<void>;
   consultCharge: () => Promise<void>;
 }
 
 export const ChargeContext = createContext<ChargeContextData>(
-  {} as ChargeContextData
+  {} as ChargeContextData,
 );
 
 export const ChargeProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -17,9 +17,9 @@ export const ChargeProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [charge, setCharge] = useState({} as ICharge);
 
-  async function createCharge(value: number) {
+  async function createCharge(value: number, month: number) {
     try {
-      const charge = await ChargeServices.createCharge(value);
+      const charge = await ChargeServices.createCharge(value, month);
 
       setCharge(charge);
     } catch (error) {
@@ -31,7 +31,7 @@ export const ChargeProvider: React.FC<{ children: React.ReactNode }> = ({
   async function consultCharge() {
     try {
       const chargeResult = await ChargeServices.consultCharge(
-        charge.transactionId
+        charge.transactionId,
       );
       setCharge(chargeResult);
     } catch (error) {
