@@ -33,7 +33,7 @@ export const SettingsScreen = () => {
       <View style={styles.content}>
         <View style={styles.menuCard}>
           <ItemActionList
-            title="Cadastrar novo membro"
+            title="Novo membro"
             description="Essa funcionalidade permite cadastrar novos membros do aplicativo para receberem notificações, realizarem suas contribuições e terem acesso aos dados do aplicativo."
             onPress={() => setCreateMemberModal(true)}
             icon={<UserRoundPlus color={COLORS.primary} />}

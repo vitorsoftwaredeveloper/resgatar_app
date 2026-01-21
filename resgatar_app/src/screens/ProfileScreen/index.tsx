@@ -102,6 +102,7 @@ export const ProfileScreen = () => {
           <Dialog
             visible={dialogLogoutVisible}
             title="Tem certeza que deseja sair?"
+            description="Você pode realizar o login novamente e ter acesso a todas as funcionalidades do nosso aplicativo."
             onClose={() => setDialogLogoutVisible(false)}
             actions={[
               {

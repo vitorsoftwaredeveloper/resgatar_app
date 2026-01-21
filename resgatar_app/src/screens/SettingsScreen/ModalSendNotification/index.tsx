@@ -51,7 +51,7 @@ export function ModalSendNotification({ visible, onClose }: Props) {
   };
 
   return (
-    <ModalBase onClose={onClose} visible={visible} title="Enviar Notificação">
+    <ModalBase onClose={onClose} visible={visible} title="Enviar notificação">
       <View style={styles.overlay}>
         <View style={styles.container}>
           <Card title="Notificação">

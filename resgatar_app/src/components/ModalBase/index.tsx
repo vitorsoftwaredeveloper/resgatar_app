@@ -28,11 +28,13 @@ export const ModalBase: React.FC<IModalBase> = ({
       presentationStyle="overFullScreen"
     >
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>{title}</Text>
+        {title && (
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>{title}</Text>
 
-          <IconButton color={COLORS.white} icon={X} onPress={onClose} />
-        </View>
+            <IconButton color={COLORS.white} icon={X} onPress={onClose} />
+          </View>
+        )}
         {children}
         <Toast />
       </SafeAreaView>

@@ -1,10 +1,11 @@
+import { COLORS } from "@/theme";
 import { StyleSheet, Dimensions } from "react-native";
 
 const { width } = Dimensions.get("window");
 
 export const TAB_WIDTH = width / 3;
 export const TAB_WIDTH_ADMIN = width / 4;
-export const ACTIVE_COLOR = "#6B4F3A";
+export const ACTIVE_COLOR = COLORS.muted;
 export const INACTIVE_COLOR = "#999";
 
 export const styles = StyleSheet.create({
