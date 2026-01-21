@@ -3,10 +3,10 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#6B4F3A",
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
+    backgroundColor: COLORS.muted,
+    borderRadius: 16,
     padding: 20,
+    marginHorizontal: 10,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -16,28 +16,20 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   logo: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    backgroundColor: "#F1ECE6",
+    width: 50,
+    height: 50,
     marginRight: 12,
+    justifyContent: "center",
+    alignItems: "center",
   },
   hello: {
-    color: "#EADFD6",
+    color: COLORS.background,
+
     fontSize: 14,
   },
   name: {
-    color: "#FFF",
+    color: COLORS.background,
     fontSize: 18,
     fontWeight: "600",
-  },
-  avatar: {
-    width: 36,
-    height: 36,
-    alignItems: "center",
-    marginRight: 12,
-    justifyContent: "center",
-    borderRadius: 20,
-    backgroundColor: COLORS.muted,
   },
 });

@@ -1,28 +1,25 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text } from "react-native";
 import { styles } from "./styles";
-import { UserIcon } from "lucide-react-native";
 import { COLORS } from "@/theme";
+import { LogoResgatar } from "../Svg/Logo";
 
 interface Props {
   name: string;
 }
 
-export function DashboardHeader({ name }: Props) {
+export function Header({ name }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.left}>
-        <View style={styles.avatar}>
-          <UserIcon size={20} color={COLORS.white} />
+        <View style={styles.logo}>
+          <LogoResgatar size={100} color={COLORS.background} />
         </View>
-
         <View>
           <Text style={styles.hello}>Olá,</Text>
           <Text style={styles.name}>{name}!</Text>
         </View>
       </View>
-
-      {/* <View style={styles.logo} /> */}
     </View>
   );
 }

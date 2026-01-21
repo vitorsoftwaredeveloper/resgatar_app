@@ -7,6 +7,7 @@ import { Eye, EyeOff, LogIn, Mail } from "lucide-react-native";
 import { styles } from "./styles";
 import { COLORS } from "@/theme";
 import { ToastMessage } from "@/components/Toast";
+import { LogoResgatar } from "@/components/Svg/Logo";
 
 export const LoginScreen = () => {
   const { login } = useContext(AuthContext);
@@ -38,37 +39,52 @@ export const LoginScreen = () => {
   return (
     <View style={styles.background}>
       <View style={styles.card}>
+        <View style={styles.logoContainer}>
+          <LogoResgatar color={COLORS.muted} size={300} />
+        </View>
+
         <Text style={styles.title}>Comunidade Resgatar</Text>
+
+        <View style={styles.motion}>
+          <View style={styles.divider} />
+          <Text style={styles.motionText}>
+            Doar a vida por amor a santa cruz!
+          </Text>
+          <View style={styles.divider} />
+        </View>
+
         <Text style={styles.subtitle}>Mc 10, 45</Text>
 
-        <Input
-          placeholder="Email"
-          value={credentials.email}
-          onChangeText={(v: string) =>
-            setCredentials((p) => ({ ...p, email: v }))
-          }
-          keyboardType="email-address"
-          autoCapitalize="none"
-          rightIcon={<Mail size={24} color={COLORS.muted} />}
-        />
+        <View style={styles.form}>
+          <Input
+            placeholder="Email"
+            value={credentials.email}
+            onChangeText={(v: string) =>
+              setCredentials((p) => ({ ...p, email: v }))
+            }
+            keyboardType="email-address"
+            autoCapitalize="none"
+            rightIcon={<Mail size={24} color={COLORS.muted} />}
+          />
 
-        <Input
-          placeholder="Senha"
-          value={credentials.password}
-          secureTextEntry={!showPassword}
-          onChangeText={(v: string) =>
-            setCredentials((p) => ({ ...p, password: v }))
-          }
-          rightIcon={
-            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-              {showPassword ? (
-                <Eye size={24} color={COLORS.muted} />
-              ) : (
-                <EyeOff size={24} color={COLORS.muted} />
-              )}
-            </TouchableOpacity>
-          }
-        />
+          <Input
+            placeholder="Senha"
+            value={credentials.password}
+            secureTextEntry={!showPassword}
+            onChangeText={(v: string) =>
+              setCredentials((p) => ({ ...p, password: v }))
+            }
+            rightIcon={
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                {showPassword ? (
+                  <Eye size={24} color={COLORS.muted} />
+                ) : (
+                  <EyeOff size={24} color={COLORS.muted} />
+                )}
+              </TouchableOpacity>
+            }
+          />
+        </View>
 
         <Button
           title={"Entrar"}
@@ -77,14 +93,6 @@ export const LoginScreen = () => {
           leftIcon={<LogIn size={20} color="#FFF" />}
           loadingEffect={loading}
         />
-
-        <View style={styles.footer}>
-          <View style={styles.divider} />
-          <Text style={styles.footerText}>
-            Doar a vida por amor a santa cruz!
-          </Text>
-          <View style={styles.divider} />
-        </View>
       </View>
     </View>
   );

@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useState } from "react";
 import { View, Text, FlatList } from "react-native";
 import { NotificationCard } from "@/components/NotificationCard";
-import { DashboardHeader } from "@/components/DashboardHeader";
+import { Header } from "@/components/Header";
 import { styles } from "./styles";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NotificationSkeleton } from "@/components/Skeleton/NotificationSkeleton";
@@ -20,7 +20,7 @@ export function DashboardScreen() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const listRef = useRef<FlatList>(null);
   const newNotifications = data.filter(
-    (notification) => notification.isNew
+    (notification) => notification.isNew,
   ).length;
 
   const handleToggle = (id: string, index: number) => {
@@ -44,7 +44,7 @@ export function DashboardScreen() {
     } catch (error: any) {
       ToastMessage.error(
         "Não foi possível carregar as notificações",
-        error.message
+        error.message,
       );
     } finally {
       setLoading(false);
@@ -54,12 +54,12 @@ export function DashboardScreen() {
   useFocusEffect(
     useCallback(() => {
       fetchNotifications();
-    }, [])
+    }, []),
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      <DashboardHeader name={member?.firstName as string} />
+      <Header name={member?.firstName as string} />
 
       <View style={styles.content}>
         {loading ? (

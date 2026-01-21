@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./styles";
 import { ContributionItem } from "@/components/ContributionItem";
 import { PixPaymentModal } from "./PixPaymentModal";
-import { DashboardHeader } from "@/components/DashboardHeader";
+import { Header } from "@/components/Header";
 import { ChargeContext } from "@/context/ChargeContext";
 import { AuthContext } from "@/context/AuthContext";
 import { TRANSACTION_STATUS } from "@/types/Charge";
@@ -69,7 +69,7 @@ export const BillsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <DashboardHeader name={member?.firstName as string} />
+      <Header name={member?.firstName as string} />
 
       <FlatList
         contentContainerStyle={styles.list}

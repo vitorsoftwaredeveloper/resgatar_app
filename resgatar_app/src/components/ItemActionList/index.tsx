@@ -10,7 +10,7 @@ interface Props {
   icon?: any;
 }
 
-export function ProfileMenuItem({
+export function ItemActionList({
   title,
   description,
   onPress,

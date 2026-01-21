@@ -16,13 +16,14 @@ export const styles = StyleSheet.create({
     paddingVertical: 32,
     minHeight: "55%",
     justifyContent: "space-between",
+    alignItems: "center",
   },
 
   title: {
     fontSize: 28,
     fontWeight: "700",
     textAlign: "center",
-    color: COLORS.text,
+    color: COLORS.muted,
     marginTop: 32,
   },
 
@@ -37,25 +38,36 @@ export const styles = StyleSheet.create({
 
   submitButton: {
     marginTop: 24,
+    width: "100%",
   },
 
-  footer: {
+  motion: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 32,
     justifyContent: "center",
   },
-
+  motionText: {
+    marginHorizontal: 12,
+    color: COLORS.muted,
+    fontSize: 16,
+    fontStyle: "italic",
+  },
   divider: {
     flex: 1,
     height: 1,
     backgroundColor: COLORS.softBrown,
   },
 
-  footerText: {
-    marginHorizontal: 12,
-    color: COLORS.muted,
-    fontSize: 14,
-    fontStyle: "italic",
+  logoContainer: {
+    width: 160,
+    height: 160,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  form: {
+    marginBottom: 16,
+    minHeight: 120,
+    width: "100%",
   },
 });

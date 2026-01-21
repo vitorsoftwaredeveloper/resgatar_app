@@ -1,3 +1,4 @@
+import { COLORS } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -15,7 +16,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     width: 40,
     height: 40,
-    backgroundColor: "#F1ECE6",
+    backgroundColor: COLORS.background,
     borderRadius: 12,
   },
   center: {

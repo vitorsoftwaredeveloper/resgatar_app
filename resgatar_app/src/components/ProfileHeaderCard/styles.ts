@@ -22,13 +22,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 16,
   },
-  avatarIcon: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: "#8C7A6B",
-  },
+
   name: {
     fontSize: 16,
     fontWeight: "600",

@@ -1,16 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
-import {
-  signIn,
-  signOut,
-  getCurrentUser,
-  updatePassword,
-} from "aws-amplify/auth";
+import { signIn, signOut, getCurrentUser } from "aws-amplify/auth";
 import { MemberServices } from "@/services/MemberService";
-import {
-  saveMember,
-  getStoredMember,
-  removeMember,
-} from "@/storage/asyncStorage";
+import { saveMember, getStoredMember } from "@/storage/asyncStorage";
 import { IMemberState, IMemberWithContribution } from "@/types/Member";
 
 interface AuthContextData {
@@ -35,7 +26,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [member, setMember] = useState<IMemberWithContribution | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const isLoggedIn = !!member;
 
   useEffect(() => {
@@ -60,9 +51,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     } catch {
       setMember(null);
     }
+    setLoading(false);
   }
 
   async function login(email: string, password: string) {
+    setLoading(true);
     try {
       await signIn({
         username: email,
@@ -79,14 +72,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setMember(null);
       throw error;
     } finally {
+      setLoading(false);
     }
   }
 
   async function logout() {
+    setLoading(true);
     try {
       await signOut();
     } finally {
       setMember(null);
+      setLoading(false);
     }
   }
 
