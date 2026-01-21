@@ -13,8 +13,7 @@ import { AuthContext } from "@/context/AuthContext";
 import { IMemberState } from "@/types/Member";
 import { Card } from "@/components/Card";
 import { Row } from "@/components/Row";
-import { IconButton } from "@/components/IconButton";
-import { Eye, EyeOff, X } from "lucide-react-native";
+import { Eye, EyeOff } from "lucide-react-native";
 import { COLORS } from "@/theme";
 import { Button } from "@/components/Button";
 import { ToastMessage } from "@/components/Toast";
@@ -70,20 +69,18 @@ export const ModalCreateMember = ({
         }, 2000);
       })
       .catch(() => {
-        ToastMessage.error("Erro", "Falha ao criar novo usuário.");
+        ToastMessage.error("Erro", "Falha ao criar novo membro.");
       });
   };
 
   return (
-    <ModalBase onClose={onClose} visible={createMemberModal}>
+    <ModalBase
+      onClose={onClose}
+      visible={createMemberModal}
+      title="Novo membro"
+    >
       <View style={styles.overlay}>
         <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Novo usuário</Text>
-
-            <IconButton color={COLORS.white} icon={X} onPress={onClose} />
-          </View>
-
           <ScrollView showsVerticalScrollIndicator={false}>
             {/* DADOS PESSOAIS */}
             <Card title="Dados pessoais">

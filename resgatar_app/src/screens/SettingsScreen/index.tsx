@@ -16,6 +16,7 @@ import { Header } from "@/components/Header";
 import { ModalRemoveMember } from "./ModalRemoveMember";
 import { ModalSendNotification } from "./ModalSendNotification";
 import { ModalChangePasswordMember } from "./ModalChangePasswordMember";
+import { COLORS } from "@/theme";
 
 export const SettingsScreen = () => {
   const { member } = useContext(AuthContext);
@@ -35,28 +36,28 @@ export const SettingsScreen = () => {
             title="Cadastrar novo membro"
             description="Essa funcionalidade permite cadastrar novos membros do aplicativo para receberem notificações, realizarem suas contribuições e terem acesso aos dados do aplicativo."
             onPress={() => setCreateMemberModal(true)}
-            icon={<UserRoundPlus />}
+            icon={<UserRoundPlus color={COLORS.primary} />}
           />
 
           <ItemActionList
             title="Remover membro"
             description="Essa funcionalidade permite remover um membro impedindo de não acessar o aplicativo."
             onPress={() => setOpenRemoveMember(true)}
-            icon={<UserRoundMinus />}
+            icon={<UserRoundMinus color={COLORS.primary} />}
           />
 
           <ItemActionList
             title="Atualizar senha de membro"
             description="Essa funcionalidade permite atualizar a senha de acesso ao aplicativo de um membro caso ela venha a esquecer."
             onPress={() => setOpenEditMember(true)}
-            icon={<Lock />}
+            icon={<Lock color={COLORS.primary} />}
           />
 
           <ItemActionList
             title="Enviar notificação"
             description="Envie notificações para os membros da comunidade"
             onPress={() => setOpenSendNotification(true)}
-            icon={<Send />}
+            icon={<Send color={COLORS.primary} />}
             isLast
           />
         </View>

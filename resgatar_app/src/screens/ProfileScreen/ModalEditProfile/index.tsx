@@ -13,9 +13,6 @@ import { AuthContext } from "@/context/AuthContext";
 import { IMemberState } from "@/types/Member";
 import { Card } from "@/components/Card";
 import { Row } from "@/components/Row";
-import { IconButton } from "@/components/IconButton";
-import { X } from "lucide-react-native";
-import { COLORS } from "@/theme";
 import { Button } from "@/components/Button";
 import { ToastMessage } from "@/components/Toast";
 import { ModalBase } from "@/components/ModalBase";
@@ -46,7 +43,7 @@ export const ModalEditProfile = ({
     complement: member?.address?.complement || "",
     datePayment: member?.paymentInfo?.datePayment?.toString() || "",
     amount: formatCurrencyBRL(
-      (member?.paymentInfo?.amount?.toString() as string) || "0"
+      (member?.paymentInfo?.amount?.toString() as string) || "0",
     ),
     type: member?.identification?.type || "CPF",
     numberType: member?.identification?.numberType || "",
@@ -73,15 +70,9 @@ export const ModalEditProfile = ({
   };
 
   return (
-    <ModalBase onClose={onClose} visible={editModalVisible}>
+    <ModalBase onClose={onClose} visible={editModalVisible} title="Meus dados">
       <View style={styles.overlay}>
         <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Meus dados</Text>
-
-            <IconButton color={COLORS.white} icon={X} onPress={onClose} />
-          </View>
-
           <ScrollView showsVerticalScrollIndicator={false}>
             <Card title="Dados pessoais">
               <Input

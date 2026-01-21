@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, FlatList } from "react-native";
+import { View, FlatList } from "react-native";
 import { Dialog } from "@/components/Dialog";
 import { RemoveMemberSkeleton } from "@/components/Skeleton/RemoveMemberSkeleton";
 import { Trash2, X } from "lucide-react-native";
@@ -7,7 +7,6 @@ import { styles } from "./styles";
 import { AuthContext } from "@/context/AuthContext";
 import { IMember } from "@/types/Member";
 import { ToastMessage } from "@/components/Toast";
-import { IconButton } from "@/components/IconButton";
 import { COLORS } from "@/theme";
 import { SettingsMemberCard } from "@/components/SettingsMemberCard";
 import { ModalBase } from "@/components/ModalBase";
@@ -47,13 +46,13 @@ export function ModalRemoveMember({ visible, onClose }: Props) {
 
     await removeMember(selectedMember._id)
       .then(() => {
-        ToastMessage.success("Sucesso", "Usuário removido com sucesso!");
+        ToastMessage.success("Membro removido com sucesso!");
         setTimeout(() => {
           onClose();
         }, 2000);
       })
       .catch(() => {
-        ToastMessage.error("Erro", "Falha ao remover usuário.");
+        ToastMessage.error("Erro", "Falha ao remover membro.");
       })
       .finally(() => {
         setSelectedMember(null);
@@ -67,15 +66,9 @@ export function ModalRemoveMember({ visible, onClose }: Props) {
   };
 
   return (
-    <ModalBase onClose={onClose} visible={visible}>
+    <ModalBase onClose={onClose} visible={visible} title="Remover membro">
       <View style={styles.overlay}>
         <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Remover usuário</Text>
-
-            <IconButton color={COLORS.white} icon={X} onPress={onClose} />
-          </View>
-
           <FlatList
             data={loading ? Array.from({ length: 4 }) : members}
             keyExtractor={(_, index) =>
@@ -102,7 +95,7 @@ export function ModalRemoveMember({ visible, onClose }: Props) {
       <Dialog
         visible={openDialog}
         title="Confirmar remoção"
-        description={`Tem certeza que deseja remover o usuário ${selectedMember?.firstName}? Esta ação não pode ser desfeita.`}
+        description={`Tem certeza que deseja remover o membro ${selectedMember?.firstName}? Esta ação não pode ser desfeita.`}
         onClose={() => setOpenDialog(false)}
         actions={[
           {

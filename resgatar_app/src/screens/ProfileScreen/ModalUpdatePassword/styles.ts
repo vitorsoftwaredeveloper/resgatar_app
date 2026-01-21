@@ -11,21 +11,6 @@ export const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
 
-  header: {
-    backgroundColor: COLORS.primary,
-    padding: 24,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
-  },
-  headerTitle: {
-    color: "#FFF",
-    fontSize: 22,
-    fontWeight: "700",
-  },
-
   footer: {
     padding: 16,
     backgroundColor: COLORS.background,

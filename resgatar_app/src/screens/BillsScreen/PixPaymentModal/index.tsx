@@ -9,7 +9,7 @@ import { IconButton } from "@/components/IconButton";
 import { TRANSACTION_STATUS } from "@/types/Charge";
 import { AuthContext } from "@/context/AuthContext";
 import { ModalBase } from "@/components/ModalBase";
-import Clipboard from "@react-native-clipboard/clipboard";
+// import Clipboard from "@react-native-clipboard/clipboard";
 import { ToastMessage } from "@/components/Toast";
 
 interface PixPaymentModalProps {
@@ -26,7 +26,7 @@ export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
   const [isCopied, setIsCopied] = useState(false);
 
   const copyToClipboard = (value: string) => {
-    Clipboard.setString(value);
+    // Clipboard.setString(value);
     setTimeout(() => setIsCopied(false), 2000);
   };
 
@@ -98,7 +98,7 @@ export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
   }, [charge.status]);
 
   return (
-    <ModalBase onClose={onClose} visible={visible}>
+    <ModalBase onClose={onClose} visible={visible} title="Pagamento PIX">
       <Animated.View
         style={[
           styles.container,
@@ -106,19 +106,6 @@ export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
         ]}
       >
         <View style={styles.container}>
-          <View style={styles.header}>
-            <View style={styles.qrIcon}>
-              <QrCode size={30} color="#fff" />
-            </View>
-
-            <View style={{ flex: 1 }}>
-              <Text style={styles.title}>Pagamento PIX</Text>
-              <Text style={styles.subtitle}>Dezembro 2024</Text>
-            </View>
-
-            <IconButton onPress={onClose} size={22} icon={X} color="#fff" />
-          </View>
-
           {charge.status === TRANSACTION_STATUS.PENDING && (
             <Animated.View
               style={[styles.badge, { transform: [{ scale: pulse }] }]}

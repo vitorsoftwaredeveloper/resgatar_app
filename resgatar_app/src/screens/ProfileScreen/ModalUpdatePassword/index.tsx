@@ -1,10 +1,9 @@
 import React, { useContext, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, ScrollView, TouchableOpacity } from "react-native";
 import { styles } from "./styles";
 import { Input } from "@/components/Input";
 import { AuthContext } from "@/context/AuthContext";
 import { Card } from "@/components/Card";
-import { IconButton } from "@/components/IconButton";
 import { Eye, EyeOff, X } from "lucide-react-native";
 import { COLORS } from "@/theme";
 import { Button } from "@/components/Button";
@@ -46,7 +45,7 @@ export const ModalUpdatePassword = ({
       memberIdPasswordWillBeChanged
         ? memberIdPasswordWillBeChanged
         : (member?._id as string),
-      passwordData.password
+      passwordData.password,
     )
       .then(() => {
         ToastMessage.success("Senha alterada com sucesso");
@@ -60,15 +59,13 @@ export const ModalUpdatePassword = ({
   };
 
   return (
-    <ModalBase visible={passwordModalVisible} onClose={onClose}>
+    <ModalBase
+      visible={passwordModalVisible}
+      onClose={onClose}
+      title="Atualizar senha"
+    >
       <View style={styles.overlay}>
         <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Atualizar senha</Text>
-
-            <IconButton color={COLORS.white} icon={X} onPress={onClose} />
-          </View>
-
           <ScrollView showsVerticalScrollIndicator={false}>
             <Card title="Senha">
               <Input

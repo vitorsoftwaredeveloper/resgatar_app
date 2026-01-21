@@ -26,7 +26,7 @@ export function Dialog({
   actions = [],
 }: DialogProps) {
   return (
-    <ModalBase onClose={onClose} visible={visible}>
+    <ModalBase onClose={onClose} visible={visible} title="">
       <Pressable style={styles.overlay} onPress={onClose}>
         <Pressable style={styles.container} onPress={() => {}}>
           {title && <Text style={styles.title}>{title}</Text>}
