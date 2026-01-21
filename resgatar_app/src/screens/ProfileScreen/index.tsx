@@ -5,11 +5,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../../context/AuthContext";
 import { ModalEditProfile } from "./ModalEditProfile";
 import { ModalUpdatePassword } from "./ModalUpdatePassword";
-import { ProfileMenuItem } from "@/components/ProfileMenuItem";
+import { ItemActionList } from "@/components/ItemActionList";
 import { ProfileHeaderCard } from "@/components/ProfileHeaderCard";
 import { styles } from "./styles";
-import { DashboardHeader } from "@/components/DashboardHeader";
+import { Header } from "@/components/Header";
 import { Dialog } from "@/components/Dialog";
+import { IMember } from "@/types/Member";
+import { COLORS } from "@/theme";
 
 export const ProfileScreen = () => {
   const { logout, member } = useContext(AuthContext);
@@ -24,52 +26,49 @@ export const ProfileScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <DashboardHeader name={member?.firstName as string} />
+      <Header name={member?.firstName as string} />
 
       <View style={styles.content}>
-        <ProfileHeaderCard
-          name={`${member?.firstName} ${member?.lastName}`}
-          document={`${member?.identification?.type}: ${member?.identification?.numberType}`}
-        />
+        <ProfileHeaderCard member={member as IMember} />
 
         <View style={styles.menuCard}>
-          <ProfileMenuItem
+          <ItemActionList
             title="Meus dados"
-            description="Visualize ou edite seus dados"
+            description="Visualize ou edite seus dados pessoais"
             onPress={() => setEditModalVisible(true)}
-            icon={<User />}
+            icon={<User color={COLORS.primary} />}
           />
 
-          <ProfileMenuItem
+          <ItemActionList
             title="Atualizar senha"
             description="Atualize sua senha de login do aplicativo"
             onPress={() => setPasswordModalVisible(true)}
-            icon={<Lock />}
+            icon={<Lock color={COLORS.primary} />}
             isLast
           />
 
-          {/* <ProfileMenuItem
+          {/* <ItemActionList
             title="Minhas notificações"
             description="Acompanhe suas notificações"
             onPress={() => {}}
             icon={<Bell />}
           />
 
-          <ProfileMenuItem
+          <ItemActionList
             title="Meus compromissos"
             description="Compromissos e pendências"
             onPress={() => {}}
             icon={<ClipboardList />}
           />
 
-          <ProfileMenuItem
+          <ItemActionList
             title="Política de Privacidade"
             description="Veja nossa política de privacidade"
             onPress={() => {}}
             icon={<Lock />}
           />
 
-          <ProfileMenuItem
+          <ItemActionList
             title="Sobre"
             description="Sobre a Comunidade Resgatar"
             onPress={() => {}}

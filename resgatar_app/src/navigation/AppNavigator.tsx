@@ -4,11 +4,16 @@ import { AuthContext } from "@/context/AuthContext";
 import { LoginScreen } from "@/screens/LoginScreen";
 import { BottomTabs } from "@/components/ButtonTabs";
 import { RootStackParamList } from "@/navigation/types";
+import { LoadingScreen } from "@/screens/LoadingScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator = () => {
-  const { isLoggedIn, member } = useContext(AuthContext);
+  const { isLoggedIn, member, loading } = useContext(AuthContext);
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>

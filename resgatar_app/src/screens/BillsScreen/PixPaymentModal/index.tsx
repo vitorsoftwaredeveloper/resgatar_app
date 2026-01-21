@@ -10,6 +10,7 @@ import { TRANSACTION_STATUS } from "@/types/Charge";
 import { AuthContext } from "@/context/AuthContext";
 import { ModalBase } from "@/components/ModalBase";
 import Clipboard from "@react-native-clipboard/clipboard";
+import { ToastMessage } from "@/components/Toast";
 
 interface PixPaymentModalProps {
   visible: boolean;
@@ -42,7 +43,7 @@ export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
           duration: 900,
           useNativeDriver: true,
         }),
-      ])
+      ]),
     ).start();
   }, []);
 
@@ -88,6 +89,7 @@ export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
 
   useEffect(() => {
     if (charge.status === TRANSACTION_STATUS.APPROVED) {
+      ToastMessage.success("Sucesso", "Pagamento realizado com sucesso!");
       setTimeout(() => {
         reloadMemberData();
         onClose();

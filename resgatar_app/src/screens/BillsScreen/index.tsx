@@ -4,12 +4,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./styles";
 import { ContributionItem } from "@/components/ContributionItem";
 import { PixPaymentModal } from "./PixPaymentModal";
-import { DashboardHeader } from "@/components/DashboardHeader";
+import { Header } from "@/components/Header";
 import { ChargeContext } from "@/context/ChargeContext";
 import { AuthContext } from "@/context/AuthContext";
 import { TRANSACTION_STATUS } from "@/types/Charge";
 import { formatUTCToDateBR } from "@/utils/helper";
 import { shareComprovantePDF } from "@/utils/generatePixReceipt";
+import { ToastMessage } from "@/components/Toast";
 
 const MONTH: Record<string, string> = {
   january: "Janeiro",
@@ -33,8 +34,16 @@ export const BillsScreen = () => {
   const [modalPayVisible, setModalPayVisible] = useState(false);
 
   const handlePay = async (item: any) => {
-    await createCharge(item.value.replace("R$", "").trim());
-    setModalPayVisible(true);
+    await createCharge(
+      item.value.replace("R$", "").trim(),
+      Object.values(MONTH).indexOf(item.month),
+    )
+      .then(() => {
+        setModalPayVisible(true);
+      })
+      .catch(() => {
+        ToastMessage.error("Erro ao criar cobrança. Tente novamente.");
+      });
   };
 
   const contributions = useMemo(
@@ -53,14 +62,14 @@ export const BillsScreen = () => {
           status: paid
             ? TRANSACTION_STATUS.APPROVED
             : TRANSACTION_STATUS.PENDING,
-        })
+        }),
       ),
-    [member]
+    [member],
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      <DashboardHeader name={member?.firstName as string} />
+      <Header name={member?.firstName as string} />
 
       <FlatList
         contentContainerStyle={styles.list}
