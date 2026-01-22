@@ -5,63 +5,37 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "resgatarapp",
-    "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "userInterfaceStyle": "light",
     "jsEngine": "hermes",
-    "splash": {
-      "image": "./assets/images/splash1.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#FFFFFF"
-    },
+    
     "ios": {
-      "supportsTablet": true,
       "bundleIdentifier": "com.vitorsoftwaredeveloper.resgatar-app",
-      "splash": {
-        "image": "./assets/images/splash1.png",
+      "supportsTablet": true
+    },
+
+    "android": {
+      "package": "com.vitorsoftwaredeveloper.resgatar_app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundColor": "#000000"
+      },
+     "splash": {
+        "backgroundColor": "#000000",
         "resizeMode": "contain",
-        "backgroundColor": "#FFFFFF"
+        "image": "./assets/images/splash2.png"
       }
     },
-    "android": {
-      "label": "Resgatar",
-      "adaptiveIcon": {
-        "backgroundColor": "#FFFFFF",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
-      },
-      "splash": {
-        "image": "./assets/images/splash1.png",
-        "resizeMode": "contain",
-        "backgroundColor": "#FFFFFF",
-        "mdpi": "./assets/images/splash1.png",
-        "hdpi": "./assets/images/splash1.png",
-        "xhdpi": "./assets/images/splash1.png",
-        "xxhdpi": "./assets/images/splash1.png",
-        "xxxhdpi": "./assets/images/splash1.png"
-      },
-      "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false,
-      "package": "com.vitorsoftwaredeveloper.resgatar_app"
-    },
-    "web": {
-      "output": "single",
-      "favicon": "./assets/images/favicon.png"
-    },
+
     "plugins": [
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash1.png",
+          "image": "./assets/images/splash2.png",
           "imageWidth": 400,
           "resizeMode": "contain",
-          "backgroundColor": "#FFFFFF"
+          "backgroundColor": "#000000"
         }
       ]
-    ],
-    "experiments": {
-      "typedRoutes": true,
-      "reactCompiler": true
-    }
+    ]
   }
 }
