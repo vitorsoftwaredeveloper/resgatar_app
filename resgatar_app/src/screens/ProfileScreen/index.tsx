@@ -26,7 +26,7 @@ export const ProfileScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header name={member?.firstName as string} />
+      <Header name={member?.firstName + " " + member?.lastName} />
 
       <View style={styles.content}>
         <ProfileHeaderCard member={member as IMember} />

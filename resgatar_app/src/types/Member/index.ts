@@ -4,7 +4,7 @@ interface IMemberState {
   firstName: string;
   lastName: string;
   bio: string;
-  dateOfBirth: number;
+  dateOfBirth: string | number;
   street: string;
   number: string;
   city: string;

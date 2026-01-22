@@ -23,12 +23,6 @@ export function ModalRemoveMember({ visible, onClose }: Props) {
   const { listMembers, removeMember } = useContext(AuthContext);
   const [openDialog, setOpenDialog] = useState(false);
 
-  useEffect(() => {
-    if (!visible) return;
-
-    loadMembers();
-  }, [visible]);
-
   async function loadMembers() {
     setLoading(true);
 
@@ -47,9 +41,7 @@ export function ModalRemoveMember({ visible, onClose }: Props) {
     await removeMember(selectedMember._id)
       .then(() => {
         ToastMessage.success("Membro removido com sucesso!");
-        setTimeout(() => {
-          onClose();
-        }, 2000);
+        loadMembers();
       })
       .catch(() => {
         ToastMessage.error("Erro", "Falha ao remover membro.");
@@ -64,6 +56,11 @@ export function ModalRemoveMember({ visible, onClose }: Props) {
     setSelectedMember(member);
     setOpenDialog(true);
   };
+
+  useEffect(() => {
+    if (!visible) return;
+    loadMembers();
+  }, [visible]);
 
   return (
     <ModalBase onClose={onClose} visible={visible} title="Remover membro">
