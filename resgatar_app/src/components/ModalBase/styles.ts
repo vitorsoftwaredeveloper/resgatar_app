@@ -6,6 +6,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
+    marginTop: SPACING.xs,
     backgroundColor: COLORS.muted,
     borderRadius: 16,
     padding: 30,

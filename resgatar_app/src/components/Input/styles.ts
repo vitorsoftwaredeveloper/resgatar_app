@@ -40,4 +40,14 @@ export const styles = StyleSheet.create({
     borderColor: "#E0B96A",
     borderWidth: 2,
   },
+
+  inputError: {
+    borderColor: COLORS.error,
+  },
+
+  errorText: {
+    color: COLORS.error,
+    fontSize: 12,
+    marginTop: 4,
+  },
 });

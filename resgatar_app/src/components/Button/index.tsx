@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   TouchableOpacity,
   Text,
@@ -14,7 +14,8 @@ type Props = ButtonProps & {
   styleCustom?: any;
   leftIcon?: React.ReactNode;
   rigthtIcon?: React.ReactNode;
-  loadingEffect?: boolean;
+  loading?: boolean;
+  onPress?: () => Promise<void> | void;
 };
 
 export function Button({
@@ -25,22 +26,28 @@ export function Button({
   onPress,
   leftIcon,
   rigthtIcon,
-  loadingEffect = true,
+  loading: externalLoading,
   ...rest
 }: Props) {
-  const [loading, setLoading] = useState(false);
+  const [internalLoading, setInternalLoading] = useState(false);
 
-  const handlePress = async () => {
+  const isControlled = typeof externalLoading === "boolean";
+  const loading = isControlled ? externalLoading : internalLoading;
+
+  const handlePress = useCallback(async () => {
     if (!onPress || loading) return;
 
-    try {
-      setLoading(true);
-      // @ts-ignore
-      await onPress();
-    } finally {
-      setLoading(false);
+    const result: any = onPress();
+
+    if (!isControlled && result instanceof Promise) {
+      try {
+        setInternalLoading(true);
+        await result;
+      } finally {
+        setInternalLoading(false);
+      }
     }
-  };
+  }, [onPress, loading, isControlled]);
 
   return (
     <TouchableOpacity
@@ -55,11 +62,11 @@ export function Button({
       ]}
       {...rest}
     >
-      {loading && loadingEffect ? (
+      {loading ? (
         <ActivityIndicator size="small" color="#FFF" />
       ) : (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-          {leftIcon && leftIcon}
+          {leftIcon}
           <Text
             style={[
               styles.buttonText,
@@ -69,7 +76,7 @@ export function Button({
           >
             {title}
           </Text>
-          {rigthtIcon && rigthtIcon}
+          {rigthtIcon}
         </View>
       )}
     </TouchableOpacity>

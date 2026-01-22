@@ -1,10 +1,8 @@
 import { Text, TextInput, TextInputProps, View } from "react-native";
-import { useState } from "react";
+import { useState, ReactNode } from "react";
 import { styles } from "./styles";
 
-import { ReactNode } from "react";
-
-type IInputProps = TextInputProps & {
+type InputProps = TextInputProps & {
   label?: string;
   value: string;
   flex?: number;
@@ -12,6 +10,7 @@ type IInputProps = TextInputProps & {
   onChangeText: (text: string) => void;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
+  error?: string | false;
 };
 
 export const Input = ({
@@ -21,18 +20,23 @@ export const Input = ({
   highlighted,
   leftIcon,
   rightIcon,
+  error,
+  flex = 1,
   ...props
-}: IInputProps) => {
+}: InputProps) => {
   const [isFocused, setIsFocused] = useState(false);
 
+  const hasError = Boolean(error);
+
   return (
-    <View style={[styles.inputWrapper, { flex: 1 }]}>
+    <View style={[styles.inputWrapper, { flex }]}>
       {label && <Text style={styles.inputLabel}>{label}</Text>}
 
       <View
         style={[
           styles.inputContainer,
           (highlighted || isFocused) && styles.inputHighlighted,
+          hasError && styles.inputError, // 👈 erro visual
         ]}
       >
         {leftIcon && <View style={styles.iconLeft}>{leftIcon}</View>}
@@ -49,6 +53,8 @@ export const Input = ({
 
         {rightIcon && <View style={styles.iconRight}>{rightIcon}</View>}
       </View>
+
+      {hasError && <Text style={styles.errorText}>{error}</Text>}
     </View>
   );
 };

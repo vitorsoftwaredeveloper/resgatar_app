@@ -20,7 +20,7 @@ export interface ContributionItemProps {
 
 interface Props {
   data: Contribution;
-  onPay?: () => void;
+  onPay: () => Promise<void>;
   onShare?: () => void;
 }
 
@@ -60,7 +60,9 @@ export function ContributionItem({ data, onPay, onShare }: Props) {
       {isPending ? (
         <Button
           title="Pagar"
-          onPress={onPay}
+          onPress={async () => {
+            await onPay();
+          }}
           styleCustom={{ marginTop: 16 }}
           leftIcon={<DollarSign size={20} color={COLORS.white} />}
         />
@@ -71,7 +73,7 @@ export function ContributionItem({ data, onPay, onShare }: Props) {
           styleCustom={{ marginTop: 16 }}
           leftIcon={<Share2 size={20} color={COLORS.text} />}
           variant="secondary"
-          loadingEffect={false}
+          loading={false}
         />
       )}
     </View>
