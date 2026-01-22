@@ -168,7 +168,6 @@ export const ModalEditProfile = ({
         handleSubmit,
         setFieldValue,
         isSubmitting,
-        isValid,
         dirty,
       }) => {
         const phoneField = useMaskedFieldFromFormik(
@@ -385,7 +384,7 @@ export const ModalEditProfile = ({
                     title="Salvar"
                     onPress={handleSubmit as any}
                     loading={isSubmitting}
-                    disabled={!dirty || !isValid || isSubmitting}
+                    disabled={!dirty || isSubmitting}
                   />
                 </View>
               </View>

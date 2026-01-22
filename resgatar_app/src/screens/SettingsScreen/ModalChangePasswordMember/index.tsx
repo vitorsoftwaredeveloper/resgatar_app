@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { View, FlatList } from "react-native";
 import { RemoveMemberSkeleton } from "@/components/Skeleton/RemoveMemberSkeleton";
-import { Edit, X } from "lucide-react-native";
+import { Edit } from "lucide-react-native";
 import { styles } from "./styles";
 import { AuthContext } from "@/context/AuthContext";
 import { IMember } from "@/types/Member";
@@ -19,7 +19,7 @@ export function ModalChangePasswordMember({ visible, onClose }: Props) {
   const [members, setMembers] = useState<IMember[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedMember, setSelectedMember] = useState<IMember | null>(null);
-  const { listMembers, removeMember } = useContext(AuthContext);
+  const { listMembers } = useContext(AuthContext);
   const [openChangePassword, setOpenChangePassword] = useState(false);
 
   useEffect(() => {

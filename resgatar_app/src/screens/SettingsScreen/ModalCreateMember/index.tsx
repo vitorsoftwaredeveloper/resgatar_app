@@ -149,8 +149,6 @@ export const ModalCreateMember = ({
         setFieldValue,
         handleSubmit,
         isSubmitting,
-        isValid,
-        dirty,
       }) => (
         <ModalBase
           visible={createMemberModal}

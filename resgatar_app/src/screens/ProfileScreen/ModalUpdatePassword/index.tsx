@@ -95,7 +95,6 @@ export const ModalUpdatePassword = ({
           errors,
           touched,
           isSubmitting,
-          isValid,
         }) => (
           <View style={styles.overlay}>
             <View style={styles.container}>
@@ -150,7 +149,7 @@ export const ModalUpdatePassword = ({
                   title="Salvar"
                   onPress={handleSubmit as any}
                   loading={isSubmitting}
-                  disabled={!isValid || isSubmitting}
+                  disabled={isSubmitting}
                 />
               </View>
             </View>
