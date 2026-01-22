@@ -1,8 +1,9 @@
-import { COLORS } from "@/theme";
+import { COLORS, SPACING } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
+    marginTop: SPACING.xs,
     backgroundColor: COLORS.muted,
     borderRadius: 16,
     padding: 20,

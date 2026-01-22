@@ -91,7 +91,7 @@ export const LoginScreen = () => {
           onPress={handleLogin}
           styleCustom={styles.submitButton}
           leftIcon={<LogIn size={20} color="#FFF" />}
-          loadingEffect={loading}
+          loading={loading}
         />
       </View>
     </View>

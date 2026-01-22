@@ -41,5 +41,6 @@ export const styles = StyleSheet.create({
   containerInput: {
     height: 180,
     marginBottom: 12,
+    gap: 24,
   },
 });

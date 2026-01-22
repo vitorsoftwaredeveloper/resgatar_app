@@ -8,7 +8,7 @@ import { Header } from "@/components/Header";
 import { ChargeContext } from "@/context/ChargeContext";
 import { AuthContext } from "@/context/AuthContext";
 import { TRANSACTION_STATUS } from "@/types/Charge";
-import { formatUTCToDateBR } from "@/utils/helper";
+import { formatDateFromTimestamp } from "@/utils/helper";
 import { shareComprovantePDF } from "@/utils/generatePixReceipt";
 import { ToastMessage } from "@/components/Toast";
 
@@ -52,12 +52,12 @@ export const BillsScreen = () => {
         ([month, { paid, value, paidAt }], index) => ({
           id: `${index}`,
           month: MONTH[month],
-          paidAt: `${formatUTCToDateBR(new Date(paidAt).getTime())}`,
+          paidAt: `${formatDateFromTimestamp(new Date(paidAt).getTime())}`,
           value: paid
             ? `R$ ${value}`.replace(".", ",")
             : `R$ ${member?.paymentInfo.amount}`.replace(".", ","),
           description: paid
-            ? `Pago em ${formatUTCToDateBR(new Date(paidAt).getTime())}`
+            ? `Pago em ${formatDateFromTimestamp(new Date(paidAt).getTime())}`
             : "Pagamento a ser realizado",
           status: paid
             ? TRANSACTION_STATUS.APPROVED
@@ -69,7 +69,7 @@ export const BillsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header name={member?.firstName as string} />
+      <Header name={member?.firstName + " " + member?.lastName} />
 
       <FlatList
         contentContainerStyle={styles.list}

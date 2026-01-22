@@ -39,32 +39,6 @@ const notificationConfig = {
   },
 };
 
-const getTagLabel = (type: string) => {
-  switch (type) {
-    case "info":
-      return "Comunicado";
-    case "alert":
-      return "Urgente";
-    case "warning":
-      return "Aviso";
-    default:
-      return "Comunicado";
-  }
-};
-
-const getTagIcon = (type: string) => {
-  switch (type) {
-    case "info":
-      return "megaphone-outline";
-    case "alert":
-      return "alert-circle-outline";
-    case "warning":
-      return "warning-outline";
-    default:
-      return "megaphone-outline";
-  }
-};
-
 export const NotificationCard = ({
   notification,
   expanded,

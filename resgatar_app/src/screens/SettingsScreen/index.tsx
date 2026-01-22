@@ -28,7 +28,7 @@ export const SettingsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header name={member?.firstName as string} />
+      <Header name={member?.firstName + " " + member?.lastName} />
 
       <View style={styles.content}>
         <View style={styles.menuCard}>

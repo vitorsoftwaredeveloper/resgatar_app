@@ -1,12 +1,5 @@
 import React, { useContext, useState } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import {
-  formatCEP,
-  formatCNPJCPF,
-  formatCurrencyBRL,
-  formatPhoneNumber,
-} from "@/utils/helper";
-import { BirthdayPicker } from "@/components/DatePicker";
 import { styles } from "./styles";
 import { Input } from "@/components/Input";
 import { AuthContext } from "@/context/AuthContext";
@@ -18,292 +11,386 @@ import { COLORS } from "@/theme";
 import { Button } from "@/components/Button";
 import { ToastMessage } from "@/components/Toast";
 import { ModalBase } from "@/components/ModalBase";
+import {
+  maskCEP,
+  maskCPFOrCNPJ,
+  maskCurrencyBRL,
+  maskDateBR,
+  maskPhoneBR,
+  onlyNumbers,
+} from "@/utils/mask";
+import { parseDateBRToTimestamp } from "@/utils/helper";
+import { Formik } from "formik";
+import * as Yup from "yup";
 
 interface IModalEditProfile {
   createMemberModal: boolean;
   onClose: () => void;
 }
 
+const createMemberSchema = Yup.object().shape({
+  email: Yup.string().email("Email inválido").required("Email obrigatório"),
+  firstName: Yup.string().required("Nome obrigatório"),
+  lastName: Yup.string().required("Sobrenome obrigatório"),
+  phoneNumber: Yup.string()
+    .test(
+      "phone",
+      "Telefone inválido",
+      (v) => onlyNumbers(v || "").length >= 10,
+    )
+    .required("Telefone obrigatório"),
+
+  zip: Yup.string().test(
+    "cep",
+    "CEP inválido",
+    (v) => onlyNumbers(v || "").length === 8,
+  ),
+
+  state: Yup.string().length(2, "UF inválida"),
+  city: Yup.string(),
+  street: Yup.string(),
+  number: Yup.string(),
+
+  dateOfBirth: Yup.string()
+    .matches(/^\d{2}\/\d{2}\/\d{4}$/, "Data inválida")
+    .required("Data de nascimento obrigatória"),
+
+  datePayment: Yup.string().required("Selecione o dia"),
+
+  amount: Yup.string()
+    .test(
+      "amount",
+      "Valor deve ser maior que zero",
+      (v) => Number(onlyNumbers(v || "")) > 0,
+    )
+    .required("Valor obrigatório"),
+
+  type: Yup.string().oneOf(["CPF", "CNPJ"]).required(),
+
+  numberType: Yup.string()
+    .test("doc", "Documento inválido", (value, ctx) => {
+      const type = ctx.parent.type;
+      const digits = onlyNumbers(value || "");
+      return type === "CPF" ? digits.length === 11 : digits.length === 14;
+    })
+    .required("Documento obrigatório"),
+
+  password: Yup.string()
+    .required("Senha é obrigatória")
+    .min(8, "A senha deve ter no mínimo 8 caracteres")
+    .matches(/^(?=.*[a-z])/, "Deve conter letra minúscula")
+    .matches(/^(?=.*[A-Z])/, "Deve conter letra maiúscula")
+    .matches(/^(?=.*\d)/, "Deve conter número")
+    .matches(/^(?=.*[@$!%*?&#])/, "Deve conter caractere especial @$!%*?&#"),
+
+  confirmPassword: Yup.string()
+    .required("Confirmação de senha é obrigatória")
+    .oneOf([Yup.ref("password")], "As senhas não conferem"),
+});
+
 export const ModalCreateMember = ({
   createMemberModal,
   onClose,
 }: IModalEditProfile) => {
   const { createMember } = useContext(AuthContext);
-
-  const [memberData, setMemberData] = useState<
-    IMemberState & { password: string }
-  >({
-    amount: "0",
-    bio: "",
-    city: "",
-    complement: "",
-    dateOfBirth: 0,
-    datePayment: "",
-    email: "",
-    firstName: "",
-    lastName: "",
-    number: "",
-    numberType: "",
-    phoneNumber: "",
-    state: "",
-    street: "",
-    type: "CPF",
-    zip: "",
-    password: "",
-  });
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleMemberDataChange = (field: string, value: string | number) => {
-    setMemberData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  const initialValues = {
+    email: "",
+    phoneNumber: "",
+    firstName: "",
+    lastName: "",
+    bio: "",
+    dateOfBirth: "",
+    street: "",
+    number: "",
+    city: "",
+    state: "",
+    zip: "",
+    complement: "",
+    datePayment: "1",
+    amount: "R$ 0,00",
+    type: "CPF",
+    numberType: "",
+    password: "",
+    confirmPassword: "",
   };
 
-  const handleSaveProfile = async () => {
-    await createMember(memberData)
-      .then(() => {
-        ToastMessage.success("Sucesso", "Usuário criado com sucesso!");
-        setTimeout(() => {
-          onClose();
-        }, 2000);
-      })
-      .catch(() => {
-        ToastMessage.error("Erro", "Falha ao criar novo membro.");
-      });
+  const handleSubmitForm = async (values: typeof initialValues) => {
+    const payload: IMemberState & { password: string } = {
+      ...values,
+      type: values.type as "CPF" | "CNPJ",
+      phoneNumber: onlyNumbers(values.phoneNumber),
+      zip: onlyNumbers(values.zip),
+      numberType: onlyNumbers(values.numberType),
+      dateOfBirth: parseDateBRToTimestamp(values.dateOfBirth),
+    };
+
+    try {
+      await createMember(payload);
+      ToastMessage.success("Sucesso", "Usuário criado com sucesso!");
+      setTimeout(onClose, 2000);
+    } catch {
+      ToastMessage.error("Erro", "Falha ao criar novo membro.");
+    }
   };
 
   return (
-    <ModalBase
-      onClose={onClose}
-      visible={createMemberModal}
-      title="Novo membro"
+    <Formik
+      initialValues={initialValues}
+      validationSchema={createMemberSchema}
+      onSubmit={handleSubmitForm}
     >
-      <View style={styles.overlay}>
-        <View style={styles.container}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {/* DADOS PESSOAIS */}
-            <Card title="Dados pessoais">
-              <Input
-                label="Email"
-                value={memberData.email}
-                onChangeText={(v: string) => handleMemberDataChange("email", v)}
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
+      {({
+        values,
+        errors,
+        touched,
+        handleChange,
+        setFieldValue,
+        handleSubmit,
+        isSubmitting,
+      }) => (
+        <ModalBase
+          visible={createMemberModal}
+          onClose={onClose}
+          title="Novo membro"
+        >
+          <View style={styles.overlay}>
+            <View style={styles.container}>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                {/* DADOS PESSOAIS */}
+                <Card title="Dados pessoais">
+                  <Input
+                    label="Email"
+                    value={values.email}
+                    onChangeText={handleChange("email")}
+                    error={touched.email && errors.email}
+                    autoCapitalize="none"
+                  />
 
-              <Input
-                label="Password"
-                value={memberData.password}
-                onChangeText={(v: string) =>
-                  handleMemberDataChange("password", v)
-                }
-                keyboardType="default"
-                secureTextEntry={!showPassword}
-                rightIcon={
-                  <TouchableOpacity
-                    onPress={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? (
-                      <Eye size={24} color={COLORS.muted} />
-                    ) : (
-                      <EyeOff size={24} color={COLORS.muted} />
-                    )}
-                  </TouchableOpacity>
-                }
-              />
+                  <Input
+                    label="Telefone"
+                    value={values.phoneNumber}
+                    keyboardType="numeric"
+                    onChangeText={(v) =>
+                      setFieldValue("phoneNumber", maskPhoneBR(v))
+                    }
+                    error={touched.phoneNumber && errors.phoneNumber}
+                  />
 
-              <Input
-                label="Telefone"
-                value={formatPhoneNumber(memberData.phoneNumber)}
-                onChangeText={(v: string) =>
-                  handleMemberDataChange("phoneNumber", v)
-                }
-                keyboardType="phone-pad"
-              />
+                  <Input
+                    label="Nome"
+                    value={values.firstName}
+                    onChangeText={handleChange("firstName")}
+                    error={touched.firstName && errors.firstName}
+                  />
 
-              <Input
-                label="Nome"
-                value={memberData.firstName}
-                onChangeText={(v: string) =>
-                  handleMemberDataChange("firstName", v)
-                }
-              />
+                  <Input
+                    label="Sobrenome"
+                    value={values.lastName}
+                    onChangeText={handleChange("lastName")}
+                    error={touched.lastName && errors.lastName}
+                  />
 
-              <Input
-                label="Sobrenome"
-                value={memberData.lastName}
-                onChangeText={(v: string) =>
-                  handleMemberDataChange("lastName", v)
-                }
-              />
+                  <Input
+                    label="Bio"
+                    value={values.bio}
+                    onChangeText={handleChange("bio")}
+                  />
+                </Card>
 
-              <Input
-                label="Bio"
-                value={memberData.bio}
-                onChangeText={(v: string) => handleMemberDataChange("bio", v)}
-              />
-            </Card>
+                {/* SEGURANÇA */}
+                <Card title="Segurança">
+                  <Input
+                    label="Senha"
+                    secureTextEntry={!showPassword}
+                    value={values.password}
+                    onChangeText={handleChange("password")}
+                    error={touched.password && errors.password}
+                    rightIcon={
+                      <TouchableOpacity
+                        onPress={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? (
+                          <Eye size={24} color={COLORS.muted} />
+                        ) : (
+                          <EyeOff size={24} color={COLORS.muted} />
+                        )}
+                      </TouchableOpacity>
+                    }
+                  />
 
-            {/* DATA NASCIMENTO */}
-            <Card title="Data de nascimento">
-              <BirthdayPicker
-                date={memberData.dateOfBirth}
-                handleDate={(date) =>
-                  handleMemberDataChange("dateOfBirth", date)
-                }
-              />
-            </Card>
+                  <Input
+                    label="Confirmar senha"
+                    secureTextEntry={!showPassword}
+                    value={values.confirmPassword}
+                    onChangeText={handleChange("confirmPassword")}
+                    error={touched.confirmPassword && errors.confirmPassword}
+                  />
+                </Card>
 
-            <Card title="Endereço">
-              <Input
-                label="CEP"
-                value={formatCEP(memberData.zip)}
-                onChangeText={(v: string) => handleMemberDataChange("zip", v)}
-                keyboardType="numeric"
-              />
-              <Row>
-                <Input
-                  label="Estado"
-                  value={memberData.state}
-                  onChangeText={(v: string) =>
-                    handleMemberDataChange("state", v)
-                  }
-                  maxLength={2}
-                  autoCapitalize="characters"
-                />
+                {/* DATA NASCIMENTO */}
+                <Card title="Data de nascimento">
+                  <Input
+                    label="Data de nascimento"
+                    placeholder="dd/mm/aaaa"
+                    value={values.dateOfBirth}
+                    onChangeText={(v) =>
+                      setFieldValue("dateOfBirth", maskDateBR(v))
+                    }
+                    keyboardType="numeric"
+                    error={touched.dateOfBirth && errors.dateOfBirth}
+                  />
+                </Card>
 
-                <Input
-                  label="Cidade"
-                  value={memberData.city}
-                  onChangeText={(v: string) =>
-                    handleMemberDataChange("city", v)
-                  }
-                />
-              </Row>
-              <Input
-                label="Logradouro"
-                value={memberData.street}
-                onChangeText={(v: string) =>
-                  handleMemberDataChange("street", v)
-                }
-              />
-              <Row>
-                <Input
-                  label="Número"
-                  value={memberData.number}
-                  onChangeText={(v: string) =>
-                    handleMemberDataChange("number", v)
-                  }
-                  keyboardType="numeric"
-                />
-                <Input
-                  label="Complemento"
-                  value={memberData.complement}
-                  onChangeText={(v: string) =>
-                    handleMemberDataChange("complement", v)
-                  }
-                />
-              </Row>
-            </Card>
+                {/* ENDEREÇO */}
+                <Card title="Endereço">
+                  <Input
+                    label="CEP"
+                    value={values.zip}
+                    keyboardType="numeric"
+                    onChangeText={(v) => setFieldValue("zip", maskCEP(v))}
+                    error={touched.zip && errors.zip}
+                  />
 
-            <Card title="Informações da contribuição">
-              <Text style={styles.subLabel}>Dia da contribuição</Text>
+                  <Row>
+                    <Input
+                      label="Estado"
+                      value={values.state}
+                      autoCapitalize="characters"
+                      maxLength={2}
+                      onChangeText={handleChange("state")}
+                      error={touched.state && errors.state}
+                    />
 
-              <View style={styles.daysGrid}>
-                {Array.from({ length: 10 }, (_, i) => {
-                  const day = i + 1;
-                  const selected =
-                    day === parseInt(memberData.datePayment || "1");
+                    <Input
+                      label="Cidade"
+                      value={values.city}
+                      onChangeText={handleChange("city")}
+                      error={touched.city && errors.city}
+                    />
+                  </Row>
 
-                  return (
-                    <TouchableOpacity
-                      key={day}
-                      onPress={() =>
-                        handleMemberDataChange("datePayment", day.toString())
-                      }
-                      style={[
-                        styles.dayCircle,
-                        selected && styles.dayCircleActive,
-                      ]}
-                    >
-                      <Text
+                  <Input
+                    label="Logradouro"
+                    value={values.street}
+                    onChangeText={handleChange("street")}
+                    error={touched.street && errors.street}
+                  />
+
+                  <Row>
+                    <Input
+                      label="Número"
+                      keyboardType="numeric"
+                      value={values.number}
+                      onChangeText={handleChange("number")}
+                      error={touched.number && errors.number}
+                    />
+
+                    <Input
+                      label="Complemento"
+                      value={values.complement}
+                      onChangeText={handleChange("complement")}
+                    />
+                  </Row>
+                </Card>
+
+                {/* CONTRIBUIÇÃO */}
+                <Card title="Informações da contribuição">
+                  <Text style={styles.subLabel}>
+                    Dia do mês para pagar a contribuição
+                  </Text>
+
+                  <View style={styles.daysGrid}>
+                    {Array.from({ length: 10 }, (_, i) => {
+                      const day = String(i + 1);
+                      return (
+                        <TouchableOpacity
+                          key={day}
+                          onPress={() => setFieldValue("datePayment", day)}
+                          style={[
+                            styles.dayCircle,
+                            values.datePayment === day &&
+                              styles.dayCircleActive,
+                          ]}
+                        >
+                          <Text
+                            style={[
+                              styles.dayText,
+                              values.datePayment === day &&
+                                styles.dayTextActive,
+                            ]}
+                          >
+                            {day}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+
+                  <Input
+                    label="Valor"
+                    value={values.amount}
+                    keyboardType="numeric"
+                    onChangeText={(v) =>
+                      setFieldValue("amount", maskCurrencyBRL(v))
+                    }
+                    error={touched.amount && errors.amount}
+                  />
+                </Card>
+
+                {/* IDENTIFICAÇÃO */}
+                <Card title="Identificação">
+                  <View style={styles.toggle}>
+                    {["CPF", "CNPJ"].map((type) => (
+                      <TouchableOpacity
+                        key={type}
+                        onPress={() => setFieldValue("type", type)}
                         style={[
-                          styles.dayText,
-                          selected && styles.dayTextActive,
+                          styles.toggleItem,
+                          values.type === type && styles.toggleActive,
                         ]}
                       >
-                        {day}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
+                        <Text
+                          style={
+                            values.type === type
+                              ? styles.toggleTextActive
+                              : styles.toggleText
+                          }
+                        >
+                          {type}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
 
-              <Input
-                label="Valor"
-                value={memberData.amount}
-                onChangeText={(v: string) =>
-                  handleMemberDataChange("amount", formatCurrencyBRL(v))
-                }
-                keyboardType="decimal-pad"
-              />
-            </Card>
-
-            <Card title="Identificação">
-              <View style={styles.toggle}>
-                <TouchableOpacity
-                  onPress={() => handleMemberDataChange("type", "CPF")}
-                  style={[
-                    styles.toggleItem,
-                    memberData.type === "CPF" && styles.toggleActive,
-                  ]}
-                >
-                  <Text
-                    style={
-                      memberData.type === "CPF"
-                        ? styles.toggleTextActive
-                        : styles.toggleText
+                  <Input
+                    label={values.type}
+                    value={values.numberType}
+                    keyboardType="numeric"
+                    onChangeText={(v) =>
+                      setFieldValue(
+                        "numberType",
+                        maskCPFOrCNPJ(v, values.type as "CPF" | "CNPJ"),
+                      )
                     }
-                  >
-                    CPF
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => handleMemberDataChange("type", "CNPJ")}
-                  style={[
-                    styles.toggleItem,
-                    memberData.type === "CNPJ" && styles.toggleActive,
-                  ]}
-                >
-                  <Text
-                    style={
-                      memberData.type === "CNPJ"
-                        ? styles.toggleTextActive
-                        : styles.toggleText
-                    }
-                  >
-                    CNPJ
-                  </Text>
-                </TouchableOpacity>
+                    error={touched.numberType && errors.numberType}
+                  />
+                </Card>
+              </ScrollView>
+
+              <View style={styles.footer}>
+                <Button
+                  title="Salvar"
+                  onPress={handleSubmit as any}
+                  disabled={isSubmitting}
+                  loading={isSubmitting}
+                />
               </View>
-
-              <Input
-                label={memberData.type}
-                value={formatCNPJCPF(memberData.numberType, memberData.type)}
-                onChangeText={(v: string) =>
-                  handleMemberDataChange("numberType", v)
-                }
-                keyboardType="numeric"
-              />
-            </Card>
-          </ScrollView>
-
-          <View style={styles.footer}>
-            <Button title="Salvar" onPress={handleSaveProfile} />
+            </View>
           </View>
-        </View>
-      </View>
-    </ModalBase>
+        </ModalBase>
+      )}
+    </Formik>
   );
 };
