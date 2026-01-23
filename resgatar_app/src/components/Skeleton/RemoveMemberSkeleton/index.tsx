@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { View, StyleSheet, Animated } from "react-native";
+import { View, Animated } from "react-native";
 import { styles } from "./styles";
 
 export function RemoveMemberSkeleton() {
@@ -18,9 +18,9 @@ export function RemoveMemberSkeleton() {
           duration: 800,
           useNativeDriver: true,
         }),
-      ])
+      ]),
     ).start();
-  }, []);
+  });
 
   return (
     <Animated.View style={[styles.card, { opacity }]}>

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, Text, Alert, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { AuthContext } from "@/context/AuthContext";
 import { Input } from "@/components/Input";
 import { Button } from "@/components/Button";

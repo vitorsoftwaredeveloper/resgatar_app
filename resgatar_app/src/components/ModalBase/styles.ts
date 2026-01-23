@@ -1,4 +1,4 @@
-import { COLORS, RADIUS, SPACING } from "@/theme";
+import { COLORS, SPACING } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({

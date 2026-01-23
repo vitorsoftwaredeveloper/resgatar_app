@@ -16,7 +16,7 @@ export const EmptyNotices = () => {
       duration: 400,
       easing: Easing.out(Easing.ease),
     });
-  }, []);
+  });
 
   const containerStyle = useAnimatedStyle(() => ({
     opacity: fadeIn.value,

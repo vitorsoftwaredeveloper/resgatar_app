@@ -1,3 +1,10 @@
+import { useCallback } from "react";
+import { Platform } from "react-native";
+import * as Notifications from "expo-notifications";
+
+const START_DAY = 1;
+const END_DAY = 23;
+
 function getNextDateForDay(day: number, hour = 9, minutes = 0): Date {
   const now = new Date();
   let year = now.getFullYear();
@@ -17,13 +24,6 @@ function getNextDateForDay(day: number, hour = 9, minutes = 0): Date {
 
   return target;
 }
-
-import { useCallback } from "react";
-import { Platform } from "react-native";
-import * as Notifications from "expo-notifications";
-
-const START_DAY = 1;
-const END_DAY = 23;
 
 export function useContributionNotifications() {
   const requestPermission = async (): Promise<boolean> => {

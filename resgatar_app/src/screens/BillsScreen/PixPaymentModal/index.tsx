@@ -1,15 +1,13 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { View, Text, Pressable, Animated } from "react-native";
-import { X, Copy, QrCode } from "lucide-react-native";
+import { Copy } from "lucide-react-native";
 import { styles } from "./styles";
 import { ChargeContext } from "@/context/ChargeContext";
 import QRCode from "react-native-qrcode-svg";
-import { useEffect, useRef } from "react";
-import { IconButton } from "@/components/IconButton";
 import { TRANSACTION_STATUS } from "@/types/Charge";
 import { AuthContext } from "@/context/AuthContext";
 import { ModalBase } from "@/components/ModalBase";
-// import Clipboard from "@react-native-clipboard/clipboard";
+import Clipboard from "@react-native-clipboard/clipboard";
 import { ToastMessage } from "@/components/Toast";
 
 interface PixPaymentModalProps {
@@ -26,7 +24,7 @@ export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
   const [isCopied, setIsCopied] = useState(false);
 
   const copyToClipboard = (value: string) => {
-    // Clipboard.setString(value);
+    Clipboard.setString(value);
     setTimeout(() => setIsCopied(false), 2000);
   };
 
@@ -45,7 +43,7 @@ export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
         }),
       ]),
     ).start();
-  }, []);
+  });
 
   useEffect(() => {
     if (visible) {

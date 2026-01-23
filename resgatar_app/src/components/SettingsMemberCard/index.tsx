@@ -4,7 +4,6 @@ import { User as UserIcon } from "lucide-react-native";
 import { styles } from "./styles";
 import { IMember } from "@/types/Member";
 import { COLORS } from "@/theme";
-import { Badge } from "../Badge";
 
 type Props = {
   member: IMember;

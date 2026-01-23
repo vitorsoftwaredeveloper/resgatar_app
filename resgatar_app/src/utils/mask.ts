@@ -1,5 +1,3 @@
-import { useFormikContext } from "formik";
-
 const onlyNumbers = (value = "") => value.replace(/\D/g, "");
 
 const maskPhoneBR = (value = "") => {

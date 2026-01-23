@@ -4,8 +4,9 @@
   "scripts": {
     "start": "npx expo run:android",
     "reset-project": "node ./scripts/reset-project.js",
+    "build": "npx expo prebuild --clean && npx expo run:android",
     "android": "expo run:android",
-    "ios": "expo run:ios",
+    "ios": "npx expo run:ios",
     "lint": "expo lint"
   },
   "dependencies": {

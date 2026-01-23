@@ -43,6 +43,7 @@ export function ModalSendNotification({ visible, onClose }: Props) {
   const handleSendNotification = async (values: typeof initialValues) => {
     const payload = {
       ...values,
+      _id: crypto.randomUUID(),
       createdAt: new Date().toISOString(),
       isNew: true,
     };
@@ -144,6 +145,7 @@ export function ModalSendNotification({ visible, onClose }: Props) {
                   expanded={expanded}
                   onToggle={() => setExpanded((prev) => !prev)}
                   notification={{
+                    _id: "1",
                     title: values.title,
                     type: values.type,
                     isNew: true,

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { View, FlatList } from "react-native";
 import { Dialog } from "@/components/Dialog";
 import { RemoveMemberSkeleton } from "@/components/Skeleton/RemoveMemberSkeleton";
-import { Trash2, X } from "lucide-react-native";
+import { Trash2 } from "lucide-react-native";
 import { styles } from "./styles";
 import { AuthContext } from "@/context/AuthContext";
 import { IMember } from "@/types/Member";

@@ -1,6 +1,5 @@
 import { ICharge } from "@/types/Charge";
 import { api } from "./api";
-import { IMember } from "@/types/Member";
 
 export const ChargeServices = {
   createCharge: async (value: number, month: number): Promise<ICharge> => {

@@ -1,4 +1,4 @@
-import { View, Dimensions, Pressable, Text } from "react-native";
+import { View, Pressable, Text } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withTiming,
@@ -20,7 +20,7 @@ export function TabBar({ state, navigation, isAdmin }: any) {
           state.index * (isAdmin ? TAB_WIDTH_ADMIN : TAB_WIDTH),
           {
             duration: 250,
-          }
+          },
         ),
       },
     ],
@@ -63,10 +63,10 @@ export function TabBar({ state, navigation, isAdmin }: any) {
                 {route.name === "Dashboard"
                   ? "Início"
                   : route.name === "Bills"
-                  ? "Contribuições"
-                  : route.name === "Profile"
-                  ? "Perfil"
-                  : "Configurações"}
+                    ? "Contribuições"
+                    : route.name === "Profile"
+                      ? "Perfil"
+                      : "Configurações"}
               </Text>
             </Pressable>
           );
