@@ -167,6 +167,7 @@ export const ModalEditProfile = ({
         handleChange,
         handleSubmit,
         setFieldValue,
+        validateForm,
         isSubmitting,
         dirty,
       }) => {
@@ -382,7 +383,18 @@ export const ModalEditProfile = ({
                 <View style={styles.footer}>
                   <Button
                     title="Salvar"
-                    onPress={handleSubmit as any}
+                    onPress={async () => {
+                      const formErrors = await validateForm();
+
+                      if (Object.keys(formErrors).length > 0) {
+                        ToastMessage.error(
+                          "Campos inválidos",
+                          "Campos preenchidos incorretamente.",
+                        );
+                      }
+
+                      handleSubmit();
+                    }}
                     loading={isSubmitting}
                     disabled={!dirty || isSubmitting}
                   />

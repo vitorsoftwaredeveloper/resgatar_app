@@ -91,6 +91,7 @@ export const ModalUpdatePassword = ({
           handleChange,
           handleBlur,
           handleSubmit,
+          validateForm,
           values,
           errors,
           touched,
@@ -147,7 +148,18 @@ export const ModalUpdatePassword = ({
               <View style={styles.footer}>
                 <Button
                   title="Salvar"
-                  onPress={handleSubmit as any}
+                  onPress={async () => {
+                    const formErrors = await validateForm();
+
+                    if (Object.keys(formErrors).length > 0) {
+                      ToastMessage.error(
+                        "Campos inválidos",
+                        "Campos preenchidos incorretamente.",
+                      );
+                    }
+
+                    handleSubmit();
+                  }}
                   loading={isSubmitting}
                   disabled={isSubmitting}
                 />

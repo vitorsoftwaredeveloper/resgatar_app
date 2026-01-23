@@ -70,6 +70,7 @@ export function ModalSendNotification({ visible, onClose }: Props) {
         handleChange,
         setFieldValue,
         handleSubmit,
+        validateForm,
         isSubmitting,
       }) => (
         <ModalBase
@@ -163,7 +164,18 @@ export function ModalSendNotification({ visible, onClose }: Props) {
               <Button
                 title="Enviar"
                 leftIcon={<Send color={COLORS.white} size={18} />}
-                onPress={handleSubmit as any}
+                onPress={async () => {
+                  const formErrors = await validateForm();
+
+                  if (Object.keys(formErrors).length > 0) {
+                    ToastMessage.error(
+                      "Campos inválidos",
+                      "Campos preenchidos incorretamente.",
+                    );
+                  }
+
+                  handleSubmit();
+                }}
                 loading={isSubmitting}
                 disabled={isSubmitting}
               />

@@ -59,7 +59,7 @@ export function useContributionNotifications() {
           content: {
             title: "Contribuição mensal",
             body: "Lembrete da sua contribuição 💙",
-            sound: true,
+            sound: "default",
           },
           trigger: {
             type: Notifications.SchedulableTriggerInputTypes.DATE,

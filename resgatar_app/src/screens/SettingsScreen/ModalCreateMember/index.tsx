@@ -148,6 +148,7 @@ export const ModalCreateMember = ({
         handleChange,
         setFieldValue,
         handleSubmit,
+        validateForm,
         isSubmitting,
       }) => (
         <ModalBase
@@ -382,7 +383,18 @@ export const ModalCreateMember = ({
               <View style={styles.footer}>
                 <Button
                   title="Salvar"
-                  onPress={handleSubmit as any}
+                  onPress={async () => {
+                    const formErrors = await validateForm();
+
+                    if (Object.keys(formErrors).length > 0) {
+                      ToastMessage.error(
+                        "Campos inválidos",
+                        "Campos preenchidos incorretamente.",
+                      );
+                    }
+
+                    handleSubmit();
+                  }}
                   disabled={isSubmitting}
                   loading={isSubmitting}
                 />
