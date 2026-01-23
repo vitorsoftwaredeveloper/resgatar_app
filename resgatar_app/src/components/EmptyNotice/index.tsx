@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Text, Image } from "react-native";
+import { Text } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -7,6 +7,8 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import { styles } from "./styles";
+import { Bell } from "lucide-react-native";
+import { COLORS } from "@/theme";
 
 export const EmptyNotices = () => {
   const fadeIn = useSharedValue(0);
@@ -25,11 +27,7 @@ export const EmptyNotices = () => {
 
   return (
     <Animated.View style={[styles.container, containerStyle]}>
-      <Image
-        source={require("@/assets/empty-notices.png")}
-        style={styles.image}
-        resizeMode="contain"
-      />
+      <Bell size={64} color={COLORS.primary} />
 
       <Text style={styles.title}>Nenhuma notificação no momento</Text>
       <Text style={styles.description}>
