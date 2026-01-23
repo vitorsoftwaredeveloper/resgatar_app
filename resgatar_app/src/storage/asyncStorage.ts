@@ -1,7 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const MEMBER_KEY = "@auth:member";
-const CHARGE_KEY = "@auth:charge";
 
 async function saveMember(member: any) {
   await AsyncStorage.setItem(MEMBER_KEY, JSON.stringify(member));

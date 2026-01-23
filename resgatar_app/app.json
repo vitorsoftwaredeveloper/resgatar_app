@@ -7,25 +7,22 @@
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
     "jsEngine": "hermes",
-    
     "ios": {
       "bundleIdentifier": "com.vitorsoftwaredeveloper.resgatar-app",
       "supportsTablet": true
     },
-
     "android": {
       "package": "com.vitorsoftwaredeveloper.resgatar_app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundColor": "#000000"
       },
-     "splash": {
+      "splash": {
         "backgroundColor": "#000000",
         "resizeMode": "contain",
         "image": "./assets/images/splash2.png"
       }
     },
-
     "plugins": [
       [
         "expo-splash-screen",
@@ -35,7 +32,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#000000"
         }
-      ]
+      ],
+      "expo-font"
     ]
   }
 }

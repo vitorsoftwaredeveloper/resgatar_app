@@ -1,3 +1,4 @@
+import "react-native-get-random-values";
 import "./config/amplify";
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
