@@ -1,12 +1,6 @@
 import React, { useContext, useState } from "react";
 import { View } from "react-native";
-import {
-  Lock,
-  Send,
-  UserRoundMinus,
-  UserRoundPen,
-  UserRoundPlus,
-} from "lucide-react-native";
+import { Lock, Send, UserRoundMinus, UserRoundPlus } from "lucide-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../../context/AuthContext";
 import { ModalCreateMember } from "./ModalCreateMember";

@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useRef, useState, useCallback } from "react";
 import { View, Text, FlatList } from "react-native";
 import { NotificationCard } from "@/components/NotificationCard";
 import { Header } from "@/components/Header";
@@ -9,7 +9,6 @@ import { NotificationServices } from "@/services/NotificationService";
 import { ToastMessage } from "@/components/Toast";
 import { INotification } from "@/types/Notification";
 import { useFocusEffect } from "@react-navigation/native";
-import { useCallback } from "react";
 import { AuthContext } from "@/context/AuthContext";
 import { EmptyNotices } from "@/components/EmptyNotice";
 

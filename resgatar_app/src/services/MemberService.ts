@@ -1,4 +1,3 @@
-import { updatePassword } from "aws-amplify/auth";
 import { api } from "./api";
 import { IMember, IMemberWithContribution } from "@/types/Member";
 

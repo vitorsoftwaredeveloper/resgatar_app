@@ -54,13 +54,13 @@ const profileValidationSchema = Yup.object().shape({
       );
     }),
 
-  state: Yup.string().length(2, "UF inválida").required("Estado obrigatório"),
+  state: Yup.string().length(2, "UF inválida"),
 
-  city: Yup.string().required("Cidade obrigatória"),
+  city: Yup.string(),
 
-  street: Yup.string().required("Logradouro obrigatório"),
+  street: Yup.string(),
 
-  number: Yup.string().required("Número obrigatório"),
+  number: Yup.string(),
 
   complement: Yup.string().nullable(),
 
@@ -167,6 +167,7 @@ export const ModalEditProfile = ({
         handleChange,
         handleSubmit,
         setFieldValue,
+        validateForm,
         isSubmitting,
         dirty,
       }) => {
@@ -382,7 +383,18 @@ export const ModalEditProfile = ({
                 <View style={styles.footer}>
                   <Button
                     title="Salvar"
-                    onPress={handleSubmit as any}
+                    onPress={async () => {
+                      const formErrors = await validateForm();
+
+                      if (Object.keys(formErrors).length > 0) {
+                        ToastMessage.error(
+                          "Campos inválidos",
+                          "Campos preenchidos incorretamente.",
+                        );
+                      }
+
+                      handleSubmit();
+                    }}
                     loading={isSubmitting}
                     disabled={!dirty || isSubmitting}
                   />

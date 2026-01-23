@@ -1,7 +1,5 @@
-import { X } from "lucide-react-native";
 import { styles } from "./styles";
 import { TouchableOpacity } from "react-native";
-import { COLORS } from "@/theme";
 
 interface IIconButton {
   onPress: () => void;

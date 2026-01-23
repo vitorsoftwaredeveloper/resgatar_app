@@ -43,6 +43,7 @@ export function ModalSendNotification({ visible, onClose }: Props) {
   const handleSendNotification = async (values: typeof initialValues) => {
     const payload = {
       ...values,
+      _id: crypto.randomUUID(),
       createdAt: new Date().toISOString(),
       isNew: true,
     };
@@ -69,6 +70,7 @@ export function ModalSendNotification({ visible, onClose }: Props) {
         handleChange,
         setFieldValue,
         handleSubmit,
+        validateForm,
         isSubmitting,
       }) => (
         <ModalBase
@@ -144,6 +146,7 @@ export function ModalSendNotification({ visible, onClose }: Props) {
                   expanded={expanded}
                   onToggle={() => setExpanded((prev) => !prev)}
                   notification={{
+                    _id: "1",
                     title: values.title,
                     type: values.type,
                     isNew: true,
@@ -161,7 +164,18 @@ export function ModalSendNotification({ visible, onClose }: Props) {
               <Button
                 title="Enviar"
                 leftIcon={<Send color={COLORS.white} size={18} />}
-                onPress={handleSubmit as any}
+                onPress={async () => {
+                  const formErrors = await validateForm();
+
+                  if (Object.keys(formErrors).length > 0) {
+                    ToastMessage.error(
+                      "Campos inválidos",
+                      "Campos preenchidos incorretamente.",
+                    );
+                  }
+
+                  handleSubmit();
+                }}
                 loading={isSubmitting}
                 disabled={isSubmitting}
               />
