@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "jsEngine": "hermes",
     "ios": {
-      "bundleIdentifier": "com.vitorsoftwaredeveloper.resgatar-app",
+      "bundleIdentifier": "com.vitorsoftwaredeveloper.resgatar.app",
       "supportsTablet": true
     },
     "android": {
@@ -16,14 +16,10 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundColor": "#000000"
-      },
-      "splash": {
-        "backgroundColor": "#000000",
-        "resizeMode": "contain",
-        "image": "./assets/images/splash2.png"
       }
     },
     "plugins": [
+      "expo-dev-client",
       [
         "expo-splash-screen",
         {
