@@ -23,22 +23,22 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 16,
+    marginBottom: SPACING.md,
   },
 
   avisosTitle: {
-    fontSize: 20,
+    fontSize: TYPOGRAPHY.title,
     fontWeight: "700",
-    color: "#3E2C1C",
+    color: COLORS.textStrong,
   },
 
   badge: {
-    backgroundColor: "#EFE6DF",
-    color: "#6B4E3D",
-    paddingHorizontal: 12,
+    backgroundColor: COLORS.softBrown,
+    color: COLORS.primary,
+    paddingHorizontal: SPACING.sm2,
     paddingVertical: 4,
-    borderRadius: 12,
-    fontSize: 13,
+    borderRadius: SPACING.sm2,
+    fontSize: TYPOGRAPHY.small,
     fontWeight: "600",
   },
 });

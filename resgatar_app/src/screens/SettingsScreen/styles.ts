@@ -1,29 +1,18 @@
+import { COLORS, RADIUS, SHADOW, SPACING } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F7F3EF",
+    backgroundColor: COLORS.background,
   },
   content: {
-    padding: 20,
+    padding: SPACING.lg,
   },
   menuCard: {
-    backgroundColor: "#FFF",
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 3,
-  },
-  logout: {
-    marginTop: 32,
-    alignItems: "center",
-  },
-  logoutText: {
-    color: "#D64545",
-    fontSize: 16,
-    fontWeight: "600",
+    backgroundColor: COLORS.white,
+    borderRadius: RADIUS.md,
+    paddingHorizontal: SPACING.md,
+    ...SHADOW.card,
   },
 });

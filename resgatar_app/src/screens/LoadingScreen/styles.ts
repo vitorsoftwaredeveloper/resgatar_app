@@ -1,4 +1,4 @@
-import { COLORS } from "@/theme";
+import { COLORS, SPACING } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 24,
+    paddingHorizontal: SPACING.xl,
   },
   logoContainer: {
     width: 160,
@@ -18,16 +18,8 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  logoText: {
-    fontSize: 48,
-  },
   loader: {
-    marginBottom: 16,
+    marginBottom: SPACING.md,
     position: "absolute",
-  },
-  loadingText: {
-    fontSize: 16,
-    color: "#666",
-    fontWeight: "500",
   },
 });

@@ -1,36 +1,33 @@
+import { COLORS, RADIUS, SHADOW, SPACING, TYPOGRAPHY } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFF",
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 20,
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 3,
+    backgroundColor: COLORS.white,
+    borderRadius: RADIUS.md,
+    padding: SPACING.md,
+    marginBottom: SPACING.lg,
+    ...SHADOW.card,
   },
   avatar: {
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: "#F1ECE6",
+    backgroundColor: COLORS.softBrown,
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 16,
+    marginRight: SPACING.md,
   },
-
   name: {
-    fontSize: 16,
+    fontSize: TYPOGRAPHY.subtitle,
     fontWeight: "600",
-    color: "#3E2C1C",
+    color: COLORS.textStrong,
   },
   document: {
-    fontSize: 14,
-    color: "#8C7A6B",
+    fontSize: TYPOGRAPHY.body,
+    color: COLORS.textMuted,
     marginTop: 4,
   },
 });

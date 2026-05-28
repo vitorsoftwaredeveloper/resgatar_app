@@ -1,29 +1,24 @@
-import React, { useEffect, useRef } from "react";
-import { View, Animated } from "react-native";
+import React from "react";
+import { View } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from "react-native-reanimated";
 import { styles } from "./styles";
 
 export function RemoveMemberSkeleton() {
-  const opacity = useRef(new Animated.Value(0.4)).current;
+  const opacity = useSharedValue(0.4);
 
-  useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(opacity, {
-          toValue: 1,
-          duration: 800,
-          useNativeDriver: true,
-        }),
-        Animated.timing(opacity, {
-          toValue: 0.4,
-          duration: 800,
-          useNativeDriver: true,
-        }),
-      ]),
-    ).start();
-  });
+  opacity.value = withRepeat(withTiming(1, { duration: 800 }), -1, true);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+  }));
 
   return (
-    <Animated.View style={[styles.card, { opacity }]}>
+    <Animated.View style={[styles.card, animatedStyle]}>
       <View style={styles.left}>
         <View style={styles.avatar} />
 

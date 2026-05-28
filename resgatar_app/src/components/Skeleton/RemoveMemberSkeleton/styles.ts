@@ -1,11 +1,11 @@
-import { COLORS } from "@/theme";
+import { COLORS, RADIUS, SPACING } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   card: {
-    marginHorizontal: 16,
-    padding: 16,
-    borderRadius: 16,
+    marginHorizontal: SPACING.md,
+    padding: SPACING.md,
+    borderRadius: RADIUS.md,
     backgroundColor: COLORS.white,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -14,33 +14,33 @@ export const styles = StyleSheet.create({
   left: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: SPACING.sm2,
   },
   avatar: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#E6E0D8",
+    backgroundColor: COLORS.skeletonBg,
   },
   texts: {
-    gap: 8,
+    gap: SPACING.xxs,
   },
   lineLarge: {
     width: 120,
     height: 14,
     borderRadius: 8,
-    backgroundColor: "#E6E0D8",
+    backgroundColor: COLORS.skeletonBg,
   },
   lineSmall: {
     width: 160,
     height: 12,
     borderRadius: 8,
-    backgroundColor: "#E6E0D8",
+    backgroundColor: COLORS.skeletonBg,
   },
   action: {
     width: 44,
     height: 44,
-    borderRadius: 12,
-    backgroundColor: "#E6E0D8",
+    borderRadius: RADIUS.sm,
+    backgroundColor: COLORS.skeletonBg,
   },
 });

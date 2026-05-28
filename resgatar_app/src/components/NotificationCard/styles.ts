@@ -1,4 +1,4 @@
-import { COLORS } from "@/theme";
+import { COLORS, RADIUS, SPACING, TYPOGRAPHY } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -6,8 +6,8 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: COLORS.white,
     borderRadius: 20,
-    padding: 16,
-    marginBottom: 16,
+    padding: SPACING.md,
+    marginBottom: SPACING.md,
     borderLeftWidth: 4,
     alignItems: "flex-start",
     shadowColor: COLORS.black,
@@ -33,7 +33,7 @@ export const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 12,
+    marginRight: SPACING.sm2,
   },
   infoIcon: {
     backgroundColor: "#F0F4F8",
@@ -47,11 +47,11 @@ export const styles = StyleSheet.create({
 
   textContainer: {
     flex: 1,
-    paddingRight: 8,
+    paddingRight: SPACING.xxs,
   },
 
   header: {
-    marginBottom: 6,
+    marginBottom: SPACING.xs,
   },
   titleRow: {
     flexDirection: "row",
@@ -59,69 +59,68 @@ export const styles = StyleSheet.create({
     marginBottom: 4,
   },
   title: {
-    fontSize: 16,
+    fontSize: TYPOGRAPHY.subtitle,
     fontWeight: "700",
-    color: "#2C1810",
+    color: COLORS.textStrong,
     flex: 1,
-    marginRight: 8,
+    marginRight: SPACING.xxs,
   },
 
   newBadge: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#6B4E3D",
-    paddingHorizontal: 8,
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: SPACING.xxs,
     paddingVertical: 4,
-    borderRadius: 12,
+    borderRadius: SPACING.sm2,
     gap: 4,
   },
   newText: {
-    color: "#fff",
-    fontSize: 11,
+    color: COLORS.white,
+    fontSize: TYPOGRAPHY.xsmall,
     fontWeight: "700",
     letterSpacing: 0.3,
   },
 
   date: {
-    fontSize: 13,
-    color: "#9B8678",
+    fontSize: TYPOGRAPHY.small,
+    color: COLORS.muted,
     fontWeight: "500",
   },
 
   divider: {
     height: 1,
-    backgroundColor: "#E8DDD4",
-    marginVertical: 12,
+    backgroundColor: COLORS.softBrown,
+    marginVertical: SPACING.sm2,
   },
 
   tagContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
+    paddingHorizontal: SPACING.sm2,
+    paddingVertical: SPACING.xs,
+    borderRadius: SPACING.sm2,
     alignSelf: "flex-start",
-    marginBottom: 12,
+    marginBottom: SPACING.sm2,
   },
   tagLabel: {
-    fontSize: 13,
+    fontSize: TYPOGRAPHY.small,
     fontWeight: "600",
   },
-
   tagIcon: {
-    marginRight: 6,
+    marginRight: SPACING.xs,
   },
 
   descriptionPreview: {
-    color: "#7A6A5E",
-    fontSize: 14,
+    color: COLORS.textMuted,
+    fontSize: TYPOGRAPHY.body,
     lineHeight: 20,
     marginTop: 4,
   },
 
   descriptionFull: {
-    color: "#4A3F35",
-    fontSize: 14,
+    color: COLORS.textStrong,
+    fontSize: TYPOGRAPHY.body,
     lineHeight: 22,
   },
 
@@ -139,42 +138,42 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginTop: 12,
+    marginTop: SPACING.sm2,
   },
   footerLeft: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
+    gap: SPACING.xs,
   },
   footerDate: {
-    fontSize: 13,
-    color: "#9B8678",
+    fontSize: TYPOGRAPHY.small,
+    color: COLORS.muted,
     fontWeight: "500",
   },
 
   shareButton: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    backgroundColor: "#F3EEE9",
+    gap: SPACING.xs,
+    paddingHorizontal: SPACING.sm2,
+    paddingVertical: SPACING.xs,
+    borderRadius: SPACING.md,
+    backgroundColor: COLORS.softBrown,
   },
   shareText: {
-    fontSize: 13,
+    fontSize: TYPOGRAPHY.small,
     fontWeight: "600",
-    color: "#6B4E3D",
+    color: COLORS.primary,
   },
 
   toggleButton: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "#F3EEE9",
+    backgroundColor: COLORS.softBrown,
     alignItems: "center",
     justifyContent: "center",
-    marginLeft: 8,
+    marginLeft: SPACING.xxs,
     marginTop: 4,
   },
 });

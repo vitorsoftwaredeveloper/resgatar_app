@@ -43,7 +43,7 @@ export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
         }),
       ]),
     ).start();
-  });
+  }, []);
 
   useEffect(() => {
     if (visible) {

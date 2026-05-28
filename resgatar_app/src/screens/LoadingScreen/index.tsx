@@ -5,8 +5,7 @@ import { styles } from "./styles";
 import { LogoResgatar } from "@/components/Svg/Logo";
 import { COLORS } from "@/theme";
 
-interface ILoadingProps {}
-export const LoadingScreen = ({}: ILoadingProps) => {
+export const LoadingScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>

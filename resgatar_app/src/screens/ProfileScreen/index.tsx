@@ -46,35 +46,6 @@ export const ProfileScreen = () => {
             icon={<Lock color={COLORS.primary} />}
             isLast
           />
-
-          {/* <ItemActionList
-            title="Minhas notificações"
-            description="Acompanhe suas notificações"
-            onPress={() => {}}
-            icon={<Bell />}
-          />
-
-          <ItemActionList
-            title="Meus compromissos"
-            description="Compromissos e pendências"
-            onPress={() => {}}
-            icon={<ClipboardList />}
-          />
-
-          <ItemActionList
-            title="Política de Privacidade"
-            description="Veja nossa política de privacidade"
-            onPress={() => {}}
-            icon={<Lock />}
-          />
-
-          <ItemActionList
-            title="Sobre"
-            description="Sobre a Comunidade Resgatar"
-            onPress={() => {}}
-            icon={<Church />}
-            isLast
-          /> */}
         </View>
 
         <TouchableOpacity
