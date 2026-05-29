@@ -4,7 +4,12 @@ import { normalizeText } from "@/utils/helper";
 
 const LITURGY_BASE = "https://liturgia.up.railway.app";
 
-function normalizeLiturgy(data: ILiturgia): ILiturgia {
+function first<T>(value: T | T[]): T | undefined {
+  if (Array.isArray(value)) return value.length > 0 ? value[0] : undefined;
+  return value;
+}
+
+function normalizeLiturgy(raw: any): ILiturgia {
   const normalizeReading = (r: any) =>
     r
       ? {
@@ -12,28 +17,29 @@ function normalizeLiturgy(data: ILiturgia): ILiturgia {
           texto: normalizeText(r.texto ?? ""),
           titulo: normalizeText(r.titulo ?? ""),
         }
-      : r;
+      : undefined;
+
+  const salmo = first(raw.leituras?.salmo);
 
   return {
-    ...data,
+    ...raw,
     leituras: {
-      ...data.leituras,
-      primeiraLeitura: normalizeReading(data.leituras.primeiraLeitura),
-      salmo: data.leituras.salmo
+      primeiraLeitura: normalizeReading(first(raw.leituras?.primeiraLeitura)),
+      salmo: salmo
         ? {
-            ...data.leituras.salmo,
-            texto: normalizeText(data.leituras.salmo.texto ?? ""),
-            refrao: normalizeText(data.leituras.salmo.refrao ?? ""),
+            ...salmo,
+            texto: normalizeText(salmo.texto ?? ""),
+            refrao: normalizeText(salmo.refrao ?? ""),
           }
-        : data.leituras.salmo,
-      segundaLeitura: normalizeReading(data.leituras.segundaLeitura),
-      evangelho: normalizeReading(data.leituras.evangelho),
+        : undefined,
+      segundaLeitura: normalizeReading(first(raw.leituras?.segundaLeitura)),
+      evangelho: normalizeReading(first(raw.leituras?.evangelho)),
     },
-    oracoes: data.oracoes
+    oracoes: raw.oracoes
       ? {
-          coleta: normalizeText(data.oracoes.coleta ?? ""),
-          oferendas: normalizeText(data.oracoes.oferendas ?? ""),
-          comunhao: normalizeText(data.oracoes.comunhao ?? ""),
+          coleta: normalizeText(raw.oracoes.coleta ?? ""),
+          oferendas: normalizeText(raw.oracoes.oferendas ?? ""),
+          comunhao: normalizeText(raw.oracoes.comunhao ?? ""),
         }
       : undefined,
   };
@@ -41,8 +47,7 @@ function normalizeLiturgy(data: ILiturgia): ILiturgia {
 
 export const LiturgyService = {
   async getToday(): Promise<ILiturgia> {
-    const { data } = await axios.get<ILiturgia>(`${LITURGY_BASE}/v2/`);
-    console.log("Raw liturgy data:", JSON.stringify(data));
+    const { data } = await axios.get(`${LITURGY_BASE}/v2/`);
     return normalizeLiturgy(data);
   },
 };

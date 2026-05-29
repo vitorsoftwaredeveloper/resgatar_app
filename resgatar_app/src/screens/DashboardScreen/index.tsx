@@ -25,7 +25,6 @@ export function DashboardScreen() {
     setError(false);
     try {
       const data = await LiturgyService.getToday();
-      // console.log("Liturgy data:", { data });
       setLiturgy(data);
     } catch {
       setError(true);
@@ -34,15 +33,9 @@ export function DashboardScreen() {
     }
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchLiturgy();
-    }, []),
-  );
+  useFocusEffect(useCallback(() => { fetchLiturgy(); }, []));
 
-  const accent = liturgy
-    ? (LITURGICAL_ACCENT[liturgy.cor] ?? COLORS.primary)
-    : COLORS.primary;
+  const accent = liturgy ? LITURGICAL_ACCENT[liturgy.cor] ?? COLORS.primary : COLORS.primary;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -73,10 +66,6 @@ export function DashboardScreen() {
               data={liturgy.data}
               cor={liturgy.cor}
             />
-            {console.log(
-              "Rendering liturgy:",
-              liturgy.leituras.primeiraLeitura,
-            )}
 
             <ReadingCard
               label="PRIMEIRA LEITURA"
