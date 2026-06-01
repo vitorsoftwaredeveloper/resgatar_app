@@ -24,7 +24,7 @@ export const App = () => {
 
   useEffect(() => {
     scheduleMonthlyContributionNotifications(9, 0);
-  });
+  }, []);
 
   return (
     <AuthProvider>

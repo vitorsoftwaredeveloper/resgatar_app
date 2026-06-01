@@ -50,4 +50,35 @@ function parseDateBRToTimestamp(date: string): number {
   return new Date(year, month - 1, day).getTime();
 }
 
-export { timeAgo, formatDateFromTimestamp, parseDateBRToTimestamp };
+function normalizeText(text: string): string {
+  return text
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, '"')
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+function formatLiturgicalDate(dataBR: string): string {
+  const [day, month, year] = dataBR.split("/").map(Number);
+  const date = new Date(year, month - 1, day);
+  const formatted = date.toLocaleDateString("pt-BR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+}
+
+export {
+  timeAgo,
+  formatDateFromTimestamp,
+  parseDateBRToTimestamp,
+  normalizeText,
+  formatLiturgicalDate,
+};

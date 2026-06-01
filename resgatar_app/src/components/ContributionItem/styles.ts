@@ -1,16 +1,13 @@
-import { COLORS } from "@/theme";
+import { COLORS, RADIUS, SHADOW, SPACING, TYPOGRAPHY } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#FFF",
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 3,
+    backgroundColor: COLORS.white,
+    borderRadius: RADIUS.md,
+    padding: SPACING.md,
+    marginBottom: SPACING.md,
+    ...SHADOW.card,
   },
   row: {
     flexDirection: "row",
@@ -19,9 +16,9 @@ export const styles = StyleSheet.create({
   icon: {
     width: 48,
     height: 48,
-    borderRadius: 12,
+    borderRadius: RADIUS.sm,
     backgroundColor: COLORS.background,
-    marginRight: 12,
+    marginRight: SPACING.sm2,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -32,28 +29,28 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   month: {
-    fontSize: 16,
+    fontSize: TYPOGRAPHY.subtitle,
     fontWeight: "600",
-    color: "#3E2C1C",
+    color: COLORS.textStrong,
   },
   description: {
-    fontSize: 14,
-    color: "#8C7A6B",
+    fontSize: TYPOGRAPHY.body,
+    color: COLORS.textMuted,
     marginTop: 2,
   },
   right: {
     alignItems: "flex-end",
   },
   value: {
-    fontSize: 16,
+    fontSize: TYPOGRAPHY.subtitle,
     fontWeight: "600",
-    color: "#3E2C1C",
+    color: COLORS.textStrong,
   },
   badge: {
-    marginTop: 6,
-    paddingHorizontal: 10,
+    marginTop: SPACING.xs,
+    paddingHorizontal: SPACING.sm,
     paddingVertical: 4,
-    borderRadius: 12,
+    borderRadius: SPACING.sm2,
   },
   pending: {
     backgroundColor: COLORS.waiting,
@@ -62,7 +59,7 @@ export const styles = StyleSheet.create({
     backgroundColor: COLORS.successBackground,
   },
   badgeText: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.small,
     fontWeight: "500",
   },
   pendingText: {

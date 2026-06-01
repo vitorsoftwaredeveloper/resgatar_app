@@ -1,11 +1,11 @@
-import { COLORS } from "@/theme";
+import { COLORS, RADIUS, SPACING, TYPOGRAPHY } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   card: {
-    marginHorizontal: 16,
-    padding: 16,
-    borderRadius: 16,
+    marginHorizontal: SPACING.md,
+    padding: SPACING.md,
+    borderRadius: RADIUS.md,
     backgroundColor: COLORS.card,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
   userInfo: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: SPACING.sm2,
   },
   avatar: {
     width: 40,
@@ -26,18 +26,18 @@ export const styles = StyleSheet.create({
   },
   userName: {
     fontWeight: "600",
-    color: "#3B2F2F",
+    color: COLORS.textStrong,
     maxWidth: 230,
   },
   userEmail: {
-    fontSize: 13,
-    color: "#7A6E63",
+    fontSize: TYPOGRAPHY.small,
+    color: COLORS.textMuted,
     maxWidth: 230,
   },
   delete: {
     width: 44,
     height: 44,
-    borderRadius: 12,
+    borderRadius: RADIUS.sm,
     backgroundColor: "#F2DEDA",
     alignItems: "center",
     justifyContent: "center",
@@ -45,7 +45,7 @@ export const styles = StyleSheet.create({
   edit: {
     width: 44,
     height: 44,
-    borderRadius: 12,
+    borderRadius: RADIUS.sm,
     backgroundColor: COLORS.background,
     color: COLORS.primary,
     alignItems: "center",

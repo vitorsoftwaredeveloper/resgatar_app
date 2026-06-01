@@ -1,44 +1,46 @@
-import { COLORS, SPACING, TYPOGRAPHY } from "@/theme";
+import { COLORS, RADIUS, SPACING, TYPOGRAPHY } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-
-  content: {
-    flex: 1,
     backgroundColor: COLORS.background,
+  },
+  scroll: {
+    flex: 1,
+  },
+  content: {
     padding: SPACING.lg,
+    paddingBottom: SPACING.xxl,
   },
-
-  title: {
-    fontSize: TYPOGRAPHY.title,
+  errorContainer: {
+    alignItems: "center",
+    paddingVertical: 56,
+    gap: SPACING.sm2,
+  },
+  errorTitle: {
+    fontSize: TYPOGRAPHY.subtitle,
     fontWeight: "700",
-    color: COLORS.primary,
-    marginBottom: SPACING.lg,
+    color: COLORS.textStrong,
   },
-
-  avisosHeader: {
+  errorSubtitle: {
+    fontSize: TYPOGRAPHY.body,
+    color: COLORS.textMuted,
+    textAlign: "center",
+  },
+  retryButton: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 16,
+    gap: SPACING.xxs,
+    marginTop: SPACING.sm,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm,
+    borderRadius: RADIUS.sm,
+    backgroundColor: COLORS.softBrown,
   },
-
-  avisosTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#3E2C1C",
-  },
-
-  badge: {
-    backgroundColor: "#EFE6DF",
-    color: "#6B4E3D",
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
-    fontSize: 13,
+  retryText: {
+    fontSize: TYPOGRAPHY.body,
+    color: COLORS.primary,
     fontWeight: "600",
   },
 });

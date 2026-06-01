@@ -1,4 +1,4 @@
-import { COLORS } from "@/theme";
+import { COLORS, RADIUS, SPACING, TYPOGRAPHY } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -9,12 +9,12 @@ export const styles = StyleSheet.create({
 
   amountContainer: {
     alignItems: "center",
-    marginBottom: 24,
+    marginBottom: SPACING.xl,
   },
 
   amountLabel: {
-    fontSize: 14,
-    color: "#8C7A6B",
+    fontSize: TYPOGRAPHY.body,
+    color: COLORS.textMuted,
     marginBottom: 4,
   },
 
@@ -26,39 +26,39 @@ export const styles = StyleSheet.create({
 
   qrContainer: {
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: SPACING.md,
   },
 
   qrBox: {
-    padding: 20,
-    borderRadius: 24,
+    padding: SPACING.lg,
+    borderRadius: RADIUS.lg,
     borderWidth: 2,
     borderStyle: "dashed",
-    borderColor: "#DDD2C7",
-    backgroundColor: "#fff",
+    borderColor: COLORS.border,
+    backgroundColor: COLORS.white,
   },
 
   helperText: {
     textAlign: "center",
-    fontSize: 14,
-    color: "#8C7A6B",
-    marginBottom: 16,
+    fontSize: TYPOGRAPHY.body,
+    color: COLORS.textMuted,
+    marginBottom: SPACING.md,
   },
 
   pixCodeContainer: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: COLORS.border,
-    borderRadius: 16,
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    marginBottom: 16,
+    borderRadius: SPACING.md,
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.md,
+    marginBottom: SPACING.md,
     marginHorizontal: 48,
   },
 
   pixCode: {
     flex: 1,
-    fontSize: 14,
+    fontSize: TYPOGRAPHY.body,
     color: COLORS.text,
   },
 
@@ -69,20 +69,20 @@ export const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     justifyContent: "center",
     alignItems: "center",
-    marginLeft: 12,
+    marginLeft: SPACING.sm2,
   },
 
   infoBox: {
     backgroundColor: COLORS.muted,
-    borderRadius: 16,
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    marginBottom: 16,
+    borderRadius: SPACING.md,
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.md,
+    marginBottom: SPACING.md,
     marginHorizontal: 48,
   },
 
   infoText: {
-    fontSize: 13,
+    fontSize: TYPOGRAPHY.small,
     color: COLORS.white,
     textAlign: "center",
     lineHeight: 18,
@@ -92,14 +92,14 @@ export const styles = StyleSheet.create({
     alignSelf: "center",
     backgroundColor: COLORS.waiting,
     paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 20,
-    marginBottom: 16,
-    marginTop: 16,
+    paddingVertical: SPACING.xs,
+    borderRadius: SPACING.lg,
+    marginBottom: SPACING.md,
+    marginTop: SPACING.md,
   },
 
   badgeText: {
-    fontSize: 16,
+    fontSize: TYPOGRAPHY.subtitle,
     color: COLORS.white,
     fontWeight: "600",
   },
@@ -112,8 +112,8 @@ export const styles = StyleSheet.create({
     color: COLORS.success,
     fontWeight: "700",
     alignSelf: "center",
-    borderRadius: 20,
-    fontSize: 16,
+    borderRadius: SPACING.lg,
+    fontSize: TYPOGRAPHY.subtitle,
   },
 
   containerCopy: {
@@ -126,19 +126,19 @@ export const styles = StyleSheet.create({
     bottom: 42,
     alignItems: "center",
     width: 70,
-    marginLeft: 12,
+    marginLeft: SPACING.sm2,
   },
 
   balloon: {
     backgroundColor: COLORS.primary,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 6,
+    paddingHorizontal: SPACING.sm,
+    paddingVertical: SPACING.xs,
+    borderRadius: SPACING.xs,
   },
 
   balloonText: {
     color: COLORS.white,
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.small,
     fontWeight: "500",
   },
 
@@ -148,8 +148,8 @@ export const styles = StyleSheet.create({
     borderLeftWidth: 6,
     borderRightWidth: 6,
     borderTopWidth: 6,
-    borderLeftColor: "#00000000",
-    borderRightColor: "#00000000",
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
     borderTopColor: COLORS.primary,
   },
 });

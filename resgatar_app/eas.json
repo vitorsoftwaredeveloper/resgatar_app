@@ -8,10 +8,21 @@
       "developmentClient": true,
       "distribution": "internal"
     },
-    "preview": {
-      "distribution": "internal"
+    "hml": {
+      "distribution": "internal",
+      "environment": "preview",
+      "env": {
+        "NODE_ENV": "hml"
+      },
+      "android": {
+        "buildType": "apk"
+      }
     },
     "production": {
+      "environment": "production",
+      "env": {
+        "NODE_ENV": "production"
+      },
       "android": {
         "buildType": "app-bundle"
       },

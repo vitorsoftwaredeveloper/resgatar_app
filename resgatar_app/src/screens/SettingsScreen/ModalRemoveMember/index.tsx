@@ -1,15 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, FlatList } from "react-native";
 import { Dialog } from "@/components/Dialog";
-import { RemoveMemberSkeleton } from "@/components/Skeleton/RemoveMemberSkeleton";
 import { Trash2 } from "lucide-react-native";
-import { styles } from "./styles";
 import { AuthContext } from "@/context/AuthContext";
 import { IMember } from "@/types/Member";
 import { ToastMessage } from "@/components/Toast";
 import { COLORS } from "@/theme";
-import { SettingsMemberCard } from "@/components/SettingsMemberCard";
 import { ModalBase } from "@/components/ModalBase";
+import { MemberListWithSkeleton } from "@/components/MemberListWithSkeleton";
 
 type Props = {
   visible: boolean;
@@ -25,7 +22,6 @@ export function ModalRemoveMember({ visible, onClose }: Props) {
 
   async function loadMembers() {
     setLoading(true);
-
     try {
       await listMembers().then((response) => {
         setMembers(response as any);
@@ -64,31 +60,13 @@ export function ModalRemoveMember({ visible, onClose }: Props) {
 
   return (
     <ModalBase onClose={onClose} visible={visible} title="Remover membro">
-      <View style={styles.overlay}>
-        <View style={styles.container}>
-          <FlatList
-            data={loading ? Array.from({ length: 4 }) : members}
-            keyExtractor={(_, index) =>
-              loading ? `skeleton-${index}` : members[index]._id
-            }
-            renderItem={({ item }: any) =>
-              loading ? (
-                <RemoveMemberSkeleton />
-              ) : (
-                <SettingsMemberCard
-                  member={item}
-                  onAction={handleSelectMember}
-                  iconAction={<Trash2 size={20} color={COLORS.error} />}
-                  variant="delete"
-                />
-              )
-            }
-            contentContainerStyle={styles.listContent}
-            style={styles.list}
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
-      </View>
+      <MemberListWithSkeleton
+        members={members}
+        loading={loading}
+        onAction={handleSelectMember}
+        iconAction={<Trash2 size={20} color={COLORS.error} />}
+        variant="delete"
+      />
       <Dialog
         visible={openDialog}
         title="Confirmar remoção"

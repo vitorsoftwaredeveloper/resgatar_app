@@ -1,9 +1,9 @@
-import { COLORS } from "@/theme";
+import { COLORS, SPACING, TYPOGRAPHY } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
-    paddingVertical: 16,
+    paddingVertical: SPACING.md,
     position: "relative",
   },
   left: {
@@ -17,20 +17,20 @@ export const styles = StyleSheet.create({
     width: 40,
     height: 40,
     backgroundColor: COLORS.background,
-    borderRadius: 12,
+    borderRadius: SPACING.sm2,
   },
   center: {
     marginLeft: 56,
-    marginRight: 24,
+    marginRight: SPACING.xl,
   },
   title: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#3E2C1C",
+    color: COLORS.textStrong,
   },
   description: {
-    fontSize: 13,
-    color: "#8C7A6B",
+    fontSize: TYPOGRAPHY.small,
+    color: COLORS.textMuted,
     marginTop: 2,
   },
   arrow: {
@@ -38,12 +38,12 @@ export const styles = StyleSheet.create({
     right: 0,
     top: 22,
     fontSize: 22,
-    color: "#8C7A6B",
+    color: COLORS.textMuted,
   },
   divider: {
     height: 1,
-    backgroundColor: "#E5DDD5",
-    marginTop: 16,
+    backgroundColor: COLORS.border,
+    marginTop: SPACING.md,
     marginLeft: 56,
   },
 });
