@@ -35,12 +35,22 @@ export function ContributionItem({ data, onPay, onShare }: Props) {
         </View>
 
         <View style={styles.info}>
-          <Text style={styles.month}>{data.month}</Text>
-          <Text style={styles.description}>{data.description}</Text>
+          <Text style={styles.month} numberOfLines={1} ellipsizeMode="tail">
+            {data.month}
+          </Text>
+          <Text
+            style={styles.description}
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
+            {data.description}
+          </Text>
         </View>
 
         <View style={styles.right}>
-          <Text style={styles.value}>{data.value}</Text>
+          <Text style={styles.value} numberOfLines={1} ellipsizeMode="tail">
+            {data.value}
+          </Text>
 
           <View
             style={[styles.badge, isPending ? styles.pending : styles.paid]}

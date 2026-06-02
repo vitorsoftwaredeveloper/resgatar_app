@@ -15,9 +15,11 @@ export function Header({ name }: Props) {
         <View style={styles.logo}>
           <LogoResgatar size={100} color={COLORS.background} />
         </View>
-        <View>
+        <View style={styles.textContainer}>
           <Text style={styles.hello}>Olá,</Text>
-          <Text style={styles.name}>{name}!</Text>
+          <Text style={styles.name} numberOfLines={1} ellipsizeMode="tail">
+            {name}
+          </Text>
         </View>
       </View>
     </View>

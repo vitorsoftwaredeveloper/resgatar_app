@@ -16,12 +16,16 @@ export function ProfileHeaderCard({ member }: Props) {
         <UserIcon size={25} color={COLORS.primary} />
       </View>
 
-      <View>
-        <Text style={styles.name}>
+      <View style={styles.info}>
+        <Text style={styles.name} numberOfLines={1} ellipsizeMode="tail">
           {member.firstName} {member.lastName}
         </Text>
-        <Text style={styles.document}>{member.identification.numberType}</Text>
-        <Text style={styles.document}>{member.email}</Text>
+        <Text style={styles.document} numberOfLines={1} ellipsizeMode="tail">
+          {member.identification.numberType}
+        </Text>
+        <Text style={styles.document} numberOfLines={1} ellipsizeMode="tail">
+          {member.email}
+        </Text>
       </View>
     </View>
   );

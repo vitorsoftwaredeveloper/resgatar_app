@@ -42,9 +42,13 @@ interface IModalEditProfile {
 const profileValidationSchema = Yup.object().shape({
   email: Yup.string().email("Email inválido").required("Email obrigatório"),
 
-  firstName: Yup.string().required("Nome obrigatório"),
+  firstName: Yup.string()
+    .max(50, "Nome muito longo (máx. 50 caracteres)")
+    .required("Nome obrigatório"),
 
-  lastName: Yup.string().required("Sobrenome obrigatório"),
+  lastName: Yup.string()
+    .max(50, "Sobrenome muito longo (máx. 50 caracteres)")
+    .required("Sobrenome obrigatório"),
 
   bio: Yup.string().max(300, "Máximo de 300 caracteres"),
 
@@ -52,26 +56,36 @@ const profileValidationSchema = Yup.object().shape({
     .required("Data de nascimento obrigatória")
     .test("valid-date", "Data inválida", (value?: string) => {
       if (!value || value.length !== 10) return false;
-
       const [day, month, year] = value.split("/").map(Number);
       const date = new Date(year, month - 1, day);
-
       return (
         date.getFullYear() === year &&
         date.getMonth() === month - 1 &&
         date.getDate() === day
       );
-    }),
+    })
+    .test(
+      "not-future",
+      "Data de nascimento não pode ser no futuro",
+      (value?: string) => {
+        if (!value || value.length !== 10) return true;
+        const [day, month, year] = value.split("/").map(Number);
+        const date = new Date(year, month - 1, day);
+        return date <= new Date();
+      },
+    ),
 
   state: Yup.string().length(2, "UF inválida"),
 
-  city: Yup.string(),
+  city: Yup.string().max(80, "Cidade muito longa (máx. 80 caracteres)"),
 
-  street: Yup.string(),
+  street: Yup.string().max(100, "Endereço muito longo (máx. 100 caracteres)"),
 
-  number: Yup.string(),
+  number: Yup.string().max(10, "Número muito longo"),
 
-  complement: Yup.string().nullable(),
+  complement: Yup.string()
+    .max(50, "Complemento muito longo (máx. 50 caracteres)")
+    .nullable(),
 
   datePayment: Yup.string().required("Selecione o dia"),
 
@@ -219,7 +233,10 @@ export const ModalEditProfile = ({
             title="Meus dados"
           >
             <View style={styles.overlay}>
-              <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+              <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === "ios" ? "padding" : "padding"}
+              >
                 <View style={styles.container}>
                   <ScrollView
                     showsVerticalScrollIndicator={false}
@@ -244,6 +261,7 @@ export const ModalEditProfile = ({
                       <Input
                         label="Nome"
                         value={values.firstName}
+                        maxLength={50}
                         onChangeText={handleChange("firstName")}
                         error={touched.firstName && errors.firstName}
                       />
@@ -251,6 +269,7 @@ export const ModalEditProfile = ({
                       <Input
                         label="Sobrenome"
                         value={values.lastName}
+                        maxLength={50}
                         onChangeText={handleChange("lastName")}
                         error={touched.lastName && errors.lastName}
                       />
@@ -291,6 +310,7 @@ export const ModalEditProfile = ({
                         <Input
                           label="Cidade"
                           flex={1}
+                          maxLength={80}
                           value={values.city}
                           onChangeText={handleChange("city")}
                           error={touched.city && errors.city}
@@ -300,6 +320,7 @@ export const ModalEditProfile = ({
                       <Input
                         label="Logradouro"
                         value={values.street}
+                        maxLength={100}
                         onChangeText={handleChange("street")}
                         error={touched.street && errors.street}
                       />
@@ -309,6 +330,7 @@ export const ModalEditProfile = ({
                           label="Número"
                           keyboardType="numeric"
                           flex={1}
+                          maxLength={10}
                           value={values.number}
                           onChangeText={handleChange("number")}
                           error={touched.number && errors.number}
@@ -316,6 +338,7 @@ export const ModalEditProfile = ({
                         <Input
                           label="Complemento"
                           flex={1}
+                          maxLength={50}
                           value={values.complement}
                           onChangeText={handleChange("complement")}
                         />
