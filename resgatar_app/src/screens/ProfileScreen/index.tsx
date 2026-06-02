@@ -25,7 +25,7 @@ export const ProfileScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
       <Header name={member?.firstName + " " + member?.lastName} />
 
       <View style={styles.content}>

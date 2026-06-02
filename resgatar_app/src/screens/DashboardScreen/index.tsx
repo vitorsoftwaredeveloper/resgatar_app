@@ -38,7 +38,7 @@ export function DashboardScreen() {
   const accent = liturgy ? LITURGICAL_ACCENT[liturgy.cor] ?? COLORS.primary : COLORS.primary;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
       <Header name={`${member?.firstName} ${member?.lastName}`} />
 
       <ScrollView

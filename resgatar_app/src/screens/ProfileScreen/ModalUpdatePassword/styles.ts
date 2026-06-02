@@ -4,10 +4,9 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "#00000055",
+    backgroundColor: COLORS.background,
   },
   container: {
-    flex: 1,
     backgroundColor: COLORS.background,
   },
 

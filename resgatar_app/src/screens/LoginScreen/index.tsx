@@ -1,5 +1,11 @@
 import React, { useContext, useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  ScrollView,
+} from "react-native";
 import { AuthContext } from "@/context/AuthContext";
 import { Input } from "@/components/Input";
 import { Button } from "@/components/Button";
@@ -37,63 +43,71 @@ export const LoginScreen = () => {
   };
 
   return (
-    <View style={styles.background}>
-      <View style={styles.card}>
-        <View style={styles.logoContainer}>
-          <LogoResgatar color={COLORS.muted} size={300} />
-        </View>
+    <KeyboardAvoidingView style={styles.background} behavior="padding">
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.card}>
+          <View style={styles.logoContainer}>
+            <LogoResgatar color={COLORS.muted} size={300} />
+          </View>
 
-        <Text style={styles.title}>Comunidade Resgatar</Text>
+          <Text style={styles.title}>Comunidade Resgatar</Text>
 
-        <View style={styles.motion}>
-          <View style={styles.divider} />
-          <Text style={styles.motionText}>
-            Doar a vida por amor a santa cruz!
-          </Text>
-          <View style={styles.divider} />
-        </View>
+          <View style={styles.motion}>
+            <View style={styles.divider} />
+            <Text style={styles.motionText}>
+              Doar a vida por amor a santa cruz!
+            </Text>
+            <View style={styles.divider} />
+          </View>
 
-        <Text style={styles.subtitle}>Mc 10, 45</Text>
+          <Text style={styles.subtitle}>Mc 10, 45</Text>
 
-        <View style={styles.form}>
-          <Input
-            placeholder="Email"
-            value={credentials.email}
-            onChangeText={(v: string) =>
-              setCredentials((p) => ({ ...p, email: v }))
-            }
-            keyboardType="email-address"
-            autoCapitalize="none"
-            rightIcon={<Mail size={24} color={COLORS.muted} />}
+          <View style={styles.form}>
+            <Input
+              placeholder="Email"
+              value={credentials.email}
+              onChangeText={(v: string) =>
+                setCredentials((p) => ({ ...p, email: v }))
+              }
+              keyboardType="email-address"
+              autoCapitalize="none"
+              rightIcon={<Mail size={24} color={COLORS.muted} />}
+            />
+
+            <Input
+              placeholder="Senha"
+              value={credentials.password}
+              secureTextEntry={!showPassword}
+              onChangeText={(v: string) =>
+                setCredentials((p) => ({ ...p, password: v }))
+              }
+              rightIcon={
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <Eye size={24} color={COLORS.muted} />
+                  ) : (
+                    <EyeOff size={24} color={COLORS.muted} />
+                  )}
+                </TouchableOpacity>
+              }
+            />
+          </View>
+
+          <Button
+            title={"Entrar"}
+            onPress={handleLogin}
+            styleCustom={styles.submitButton}
+            leftIcon={<LogIn size={20} color="#FFF" />}
+            loading={loading}
           />
-
-          <Input
-            placeholder="Senha"
-            value={credentials.password}
-            secureTextEntry={!showPassword}
-            onChangeText={(v: string) =>
-              setCredentials((p) => ({ ...p, password: v }))
-            }
-            rightIcon={
-              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                {showPassword ? (
-                  <Eye size={24} color={COLORS.muted} />
-                ) : (
-                  <EyeOff size={24} color={COLORS.muted} />
-                )}
-              </TouchableOpacity>
-            }
-          />
         </View>
-
-        <Button
-          title={"Entrar"}
-          onPress={handleLogin}
-          styleCustom={styles.submitButton}
-          leftIcon={<LogIn size={20} color="#FFF" />}
-          loading={loading}
-        />
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };

@@ -5,6 +5,9 @@ export const styles = StyleSheet.create({
   background: {
     flex: 1,
     backgroundColor: COLORS.softBrown,
+  },
+  scrollContent: {
+    flexGrow: 1,
     justifyContent: "center",
     padding: 24,
   },

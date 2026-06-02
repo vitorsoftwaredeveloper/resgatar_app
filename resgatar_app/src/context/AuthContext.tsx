@@ -172,11 +172,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }
   async function reloadMemberData() {
-    setLoading(true);
     const memberData = await MemberServices.getMember();
     setMember(memberData);
     await saveMember(memberData);
-    setLoading(false);
   }
 
   async function changePassword(memberId: string, newPassword: string) {

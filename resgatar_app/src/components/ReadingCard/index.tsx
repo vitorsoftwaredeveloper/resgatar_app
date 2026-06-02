@@ -19,6 +19,21 @@ interface Props {
   defaultExpanded?: boolean;
 }
 
+function formatVerseText(text: string, baseStyle: any) {
+  const parts = text.split(/(\d+)(?=[A-Za-zÀ-ÿ])/);
+  return parts.map((part, i) =>
+    /^\d+$/.test(part) ? (
+      <Text key={i} style={styles.verseNumber}>
+        {part}{" "}
+      </Text>
+    ) : (
+      <Text key={i} style={baseStyle}>
+        {part}
+      </Text>
+    ),
+  );
+}
+
 export function ReadingCard({
   label,
   referencia,
@@ -62,30 +77,36 @@ export function ReadingCard({
 
   return (
     <Pressable
-      style={[styles.card, { borderLeftColor: accentColor }, isGospel && styles.gospelCard]}
+      style={[
+        styles.card,
+        { borderLeftColor: accentColor },
+        isGospel && styles.gospelCard,
+      ]}
       onPress={() => setExpanded((v) => !v)}
       accessibilityRole="button"
     >
-      <View style={[styles.labelBadge, { backgroundColor: accentColor + "22" }]}>
+      <View
+        style={[styles.labelBadge, { backgroundColor: accentColor + "22" }]}
+      >
         <Text style={[styles.label, { color: accentColor }]}>{label}</Text>
       </View>
 
-      {!!referencia && (
-        <Text style={styles.referencia}>{referencia}</Text>
-      )}
-      {!!titulo && (
-        <Text style={styles.titulo}>{titulo}</Text>
-      )}
+      {!!referencia && <Text style={styles.referencia}>{referencia}</Text>}
+      {!!titulo && <Text style={styles.titulo}>{titulo}</Text>}
 
       <Animated.View style={expandStyle}>
         <View onLayout={handleContentLayout}>
-          <Text style={styles.texto}>{texto}</Text>
+          <Text style={styles.texto}>
+            {formatVerseText(texto, styles.texto)}
+          </Text>
         </View>
       </Animated.View>
 
       {contentHeight === 0 && (
         <View style={styles.hiddenMeasure} onLayout={handleContentLayout}>
-          <Text style={styles.texto}>{texto}</Text>
+          <Text style={styles.texto}>
+            {formatVerseText(texto, styles.texto)}
+          </Text>
         </View>
       )}
 

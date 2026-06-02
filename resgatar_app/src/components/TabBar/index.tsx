@@ -3,6 +3,7 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Home, FileText, User, Settings } from "lucide-react-native";
 import {
   styles,
@@ -13,6 +14,7 @@ import {
 } from "./styles";
 
 export function TabBar({ state, navigation, isAdmin }: any) {
+  const { bottom } = useSafeAreaInsets();
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
       {
@@ -27,7 +29,7 @@ export function TabBar({ state, navigation, isAdmin }: any) {
   }));
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingBottom: bottom }]}>
       <Animated.View
         style={[
           styles.indicator,

@@ -1,4 +1,3 @@
-import Toast from "react-native-toast-message";
 import { styles } from "./styles";
 import { Modal, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -36,7 +35,6 @@ export const ModalBase: React.FC<IModalBase> = ({
           </View>
         )}
         {children}
-        <Toast />
       </SafeAreaView>
     </Modal>
   );

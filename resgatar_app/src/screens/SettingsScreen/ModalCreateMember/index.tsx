@@ -128,8 +128,8 @@ export const ModalCreateMember = ({
 
     try {
       await createMember(payload);
+      onClose();
       ToastMessage.success("Sucesso", "Usuário criado com sucesso!");
-      setTimeout(onClose, 2000);
     } catch {
       ToastMessage.error("Erro", "Falha ao criar novo membro.");
     }
@@ -395,7 +395,7 @@ export const ModalCreateMember = ({
 
                     handleSubmit();
                   }}
-                  disabled={isSubmitting}
+                  // disabled={isSubmitting}
                   loading={isSubmitting}
                 />
               </View>
