@@ -60,4 +60,10 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.small,
     fontWeight: "600",
   },
+  verseNumber: {
+    fontSize: TYPOGRAPHY.xsmall,
+    color: COLORS.textMuted,
+    fontWeight: "600",
+    lineHeight: 26,
+  },
 });

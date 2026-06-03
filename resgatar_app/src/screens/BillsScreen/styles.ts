@@ -8,5 +8,6 @@ export const styles = StyleSheet.create({
   },
   list: {
     padding: SPACING.lg,
+    paddingBottom: SPACING.xxl,
   },
 });

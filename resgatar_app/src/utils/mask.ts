@@ -60,6 +60,43 @@ function maskDateBR(value: string) {
   return `${day}/${month}/${year}`;
 }
 
+function validateCPF(value = ""): boolean {
+  const digits = onlyNumbers(value);
+  if (digits.length !== 11) return false;
+  if (/^(\d)\1{10}$/.test(digits)) return false;
+
+  const calc = (factor: number) => {
+    let sum = 0;
+    for (let i = 0; i < factor - 1; i++) {
+      sum += parseInt(digits[i]) * (factor - i);
+    }
+    const rem = (sum * 10) % 11;
+    return rem === 10 || rem === 11 ? 0 : rem;
+  };
+
+  return calc(10) === parseInt(digits[9]) && calc(11) === parseInt(digits[10]);
+}
+
+function validateCNPJ(value = ""): boolean {
+  const digits = onlyNumbers(value);
+  if (digits.length !== 14) return false;
+  if (/^(\d)\1{13}$/.test(digits)) return false;
+
+  const calc = (weights: number[]) => {
+    let sum = 0;
+    for (let i = 0; i < weights.length; i++) {
+      sum += parseInt(digits[i]) * weights[i];
+    }
+    const rem = sum % 11;
+    return rem < 2 ? 0 : 11 - rem;
+  };
+
+  const w1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+  const w2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+
+  return calc(w1) === parseInt(digits[12]) && calc(w2) === parseInt(digits[13]);
+}
+
 export {
   onlyNumbers,
   maskPhoneBR,
@@ -67,4 +104,6 @@ export {
   maskCPFOrCNPJ,
   maskCurrencyBRL,
   maskDateBR,
+  validateCPF,
+  validateCNPJ,
 };

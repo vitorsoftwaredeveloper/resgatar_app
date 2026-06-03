@@ -15,6 +15,10 @@ export const styles = StyleSheet.create({
   left: {
     flexDirection: "row",
     alignItems: "center",
+    flex: 1,
+  },
+  textContainer: {
+    flex: 1,
   },
   logo: {
     width: 50,
@@ -32,5 +36,6 @@ export const styles = StyleSheet.create({
     color: COLORS.background,
     fontSize: 18,
     fontWeight: "600",
+    flexShrink: 1,
   },
 });

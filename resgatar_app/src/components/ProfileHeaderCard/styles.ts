@@ -19,11 +19,16 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: SPACING.md,
+    flexShrink: 0,
+  },
+  info: {
+    flex: 1,
   },
   name: {
     fontSize: TYPOGRAPHY.subtitle,
     fontWeight: "600",
     color: COLORS.textStrong,
+    flexShrink: 1,
   },
   document: {
     fontSize: TYPOGRAPHY.body,

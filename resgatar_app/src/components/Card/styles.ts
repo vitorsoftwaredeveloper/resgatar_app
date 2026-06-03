@@ -12,6 +12,11 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     color: COLORS.text,
+    marginBottom: 4,
+  },
+  cardDescription: {
+    fontSize: 13,
+    color: COLORS.muted,
     marginBottom: 12,
   },
 });

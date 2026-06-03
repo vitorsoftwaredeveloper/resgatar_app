@@ -15,11 +15,24 @@ export function LiturgySeasonBanner({ liturgia, data, cor }: Props) {
   const bg = LITURGICAL_BG[cor];
 
   return (
-    <View style={[styles.container, { backgroundColor: bg, borderLeftColor: accent }]}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: bg, borderLeftColor: accent },
+      ]}
+    >
       <View style={[styles.dot, { backgroundColor: accent }]} />
       <View style={styles.textBlock}>
-        <Text style={[styles.season, { color: accent }]}>{liturgia}</Text>
-        <Text style={styles.date}>{formatLiturgicalDate(data)}</Text>
+        <Text
+          style={[styles.season, { color: accent }]}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
+          {liturgia}
+        </Text>
+        <Text style={styles.date} numberOfLines={1} ellipsizeMode="tail">
+          {formatLiturgicalDate(data)}
+        </Text>
       </View>
     </View>
   );

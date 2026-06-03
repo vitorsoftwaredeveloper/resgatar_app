@@ -1,5 +1,10 @@
 import React, { useContext, useState } from "react";
-import { View, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  ScrollView,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+} from "react-native";
 import { styles } from "./styles";
 import { Input } from "@/components/Input";
 import { AuthContext } from "@/context/AuthContext";
@@ -98,73 +103,78 @@ export const ModalUpdatePassword = ({
           isSubmitting,
         }) => (
           <View style={styles.overlay}>
-            <View style={styles.container}>
-              <ScrollView showsVerticalScrollIndicator={false}>
-                <Card title="Senha">
-                  <Input
-                    label="Nova senha"
-                    value={values.password}
-                    onChangeText={handleChange("password")}
-                    onBlur={handleBlur("password")}
-                    keyboardType="default"
-                    secureTextEntry={!showPassword}
-                    rightIcon={
-                      <TouchableOpacity
-                        onPress={() => setShowPassword((prev) => !prev)}
-                      >
-                        {showPassword ? (
-                          <Eye size={24} color={COLORS.muted} />
-                        ) : (
-                          <EyeOff size={24} color={COLORS.muted} />
-                        )}
-                      </TouchableOpacity>
-                    }
-                    error={touched.password && errors.password}
+            <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+              <View style={styles.container}>
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                  keyboardShouldPersistTaps="handled"
+                >
+                  <Card title="Senha">
+                    <Input
+                      label="Nova senha"
+                      value={values.password}
+                      onChangeText={handleChange("password")}
+                      onBlur={handleBlur("password")}
+                      keyboardType="default"
+                      secureTextEntry={!showPassword}
+                      rightIcon={
+                        <TouchableOpacity
+                          onPress={() => setShowPassword((prev) => !prev)}
+                        >
+                          {showPassword ? (
+                            <Eye size={24} color={COLORS.muted} />
+                          ) : (
+                            <EyeOff size={24} color={COLORS.muted} />
+                          )}
+                        </TouchableOpacity>
+                      }
+                      error={touched.password && errors.password}
+                    />
+
+                    <Input
+                      label="Confirmar senha"
+                      value={values.confirmPassword}
+                      onChangeText={handleChange("confirmPassword")}
+                      onBlur={handleBlur("confirmPassword")}
+                      keyboardType="default"
+                      secureTextEntry={!showPassword}
+                      rightIcon={
+                        <TouchableOpacity
+                          onPress={() => setShowPassword((prev) => !prev)}
+                        >
+                          {showPassword ? (
+                            <Eye size={24} color={COLORS.muted} />
+                          ) : (
+                            <EyeOff size={24} color={COLORS.muted} />
+                          )}
+                        </TouchableOpacity>
+                      }
+                      error={touched.confirmPassword && errors.confirmPassword}
+                    />
+                  </Card>
+                </ScrollView>
+
+                <View style={styles.footer}>
+                  <Button
+                    title="Salvar"
+                    onPress={async () => {
+                      const formErrors = await validateForm();
+
+                      if (Object.keys(formErrors).length > 0) {
+                        const firstError = Object.values(
+                          formErrors,
+                        )[0] as string;
+                        ToastMessage.error("Campos inválidos", firstError);
+                      }
+
+                      handleSubmit();
+                    }}
+                    loading={isSubmitting}
+                    disabled={isSubmitting}
                   />
-
-                  <Input
-                    label="Confirmar senha"
-                    value={values.confirmPassword}
-                    onChangeText={handleChange("confirmPassword")}
-                    onBlur={handleBlur("confirmPassword")}
-                    keyboardType="default"
-                    secureTextEntry={!showPassword}
-                    rightIcon={
-                      <TouchableOpacity
-                        onPress={() => setShowPassword((prev) => !prev)}
-                      >
-                        {showPassword ? (
-                          <Eye size={24} color={COLORS.muted} />
-                        ) : (
-                          <EyeOff size={24} color={COLORS.muted} />
-                        )}
-                      </TouchableOpacity>
-                    }
-                    error={touched.confirmPassword && errors.confirmPassword}
-                  />
-                </Card>
-              </ScrollView>
-
-              <View style={styles.footer}>
-                <Button
-                  title="Salvar"
-                  onPress={async () => {
-                    const formErrors = await validateForm();
-
-                    if (Object.keys(formErrors).length > 0) {
-                      ToastMessage.error(
-                        "Campos inválidos",
-                        "Campos preenchidos incorretamente.",
-                      );
-                    }
-
-                    handleSubmit();
-                  }}
-                  loading={isSubmitting}
-                  disabled={isSubmitting}
-                />
+                </View>
               </View>
-            </View>
+            </KeyboardAvoidingView>
           </View>
         )}
       </Formik>

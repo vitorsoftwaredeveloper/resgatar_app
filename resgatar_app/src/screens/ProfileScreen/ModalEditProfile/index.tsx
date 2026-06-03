@@ -1,5 +1,12 @@
-import React, { useContext } from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import React, { useContext, useRef } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { styles } from "./styles";
 import { Input } from "@/components/Input";
 import { AuthContext } from "@/context/AuthContext";
@@ -18,6 +25,8 @@ import {
   maskDateBR,
   maskPhoneBR,
   onlyNumbers,
+  validateCPF,
+  validateCNPJ,
 } from "@/utils/mask";
 import { useMaskedFieldFromFormik } from "@/hooks/useMaskedField";
 import {
@@ -33,9 +42,13 @@ interface IModalEditProfile {
 const profileValidationSchema = Yup.object().shape({
   email: Yup.string().email("Email inválido").required("Email obrigatório"),
 
-  firstName: Yup.string().required("Nome obrigatório"),
+  firstName: Yup.string()
+    .max(50, "Nome muito longo (máx. 50 caracteres)")
+    .required("Nome obrigatório"),
 
-  lastName: Yup.string().required("Sobrenome obrigatório"),
+  lastName: Yup.string()
+    .max(50, "Sobrenome muito longo (máx. 50 caracteres)")
+    .required("Sobrenome obrigatório"),
 
   bio: Yup.string().max(300, "Máximo de 300 caracteres"),
 
@@ -43,26 +56,36 @@ const profileValidationSchema = Yup.object().shape({
     .required("Data de nascimento obrigatória")
     .test("valid-date", "Data inválida", (value?: string) => {
       if (!value || value.length !== 10) return false;
-
       const [day, month, year] = value.split("/").map(Number);
       const date = new Date(year, month - 1, day);
-
       return (
         date.getFullYear() === year &&
         date.getMonth() === month - 1 &&
         date.getDate() === day
       );
-    }),
+    })
+    .test(
+      "not-future",
+      "Data de nascimento não pode ser no futuro",
+      (value?: string) => {
+        if (!value || value.length !== 10) return true;
+        const [day, month, year] = value.split("/").map(Number);
+        const date = new Date(year, month - 1, day);
+        return date <= new Date();
+      },
+    ),
 
   state: Yup.string().length(2, "UF inválida"),
 
-  city: Yup.string(),
+  city: Yup.string().max(80, "Cidade muito longa (máx. 80 caracteres)"),
 
-  street: Yup.string(),
+  street: Yup.string().max(100, "Endereço muito longo (máx. 100 caracteres)"),
 
-  number: Yup.string(),
+  number: Yup.string().max(10, "Número muito longo"),
 
-  complement: Yup.string().nullable(),
+  complement: Yup.string()
+    .max(50, "Complemento muito longo (máx. 50 caracteres)")
+    .nullable(),
 
   datePayment: Yup.string().required("Selecione o dia"),
 
@@ -87,16 +110,17 @@ const profileValidationSchema = Yup.object().shape({
   amount: Yup.string()
     .test(
       "amount",
-      "Valor deve ser maior que zero",
-      (value) => Number(onlyNumbers(value || "")) > 0,
+      "Informe um valor de contribuição válido (mínimo R$ 1,00)",
+      (value) => Number(onlyNumbers(value || "")) >= 100,
     )
     .required("Valor obrigatório"),
 
   numberType: Yup.string()
     .test("doc", "Documento inválido", (value, ctx) => {
       const type = ctx.parent.type;
-      const digits = onlyNumbers(value || "");
-      return type === "CPF" ? digits.length === 11 : digits.length === 14;
+      return type === "CPF"
+        ? validateCPF(value || "")
+        : validateCNPJ(value || "");
     })
     .required("Documento obrigatório"),
 });
@@ -106,6 +130,10 @@ export const ModalEditProfile = ({
   onClose,
 }: IModalEditProfile) => {
   const { member, updateMember } = useContext(AuthContext);
+  const savedDocValues = useRef<Record<string, string>>({
+    CPF: maskCPFOrCNPJ(member?.identification?.numberType || "", "CPF"),
+    CNPJ: "",
+  });
 
   const initialValues: IMemberState = {
     email: member?.email || "",
@@ -145,8 +173,8 @@ export const ModalEditProfile = ({
 
     try {
       await updateMember(payload);
+      onClose();
       ToastMessage.success("Sucesso", "Perfil atualizado com sucesso!");
-      setTimeout(onClose, 2000);
     } catch {
       ToastMessage.error("Erro", "Falha ao atualizar perfil.");
     } finally {
@@ -205,201 +233,224 @@ export const ModalEditProfile = ({
             title="Meus dados"
           >
             <View style={styles.overlay}>
-              <View style={styles.container}>
-                <ScrollView showsVerticalScrollIndicator={false}>
-                  <Card title="Dados pessoais">
-                    <Input
-                      label="Email"
-                      value={values.email}
-                      keyboardType="email-address"
-                      onChangeText={handleChange("email")}
-                      error={touched.email && errors.email}
-                    />
-
-                    <Input
-                      label="Telefone"
-                      keyboardType="phone-pad"
-                      {...phoneField}
-                      error={touched.phoneNumber && errors.phoneNumber}
-                    />
-
-                    <Input
-                      label="Nome"
-                      value={values.firstName}
-                      onChangeText={handleChange("firstName")}
-                      error={touched.firstName && errors.firstName}
-                    />
-
-                    <Input
-                      label="Sobrenome"
-                      value={values.lastName}
-                      onChangeText={handleChange("lastName")}
-                      error={touched.lastName && errors.lastName}
-                    />
-
-                    <Input
-                      label="Bio"
-                      value={values.bio}
-                      onChangeText={handleChange("bio")}
-                      error={touched.bio && errors.bio}
-                    />
-                  </Card>
-
-                  <Card title="Data de nascimento">
-                    <Input
-                      label="Data de nascimento"
-                      placeholder="dd/mm/aaaa"
-                      keyboardType="numeric"
-                      {...birthField}
-                      error={touched.dateOfBirth && errors.dateOfBirth}
-                    />
-                  </Card>
-
-                  <Card title="Endereço">
-                    <Input
-                      label="CEP"
-                      keyboardType="numeric"
-                      {...cepField}
-                      error={touched.zip && errors.zip}
-                    />
-
-                    <Row>
+              <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === "ios" ? "padding" : "padding"}
+              >
+                <View style={styles.container}>
+                  <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    keyboardShouldPersistTaps="handled"
+                  >
+                    <Card title="Dados pessoais">
                       <Input
-                        label="Estado"
-                        maxLength={2}
-                        flex={1}
-                        value={values.state}
-                        onChangeText={handleChange("state")}
-                        error={touched.state && errors.state}
+                        label="Email"
+                        value={values.email}
+                        keyboardType="email-address"
+                        onChangeText={handleChange("email")}
+                        error={touched.email && errors.email}
                       />
+
                       <Input
-                        label="Cidade"
-                        flex={1}
-                        value={values.city}
-                        onChangeText={handleChange("city")}
-                        error={touched.city && errors.city}
+                        label="Telefone"
+                        keyboardType="phone-pad"
+                        {...phoneField}
+                        error={touched.phoneNumber && errors.phoneNumber}
                       />
-                    </Row>
 
-                    <Input
-                      label="Logradouro"
-                      value={values.street}
-                      onChangeText={handleChange("street")}
-                      error={touched.street && errors.street}
-                    />
-
-                    <Row>
                       <Input
-                        label="Número"
+                        label="Nome"
+                        value={values.firstName}
+                        maxLength={50}
+                        onChangeText={handleChange("firstName")}
+                        error={touched.firstName && errors.firstName}
+                      />
+
+                      <Input
+                        label="Sobrenome"
+                        value={values.lastName}
+                        maxLength={50}
+                        onChangeText={handleChange("lastName")}
+                        error={touched.lastName && errors.lastName}
+                      />
+
+                      <Input
+                        label="Data de nascimento"
+                        placeholder="dd/mm/aaaa"
                         keyboardType="numeric"
-                        flex={1}
-                        value={values.number}
-                        onChangeText={handleChange("number")}
-                        error={touched.number && errors.number}
+                        {...birthField}
+                        error={touched.dateOfBirth && errors.dateOfBirth}
                       />
+
                       <Input
-                        label="Complemento"
-                        flex={1}
-                        value={values.complement}
-                        onChangeText={handleChange("complement")}
+                        label="Bio"
+                        value={values.bio}
+                        onChangeText={handleChange("bio")}
+                        error={touched.bio && errors.bio}
                       />
-                    </Row>
-                  </Card>
+                    </Card>
 
-                  <Card title="Informações da contribuição">
-                    <Text style={styles.subLabel}>Dia da contribuição</Text>
+                    <Card title="Endereço">
+                      <Input
+                        label="CEP"
+                        keyboardType="numeric"
+                        {...cepField}
+                        error={touched.zip && errors.zip}
+                      />
 
-                    <View style={styles.daysGrid}>
-                      {Array.from({ length: 10 }, (_, i) => {
-                        const day = String(i + 1);
-                        const selected = values.datePayment === day;
+                      <Row>
+                        <Input
+                          label="Estado"
+                          maxLength={2}
+                          flex={1}
+                          value={values.state}
+                          onChangeText={handleChange("state")}
+                          error={touched.state && errors.state}
+                        />
+                        <Input
+                          label="Cidade"
+                          flex={1}
+                          maxLength={80}
+                          value={values.city}
+                          onChangeText={handleChange("city")}
+                          error={touched.city && errors.city}
+                        />
+                      </Row>
 
-                        return (
+                      <Input
+                        label="Logradouro"
+                        value={values.street}
+                        maxLength={100}
+                        onChangeText={handleChange("street")}
+                        error={touched.street && errors.street}
+                      />
+
+                      <Row>
+                        <Input
+                          label="Número"
+                          keyboardType="numeric"
+                          flex={1}
+                          maxLength={10}
+                          value={values.number}
+                          onChangeText={handleChange("number")}
+                          error={touched.number && errors.number}
+                        />
+                        <Input
+                          label="Complemento"
+                          flex={1}
+                          maxLength={50}
+                          value={values.complement}
+                          onChangeText={handleChange("complement")}
+                        />
+                      </Row>
+                    </Card>
+
+                    <Card
+                      title="Contribuição"
+                      description="Dia do mês e valor mensal da sua contribuição à comunidade."
+                    >
+                      <Text style={styles.subLabel}>Dia da contribuição</Text>
+
+                      <View style={styles.daysGrid}>
+                        {Array.from({ length: 10 }, (_, i) => {
+                          const day = String(i + 1);
+                          const selected = values.datePayment === day;
+
+                          return (
+                            <TouchableOpacity
+                              key={day}
+                              onPress={() => handleChange("datePayment")(day)}
+                              style={[
+                                styles.dayCircle,
+                                selected && styles.dayCircleActive,
+                              ]}
+                            >
+                              <Text
+                                style={[
+                                  styles.dayText,
+                                  selected && styles.dayTextActive,
+                                ]}
+                              >
+                                {day}
+                              </Text>
+                            </TouchableOpacity>
+                          );
+                        })}
+                      </View>
+
+                      <Input
+                        label="Valor"
+                        keyboardType="decimal-pad"
+                        {...amountField}
+                        error={touched.amount && errors.amount}
+                      />
+                    </Card>
+
+                    <Card
+                      title="Identificação"
+                      description="Documento utilizado para emissão do comprovante PIX."
+                    >
+                      <View style={styles.toggle}>
+                        {["CPF", "CNPJ"].map((type) => (
                           <TouchableOpacity
-                            key={day}
-                            onPress={() => handleChange("datePayment")(day)}
+                            key={type}
+                            onPress={() => {
+                              savedDocValues.current[values.type] =
+                                values.numberType as string;
+                              handleChange("type")(type);
+                              setFieldValue(
+                                "numberType",
+                                savedDocValues.current[type] ?? "",
+                              );
+                            }}
                             style={[
-                              styles.dayCircle,
-                              selected && styles.dayCircleActive,
+                              styles.toggleItem,
+                              values.type === type && styles.toggleActive,
                             ]}
                           >
                             <Text
-                              style={[
-                                styles.dayText,
-                                selected && styles.dayTextActive,
-                              ]}
+                              style={
+                                values.type === type
+                                  ? styles.toggleTextActive
+                                  : styles.toggleText
+                              }
                             >
-                              {day}
+                              {type}
                             </Text>
                           </TouchableOpacity>
-                        );
-                      })}
-                    </View>
+                        ))}
+                      </View>
 
-                    <Input
-                      label="Valor"
-                      keyboardType="decimal-pad"
-                      {...amountField}
-                      error={touched.amount && errors.amount}
+                      <Input
+                        label={values.type}
+                        keyboardType="numeric"
+                        {...documentField}
+                        error={touched.numberType && errors.numberType}
+                      />
+                    </Card>
+                  </ScrollView>
+
+                  <View style={styles.footer}>
+                    <Button
+                      title="Salvar"
+                      onPress={async () => {
+                        const formErrors = await validateForm();
+
+                        if (Object.keys(formErrors).length > 0) {
+                          const firstError = Object.values(
+                            formErrors,
+                          )[0] as string;
+                          ToastMessage.error("Campos inválidos", firstError);
+                        }
+
+                        handleSubmit();
+                      }}
+                      loading={isSubmitting}
+                      disabled={!dirty || isSubmitting}
                     />
-                  </Card>
-
-                  <Card title="Identificação">
-                    <View style={styles.toggle}>
-                      {["CPF", "CNPJ"].map((type) => (
-                        <TouchableOpacity
-                          key={type}
-                          onPress={() => {
-                            handleChange("type")(type);
-                            setFieldValue("numberType", "");
-                          }}
-                          style={[
-                            styles.toggleItem,
-                            values.type === type && styles.toggleActive,
-                          ]}
-                        >
-                          <Text
-                            style={
-                              values.type === type
-                                ? styles.toggleTextActive
-                                : styles.toggleText
-                            }
-                          >
-                            {type}
-                          </Text>
-                        </TouchableOpacity>
-                      ))}
-                    </View>
-
-                    <Input
-                      label={values.type}
-                      keyboardType="numeric"
-                      {...documentField}
-                      error={touched.numberType && errors.numberType}
-                    />
-                  </Card>
-                </ScrollView>
-
-                <View style={styles.footer}>
-                  <Button
-                    title="Salvar"
-                    onPress={async () => {
-                      const formErrors = await validateForm();
-
-                      if (Object.keys(formErrors).length > 0) {
-                        ToastMessage.error(
-                          "Campos inválidos",
-                          "Campos preenchidos incorretamente.",
-                        );
-                      }
-
-                      handleSubmit();
-                    }}
-                    loading={isSubmitting}
-                    disabled={!dirty || isSubmitting}
-                  />
+                  </View>
                 </View>
-              </View>
+              </KeyboardAvoidingView>
             </View>
           </ModalBase>
         );
