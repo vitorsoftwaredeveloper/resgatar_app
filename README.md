@@ -47,21 +47,21 @@ Resgatar is a React Native application built with Expo that serves the members o
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | React Native 0.81.5 + Expo SDK 54 |
-| Language | TypeScript (strict mode) |
-| State management | React Context API |
-| Authentication | AWS Amplify v6 + Amazon Cognito |
-| HTTP client | Axios with Bearer token interceptor |
-| Animations | React Native Reanimated v4 |
-| Forms | Formik + Yup |
-| Navigation | React Navigation v7 (Bottom Tabs + Native Stack) |
-| Icons | Lucide React Native |
-| QR Code | react-native-qrcode-svg |
-| Notifications | expo-notifications |
-| Build service | EAS Build (Expo Application Services) |
-| Liturgy API | liturgia.up.railway.app |
+| Layer            | Technology                                       |
+| ---------------- | ------------------------------------------------ |
+| Framework        | React Native 0.81.5 + Expo SDK 54                |
+| Language         | TypeScript (strict mode)                         |
+| State management | React Context API                                |
+| Authentication   | AWS Amplify v6 + Amazon Cognito                  |
+| HTTP client      | Axios with Bearer token interceptor              |
+| Animations       | React Native Reanimated v4                       |
+| Forms            | Formik + Yup                                     |
+| Navigation       | React Navigation v7 (Bottom Tabs + Native Stack) |
+| Icons            | Lucide React Native                              |
+| QR Code          | react-native-qrcode-svg                          |
+| Notifications    | expo-notifications                               |
+| Build service    | EAS Build (Expo Application Services)            |
+| Liturgy API      | liturgia.up.railway.app                          |
 
 ---
 
@@ -135,9 +135,9 @@ docs/
 
 ## Screenshots
 
-| Login | Dashboard | Contributions | PIX Payment |
-|:---:|:---:|:---:|:---:|
-| ![Login](docs/screenshots/screenshot_1_login.png) | ![Dashboard](docs/screenshots/screenshot_2_dashboard.png) | ![Contributions](docs/screenshots/screenshot_3_bills.png) | ![PIX](docs/screenshots/screenshot_4_pix.png) |
+|                             Login                              |                                Dashboard                                |                              Contributions                              |                        PIX Payment                         |
+| :------------------------------------------------------------: | :---------------------------------------------------------------------: | :---------------------------------------------------------------------: | :--------------------------------------------------------: |
+| ![Login](resgatar_app/docs/screenshots/screenshot_1_login.png) | ![Dashboard](resgatar_app/docs/screenshots/screenshot_2_dashboard.jpeg) | ![Contributions](resgatar_app/docs/screenshots/screenshot_3_bills.jpeg) | ![PIX](resgatar_app/docs/screenshots/screenshot_4_pix.png) |
 
 ---
 
@@ -170,14 +170,14 @@ cp .env.example .env
 
 ## Environment Variables
 
-| Variable | Description |
-|---|---|
-| `COGNITO_USER_POOL_ID` | Amazon Cognito User Pool ID |
-| `COGNITO_USER_POOL_CLIENT_ID` | Cognito App Client ID |
-| `COGNITO_REGION` | AWS region (e.g. `us-east-1`) |
-| `API_BASE_URL` | Base URL of the backend REST API |
-| `API_BASE_URL_AUTH` | Base URL for authentication endpoints |
-| `NODE_ENV` | Runtime environment (`development` or `production`) |
+| Variable                      | Description                                         |
+| ----------------------------- | --------------------------------------------------- |
+| `COGNITO_USER_POOL_ID`        | Amazon Cognito User Pool ID                         |
+| `COGNITO_USER_POOL_CLIENT_ID` | Cognito App Client ID                               |
+| `COGNITO_REGION`              | AWS region (e.g. `us-east-1`)                       |
+| `API_BASE_URL`                | Base URL of the backend REST API                    |
+| `API_BASE_URL_AUTH`           | Base URL for authentication endpoints               |
+| `NODE_ENV`                    | Runtime environment (`development` or `production`) |
 
 For EAS builds, these variables must be registered as EAS environment variables. `NODE_ENV` is declared directly in `eas.json`. All others must be registered via the EAS CLI:
 
@@ -263,10 +263,10 @@ All visual tokens are centralized in `src/theme/index.ts`. Components must consu
 
 The dashboard dynamically adapts its accent color based on the liturgical season returned by the API:
 
-| Season | Accent color |
-|---|---|
-| Verde (Ordinary Time) | #2E7D32 |
-| Roxo (Advent / Lent) | #7B1FA2 |
-| Branco (Feasts) | #B8860B |
-| Vermelho (Passion / Martyrs) | #C62828 |
-| Rosa (Laetare / Gaudete) | #AD1457 |
+| Season                       | Accent color |
+| ---------------------------- | ------------ |
+| Verde (Ordinary Time)        | #2E7D32      |
+| Roxo (Advent / Lent)         | #7B1FA2      |
+| Branco (Feasts)              | #B8860B      |
+| Vermelho (Passion / Martyrs) | #C62828      |
+| Rosa (Laetare / Gaudete)     | #AD1457      |

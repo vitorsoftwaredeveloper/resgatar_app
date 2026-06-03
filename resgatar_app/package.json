@@ -7,7 +7,10 @@
     "build": "npx expo prebuild --clean && npx expo run:android",
     "android": "expo run:android",
     "ios": "npx expo run:ios",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "eas-profile": "eas build:version:set --platform android",
+    "eas-build": "eas build --platform android --profile production"
+
   },
   "dependencies": {
     "@aws-amplify/react-native": "^1.3.1",
