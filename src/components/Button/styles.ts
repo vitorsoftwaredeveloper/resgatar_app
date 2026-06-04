@@ -1,5 +1,5 @@
-import { StyleSheet } from "react-native";
 import { COLORS } from "@/theme";
+import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   button: {
@@ -31,7 +31,7 @@ export const styles = StyleSheet.create({
   },
 
   textOnSecondary: {
-    color: COLORS.text,
+    color: COLORS.primary,
   },
 
   disabled: {

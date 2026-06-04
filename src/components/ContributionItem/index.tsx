@@ -1,10 +1,10 @@
-import React from "react";
-import { View, Text } from "react-native";
-import { styles } from "./styles";
-import { TRANSACTION_STATUS } from "@/types/Charge";
-import { Button } from "../Button";
-import { DollarSign, FileText, Share2 } from "lucide-react-native";
 import { COLORS } from "@/theme";
+import { TRANSACTION_STATUS } from "@/types/Charge";
+import { CreditCard, Share2 } from "lucide-react-native";
+import React from "react";
+import { Text, View } from "react-native";
+import { Button } from "../Button";
+import { styles } from "./styles";
 
 interface Contribution {
   id: string;
@@ -30,10 +30,6 @@ export function ContributionItem({ data, onPay, onShare }: Props) {
   return (
     <View style={styles.card}>
       <View style={styles.row}>
-        <View style={styles.icon}>
-          <FileText size={24} color={styles.iconSvg.color} />
-        </View>
-
         <View style={styles.info}>
           <Text style={styles.month} numberOfLines={1} ellipsizeMode="tail">
             {data.month}
@@ -67,21 +63,23 @@ export function ContributionItem({ data, onPay, onShare }: Props) {
         </View>
       </View>
 
+      <View style={styles.divider} />
+
       {isPending ? (
         <Button
-          title="Pagar"
+          title="Pagar com Pix"
           onPress={async () => {
             await onPay();
           }}
           styleCustom={{ marginTop: 16 }}
-          leftIcon={<DollarSign size={20} color={COLORS.white} />}
+          leftIcon={<CreditCard size={20} color={COLORS.white} />}
         />
       ) : (
         <Button
-          title="Compartilhar"
+          title="Comprovante"
           onPress={onShare}
-          styleCustom={{ marginTop: 16 }}
-          leftIcon={<Share2 size={20} color={COLORS.text} />}
+          styleCustom={{ marginTop: 16, color: "red" }}
+          leftIcon={<Share2 size={20} color={COLORS.primary} />}
           variant="secondary"
           loading={false}
         />

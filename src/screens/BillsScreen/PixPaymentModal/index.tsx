@@ -1,14 +1,13 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
-import { View, Text, Pressable, Animated } from "react-native";
-import { Copy } from "lucide-react-native";
-import { styles } from "./styles";
-import { ChargeContext } from "@/context/ChargeContext";
-import QRCode from "react-native-qrcode-svg";
-import { TRANSACTION_STATUS } from "@/types/Charge";
-import { AuthContext } from "@/context/AuthContext";
 import { ModalBase } from "@/components/ModalBase";
+import { AuthContext } from "@/context/AuthContext";
+import { ChargeContext } from "@/context/ChargeContext";
+import { TRANSACTION_STATUS } from "@/types/Charge";
 import Clipboard from "@react-native-clipboard/clipboard";
-import { ToastMessage } from "@/components/Toast";
+import { Copy } from "lucide-react-native";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Animated, Pressable, Text, View } from "react-native";
+import QRCode from "react-native-qrcode-svg";
+import { styles } from "./styles";
 
 interface PixPaymentModalProps {
   visible: boolean;
@@ -26,6 +25,12 @@ export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
   const copyToClipboard = (value: string) => {
     Clipboard.setString(value);
     setTimeout(() => setIsCopied(false), 2000);
+  };
+
+  const handleApprove = async () => {
+    await reloadMemberData().then(() => {
+      onClose();
+    });
   };
 
   useEffect(() => {
@@ -87,11 +92,7 @@ export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
 
   useEffect(() => {
     if (charge.status === TRANSACTION_STATUS.APPROVED) {
-      ToastMessage.success("Sucesso", "Pagamento realizado com sucesso!");
-      setTimeout(() => {
-        reloadMemberData();
-        onClose();
-      }, 2500);
+      handleApprove();
     }
   }, [charge.status]);
 

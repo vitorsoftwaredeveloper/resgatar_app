@@ -1,23 +1,16 @@
-import React, { useContext, useRef } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
-import { styles } from "./styles";
-import { Input } from "@/components/Input";
-import { AuthContext } from "@/context/AuthContext";
-import { IMemberState } from "@/types/Member";
-import { Card } from "@/components/Card";
-import { Row } from "@/components/Row";
 import { Button } from "@/components/Button";
-import { ToastMessage } from "@/components/Toast";
+import { Card } from "@/components/Card";
+import { Input } from "@/components/Input";
 import { ModalBase } from "@/components/ModalBase";
-import * as Yup from "yup";
-import { Formik } from "formik";
+import { Row } from "@/components/Row";
+import { ToastMessage } from "@/components/Toast";
+import { AuthContext } from "@/context/AuthContext";
+import { useMaskedFieldFromFormik } from "@/hooks/useMaskedField";
+import { IMemberState } from "@/types/Member";
+import {
+  formatDateFromTimestamp,
+  parseDateBRToTimestamp,
+} from "@/utils/helper";
 import {
   maskCEP,
   maskCPFOrCNPJ,
@@ -25,14 +18,21 @@ import {
   maskDateBR,
   maskPhoneBR,
   onlyNumbers,
-  validateCPF,
   validateCNPJ,
+  validateCPF,
 } from "@/utils/mask";
-import { useMaskedFieldFromFormik } from "@/hooks/useMaskedField";
+import { Formik } from "formik";
+import React, { useContext, useRef } from "react";
 import {
-  formatDateFromTimestamp,
-  parseDateBRToTimestamp,
-} from "@/utils/helper";
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import * as Yup from "yup";
+import { styles } from "./styles";
 
 interface IModalEditProfile {
   editModalVisible: boolean;
@@ -171,15 +171,19 @@ export const ModalEditProfile = ({
       dateOfBirth: parseDateBRToTimestamp(values.dateOfBirth as string),
     };
 
-    try {
-      await updateMember(payload);
-      onClose();
-      ToastMessage.success("Sucesso", "Perfil atualizado com sucesso!");
-    } catch {
-      ToastMessage.error("Erro", "Falha ao atualizar perfil.");
-    } finally {
-      setSubmitting(false);
-    }
+    await updateMember(payload)
+      .then(() => {
+        ToastMessage.success("Sucesso", "Perfil atualizado com sucesso!");
+        setTimeout(() => {
+          onClose();
+        }, 1500);
+      })
+      .catch(() => {
+        ToastMessage.error("Erro", "Falha ao atualizar perfil.");
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
   };
 
   return (

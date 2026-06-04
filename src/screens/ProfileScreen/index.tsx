@@ -1,17 +1,17 @@
+import { Dialog } from "@/components/Dialog";
+import { Header } from "@/components/Header";
+import { ItemActionList } from "@/components/ItemActionList";
+import { ProfileHeaderCard } from "@/components/ProfileHeaderCard";
+import { COLORS } from "@/theme";
+import { IMember } from "@/types/Member";
+import { Lock, LogOut, User } from "lucide-react-native";
 import React, { useContext, useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { User, Lock } from "lucide-react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../../context/AuthContext";
 import { ModalEditProfile } from "./ModalEditProfile";
 import { ModalUpdatePassword } from "./ModalUpdatePassword";
-import { ItemActionList } from "@/components/ItemActionList";
-import { ProfileHeaderCard } from "@/components/ProfileHeaderCard";
 import { styles } from "./styles";
-import { Header } from "@/components/Header";
-import { Dialog } from "@/components/Dialog";
-import { IMember } from "@/types/Member";
-import { COLORS } from "@/theme";
 
 export const ProfileScreen = () => {
   const { logout, member } = useContext(AuthContext);
@@ -52,7 +52,8 @@ export const ProfileScreen = () => {
           style={styles.logout}
           onPress={() => setDialogLogoutVisible(true)}
         >
-          <Text style={styles.logoutText}>⎋ Sair</Text>
+          <LogOut color={COLORS.error} />
+          <Text style={styles.logoutText}>Sair da conta</Text>
         </TouchableOpacity>
 
         {editModalVisible && (

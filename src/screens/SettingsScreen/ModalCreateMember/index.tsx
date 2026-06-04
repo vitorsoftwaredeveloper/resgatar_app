@@ -1,16 +1,13 @@
-import React, { useContext, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import { styles } from "./styles";
-import { Input } from "@/components/Input";
-import { AuthContext } from "@/context/AuthContext";
-import { IMemberState } from "@/types/Member";
-import { Card } from "@/components/Card";
-import { Row } from "@/components/Row";
-import { Eye, EyeOff } from "lucide-react-native";
-import { COLORS } from "@/theme";
 import { Button } from "@/components/Button";
-import { ToastMessage } from "@/components/Toast";
+import { Card } from "@/components/Card";
+import { Input } from "@/components/Input";
 import { ModalBase } from "@/components/ModalBase";
+import { Row } from "@/components/Row";
+import { ToastMessage } from "@/components/Toast";
+import { AuthContext } from "@/context/AuthContext";
+import { COLORS } from "@/theme";
+import { IMemberState } from "@/types/Member";
+import { parseDateBRToTimestamp } from "@/utils/helper";
 import {
   maskCEP,
   maskCPFOrCNPJ,
@@ -19,9 +16,12 @@ import {
   maskPhoneBR,
   onlyNumbers,
 } from "@/utils/mask";
-import { parseDateBRToTimestamp } from "@/utils/helper";
 import { Formik } from "formik";
+import { Eye, EyeOff } from "lucide-react-native";
+import React, { useContext, useState } from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import * as Yup from "yup";
+import { styles } from "./styles";
 
 interface IModalEditProfile {
   createMemberModal: boolean;
@@ -126,13 +126,16 @@ export const ModalCreateMember = ({
       dateOfBirth: parseDateBRToTimestamp(values.dateOfBirth),
     };
 
-    try {
-      await createMember(payload);
-      onClose();
-      ToastMessage.success("Sucesso", "Usuário criado com sucesso!");
-    } catch {
-      ToastMessage.error("Erro", "Falha ao criar novo membro.");
-    }
+    await createMember(payload)
+      .then(() => {
+        ToastMessage.success("Sucesso", "Usuário criado com sucesso!");
+        setTimeout(() => {
+          onClose();
+        }, 1500);
+      })
+      .catch(() => {
+        ToastMessage.error("Erro", "Falha ao criar novo membro.");
+      });
   };
 
   return (

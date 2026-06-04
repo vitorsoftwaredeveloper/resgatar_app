@@ -13,18 +13,6 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  icon: {
-    width: 48,
-    height: 48,
-    borderRadius: RADIUS.sm,
-    backgroundColor: COLORS.background,
-    marginRight: SPACING.sm2,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  iconSvg: {
-    color: COLORS.primary,
-  },
   info: {
     flex: 1,
   },
@@ -67,5 +55,10 @@ export const styles = StyleSheet.create({
   },
   paidText: {
     color: COLORS.success,
+  },
+  divider: {
+    borderBottomColor: COLORS.background,
+    borderBottomWidth: 1,
+    marginVertical: SPACING.md,
   },
 });

@@ -10,8 +10,10 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    padding: SPACING.lg,
+    paddingLeft: SPACING.lg,
+    paddingRight: SPACING.lg,
     paddingBottom: SPACING.xxl,
+    paddingTop: SPACING.lg,
   },
   errorContainer: {
     alignItems: "center",

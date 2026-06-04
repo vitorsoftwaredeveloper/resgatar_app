@@ -18,6 +18,9 @@ export const styles = StyleSheet.create({
   logout: {
     marginTop: SPACING.xxl,
     alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    gap: SPACING.sm2,
   },
   logoutText: {
     color: COLORS.error,

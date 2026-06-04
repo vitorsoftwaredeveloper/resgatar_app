@@ -135,9 +135,9 @@ docs/
 
 ## Screenshots
 
-|                             Login                              |                                Dashboard                                |                              Contributions                              |                        PIX Payment                         |
-| :------------------------------------------------------------: | :---------------------------------------------------------------------: | :---------------------------------------------------------------------: | :--------------------------------------------------------: |
-| ![Login](resgatar_app/docs/screenshots/screenshot_1_login.png) | ![Dashboard](resgatar_app/docs/screenshots/screenshot_2_dashboard.jpeg) | ![Contributions](resgatar_app/docs/screenshots/screenshot_3_bills.jpeg) | ![PIX](resgatar_app/docs/screenshots/screenshot_4_pix.png) |
+|                       Login                       |                         Dashboard                          |                       Contributions                        |                  PIX Payment                  |
+| :-----------------------------------------------: | :--------------------------------------------------------: | :--------------------------------------------------------: | :-------------------------------------------: |
+| ![Login](docs/screenshots/screenshot_1_login.png) | ![Dashboard](docs/screenshots/screenshot_2_dashboard.jpeg) | ![Contributions](docs/screenshots/screenshot_3_bills.jpeg) | ![PIX](docs/screenshots/screenshot_4_pix.png) |
 
 ---
 

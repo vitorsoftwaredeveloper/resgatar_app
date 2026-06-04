@@ -1,9 +1,9 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import {
-  TouchableOpacity,
-  Text,
   ActivityIndicator,
   ButtonProps,
+  Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { styles } from "./styles";

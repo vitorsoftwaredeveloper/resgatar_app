@@ -1,12 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
 import { Dialog } from "@/components/Dialog";
-import { Trash2 } from "lucide-react-native";
-import { AuthContext } from "@/context/AuthContext";
-import { IMember } from "@/types/Member";
-import { ToastMessage } from "@/components/Toast";
-import { COLORS } from "@/theme";
-import { ModalBase } from "@/components/ModalBase";
 import { MemberListWithSkeleton } from "@/components/MemberListWithSkeleton";
+import { ModalBase } from "@/components/ModalBase";
+import { ToastMessage } from "@/components/Toast";
+import { AuthContext } from "@/context/AuthContext";
+import { COLORS } from "@/theme";
+import { IMember } from "@/types/Member";
+import { Trash2 } from "lucide-react-native";
+import React, { useContext, useEffect, useState } from "react";
 
 type Props = {
   visible: boolean;
