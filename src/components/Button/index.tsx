@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { styles } from "./styles";
+import { useStyles } from "./styles";
 
 type Props = ButtonProps & {
   title: string;
@@ -29,6 +29,7 @@ export function Button({
   loading: externalLoading,
   ...rest
 }: Props) {
+  const styles = useStyles();
   const [internalLoading, setInternalLoading] = useState(false);
 
   const isControlled = typeof externalLoading === "boolean";

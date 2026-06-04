@@ -1,9 +1,9 @@
 import React from "react";
 import { View, Text, Pressable } from "react-native";
 import { User as UserIcon } from "lucide-react-native";
-import { styles } from "./styles";
+import { useStyles } from "./styles";
+import { useAppTheme } from "@/context/ThemeContext";
 import { IMember } from "@/types/Member";
-import { COLORS } from "@/theme";
 
 type Props = {
   member: IMember;
@@ -18,11 +18,14 @@ export function SettingsMemberCard({
   iconAction,
   variant = "edit",
 }: Props) {
+  const { colors } = useAppTheme();
+  const styles = useStyles();
+
   return (
     <View style={styles.card}>
       <View style={styles.userInfo}>
         <View style={styles.avatar}>
-          <UserIcon size={20} color={COLORS.primary} />
+          <UserIcon size={20} color={colors.primary} />
         </View>
 
         <View>

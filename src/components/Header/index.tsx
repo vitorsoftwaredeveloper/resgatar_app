@@ -1,19 +1,23 @@
-import { COLORS } from "@/theme";
+import { useAppTheme } from "@/context/ThemeContext";
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
+import { Moon, Sun } from "lucide-react-native";
 import { LogoResgatar } from "../Svg/Logo";
-import { styles } from "./styles";
+import { useStyles } from "./styles";
 
 interface Props {
   name: string;
 }
 
 export function Header({ name }: Props) {
+  const { mode, toggleTheme, colors } = useAppTheme();
+  const styles = useStyles();
+
   return (
     <View style={styles.container}>
       <View style={styles.left}>
         <View style={styles.logo}>
-          <LogoResgatar size={100} color={COLORS.primary} />
+          <LogoResgatar size={100} color={colors.primary} />
         </View>
         <View style={styles.textContainer}>
           <Text style={styles.hello}>Olá,</Text>
@@ -21,6 +25,13 @@ export function Header({ name }: Props) {
             {name}
           </Text>
         </View>
+        <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
+          {mode === "dark" ? (
+            <Sun size={18} color={colors.primary} />
+          ) : (
+            <Moon size={18} color={colors.primary} />
+          )}
+        </TouchableOpacity>
       </View>
     </View>
   );

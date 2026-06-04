@@ -7,7 +7,7 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import { ChevronDown } from "lucide-react-native";
-import { styles } from "./styles";
+import { useStyles } from "./styles";
 
 interface Props {
   referencia: string;
@@ -17,6 +17,7 @@ interface Props {
 }
 
 export function PsalmCard({ referencia, refrao, texto, accentColor }: Props) {
+  const styles = useStyles();
   const [expanded, setExpanded] = useState(false);
   const [contentHeight, setContentHeight] = useState(0);
   const animatedHeight = useSharedValue(0);

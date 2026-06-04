@@ -3,7 +3,9 @@ import { View, FlatList, StyleSheet } from "react-native";
 import { RemoveMemberSkeleton } from "@/components/Skeleton/RemoveMemberSkeleton";
 import { SettingsMemberCard } from "@/components/SettingsMemberCard";
 import { IMember } from "@/types/Member";
-import { COLORS, SPACING } from "@/theme";
+import { SPACING } from "@/theme";
+import { useAppTheme } from "@/context/ThemeContext";
+import { useMemo } from "react";
 
 interface Props {
   members: IMember[];
@@ -15,6 +17,30 @@ interface Props {
 
 const SKELETON_COUNT = 4;
 
+function useStyles() {
+  const { colors } = useAppTheme();
+  return useMemo(
+    () =>
+      StyleSheet.create({
+        overlay: {
+          flex: 1,
+          backgroundColor: "#00000055",
+        },
+        container: {
+          flex: 1,
+          backgroundColor: colors.background,
+        },
+        list: {
+          marginTop: SPACING.xxs,
+        },
+        listContent: {
+          gap: SPACING.sm2,
+        },
+      }),
+    [colors],
+  );
+}
+
 export function MemberListWithSkeleton({
   members,
   loading,
@@ -22,6 +48,8 @@ export function MemberListWithSkeleton({
   iconAction,
   variant,
 }: Props) {
+  const styles = useStyles();
+
   return (
     <View style={styles.overlay}>
       <View style={styles.container}>
@@ -50,20 +78,3 @@ export function MemberListWithSkeleton({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: "#00000055",
-  },
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  list: {
-    marginTop: SPACING.xxs,
-  },
-  listContent: {
-    gap: SPACING.sm2,
-  },
-});

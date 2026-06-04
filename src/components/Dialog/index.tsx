@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Pressable } from "react-native";
-import { styles } from "./styles";
+import { useStyles } from "./styles";
 import { Button } from "../Button";
 import { ModalBase } from "../ModalBase";
 
@@ -25,6 +25,8 @@ export function Dialog({
   onClose,
   actions = [],
 }: DialogProps) {
+  const styles = useStyles();
+
   return (
     <ModalBase onClose={onClose} visible={visible} title="">
       <Pressable style={styles.overlay} onPress={onClose}>

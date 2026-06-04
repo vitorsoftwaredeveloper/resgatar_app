@@ -1,4 +1,4 @@
-import { styles } from "./styles";
+import { useStyles } from "./styles";
 import { TouchableOpacity } from "react-native";
 
 interface IIconButton {
@@ -14,6 +14,8 @@ export const IconButton = ({
   icon: Icon,
   color,
 }: IIconButton) => {
+  const styles = useStyles();
+
   return (
     <TouchableOpacity onPress={onPress} style={styles.iconButton}>
       <Icon size={size} color={color} />

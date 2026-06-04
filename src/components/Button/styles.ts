@@ -1,40 +1,48 @@
-import { COLORS } from "@/theme";
+import { useMemo } from "react";
 import { StyleSheet } from "react-native";
+import { useAppTheme } from "@/context/ThemeContext";
 
-export const styles = StyleSheet.create({
-  button: {
-    minHeight: 48,
-    borderRadius: 14,
-    paddingHorizontal: 24,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+export function useStyles() {
+  const { colors } = useAppTheme();
+  return useMemo(
+    () =>
+      StyleSheet.create({
+        button: {
+          minHeight: 48,
+          borderRadius: 14,
+          paddingHorizontal: 24,
+          alignItems: "center",
+          justifyContent: "center",
+        },
 
-  primary: {
-    backgroundColor: COLORS.primary,
-  },
+        primary: {
+          backgroundColor: colors.primary,
+        },
 
-  secondary: {
-    backgroundColor: COLORS.background,
-    borderWidth: 1,
-    borderColor: COLORS.background,
-  },
+        secondary: {
+          backgroundColor: colors.background,
+          borderWidth: 1,
+          borderColor: colors.background,
+        },
 
-  buttonText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: COLORS.background,
-  },
+        buttonText: {
+          fontSize: 16,
+          fontWeight: "600",
+          color: colors.background,
+        },
 
-  textOnPrimary: {
-    color: COLORS.background,
-  },
+        textOnPrimary: {
+          color: colors.background,
+        },
 
-  textOnSecondary: {
-    color: COLORS.primary,
-  },
+        textOnSecondary: {
+          color: colors.primary,
+        },
 
-  disabled: {
-    opacity: 0.6,
-  },
-});
+        disabled: {
+          opacity: 0.6,
+        },
+      }),
+    [colors],
+  );
+}

@@ -32,7 +32,7 @@ import {
   View,
 } from "react-native";
 import * as Yup from "yup";
-import { styles } from "./styles";
+import { useStyles } from "./styles";
 
 interface IModalEditProfile {
   editModalVisible: boolean;
@@ -130,6 +130,7 @@ export const ModalEditProfile = ({
   onClose,
 }: IModalEditProfile) => {
   const { member, updateMember } = useContext(AuthContext);
+  const styles = useStyles();
   const savedDocValues = useRef<Record<string, string>>({
     CPF: maskCPFOrCNPJ(member?.identification?.numberType || "", "CPF"),
     CNPJ: "",

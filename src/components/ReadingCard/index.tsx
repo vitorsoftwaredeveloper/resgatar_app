@@ -7,7 +7,7 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import { ChevronDown } from "lucide-react-native";
-import { styles } from "./styles";
+import { useStyles } from "./styles";
 
 interface Props {
   label: string;
@@ -19,15 +19,15 @@ interface Props {
   defaultExpanded?: boolean;
 }
 
-function formatVerseText(text: string, baseStyle: any) {
+function formatVerseText(text: string, textStyle: any, verseStyle: any) {
   const parts = text.split(/(\d+)(?=[A-Za-zÀ-ÿ])/);
   return parts.map((part, i) =>
     /^\d+$/.test(part) ? (
-      <Text key={i} style={styles.verseNumber}>
+      <Text key={i} style={verseStyle}>
         {part}{" "}
       </Text>
     ) : (
-      <Text key={i} style={baseStyle}>
+      <Text key={i} style={textStyle}>
         {part}
       </Text>
     ),
@@ -43,6 +43,7 @@ export function ReadingCard({
   isGospel = false,
   defaultExpanded = false,
 }: Props) {
+  const styles = useStyles();
   const [expanded, setExpanded] = useState(defaultExpanded);
   const [contentHeight, setContentHeight] = useState(0);
   const animatedHeight = useSharedValue(0);
@@ -97,7 +98,7 @@ export function ReadingCard({
       <Animated.View style={expandStyle}>
         <View onLayout={handleContentLayout}>
           <Text style={styles.texto}>
-            {formatVerseText(texto, styles.texto)}
+            {formatVerseText(texto, styles.texto, styles.verseNumber)}
           </Text>
         </View>
       </Animated.View>
@@ -105,7 +106,7 @@ export function ReadingCard({
       {contentHeight === 0 && (
         <View style={styles.hiddenMeasure} onLayout={handleContentLayout}>
           <Text style={styles.texto}>
-            {formatVerseText(texto, styles.texto)}
+            {formatVerseText(texto, styles.texto, styles.verseNumber)}
           </Text>
         </View>
       )}

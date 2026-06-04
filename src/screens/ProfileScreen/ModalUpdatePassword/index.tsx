@@ -5,12 +5,12 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
 } from "react-native";
-import { styles } from "./styles";
+import { useStyles } from "./styles";
 import { Input } from "@/components/Input";
 import { AuthContext } from "@/context/AuthContext";
 import { Card } from "@/components/Card";
 import { Eye, EyeOff } from "lucide-react-native";
-import { COLORS } from "@/theme";
+import { useAppTheme } from "@/context/ThemeContext";
 import { Button } from "@/components/Button";
 import { ToastMessage } from "@/components/Toast";
 import { ModalBase } from "@/components/ModalBase";
@@ -52,6 +52,8 @@ export const ModalUpdatePassword = ({
   memberIdPasswordWillBeChanged,
 }: IModalUpdatePassword) => {
   const { changePassword, member } = useContext(AuthContext);
+  const { colors } = useAppTheme();
+  const styles = useStyles();
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSavePassword = async (
@@ -122,9 +124,9 @@ export const ModalUpdatePassword = ({
                           onPress={() => setShowPassword((prev) => !prev)}
                         >
                           {showPassword ? (
-                            <Eye size={24} color={COLORS.muted} />
+                            <Eye size={24} color={colors.muted} />
                           ) : (
-                            <EyeOff size={24} color={COLORS.muted} />
+                            <EyeOff size={24} color={colors.muted} />
                           )}
                         </TouchableOpacity>
                       }
@@ -143,9 +145,9 @@ export const ModalUpdatePassword = ({
                           onPress={() => setShowPassword((prev) => !prev)}
                         >
                           {showPassword ? (
-                            <Eye size={24} color={COLORS.muted} />
+                            <Eye size={24} color={colors.muted} />
                           ) : (
-                            <EyeOff size={24} color={COLORS.muted} />
+                            <EyeOff size={24} color={colors.muted} />
                           )}
                         </TouchableOpacity>
                       }

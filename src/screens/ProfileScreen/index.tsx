@@ -3,7 +3,7 @@ import { Header } from "@/components/Header";
 import { ItemActionList } from "@/components/ItemActionList";
 import { ProfileHeaderCard } from "@/components/ProfileHeaderCard";
 import { SwipeableTab } from "@/components/SwipeableTab";
-import { COLORS } from "@/theme";
+import { useAppTheme } from "@/context/ThemeContext";
 import { IMember } from "@/types/Member";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { Lock, LogOut, User } from "lucide-react-native";
@@ -13,11 +13,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../../context/AuthContext";
 import { ModalEditProfile } from "./ModalEditProfile";
 import { ModalUpdatePassword } from "./ModalUpdatePassword";
-import { styles } from "./styles";
+import { useStyles } from "./styles";
 
 export const ProfileScreen = () => {
   const { logout, member } = useContext(AuthContext);
+  const { colors } = useAppTheme();
   const tabBarHeight = useBottomTabBarHeight();
+  const styles = useStyles();
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
   const [dialogLogoutVisible, setDialogLogoutVisible] = useState(false);
@@ -40,14 +42,14 @@ export const ProfileScreen = () => {
               title="Meus dados"
               description="Visualize ou edite seus dados pessoais"
               onPress={() => setEditModalVisible(true)}
-              icon={<User color={COLORS.primary} />}
+              icon={<User color={colors.primary} />}
             />
 
             <ItemActionList
               title="Atualizar senha"
               description="Atualize sua senha de login do aplicativo"
               onPress={() => setPasswordModalVisible(true)}
-              icon={<Lock color={COLORS.primary} />}
+              icon={<Lock color={colors.primary} />}
               isLast
             />
           </View>
@@ -56,7 +58,7 @@ export const ProfileScreen = () => {
             style={styles.logout}
             onPress={() => setDialogLogoutVisible(true)}
           >
-            <LogOut color={COLORS.error} />
+            <LogOut color={colors.error} />
             <Text style={styles.logoutText}>Sair da conta</Text>
           </TouchableOpacity>
 

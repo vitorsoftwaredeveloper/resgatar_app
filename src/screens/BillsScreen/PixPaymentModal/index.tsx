@@ -7,7 +7,7 @@ import { Copy } from "lucide-react-native";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Animated, Pressable, Text, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
-import { styles } from "./styles";
+import { useStyles } from "./styles";
 
 interface PixPaymentModalProps {
   visible: boolean;
@@ -17,6 +17,7 @@ interface PixPaymentModalProps {
 export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
   const { charge, consultCharge } = useContext(ChargeContext);
   const { reloadMemberData } = useContext(AuthContext);
+  const styles = useStyles();
   const scaleAnim = useRef(new Animated.Value(0.95)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const pulse = useRef(new Animated.Value(1)).current;

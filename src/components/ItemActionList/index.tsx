@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { styles } from "./styles";
+import { useStyles } from "./styles";
 
 interface Props {
   title: string;
@@ -17,6 +17,8 @@ export function ItemActionList({
   isLast,
   icon,
 }: Props) {
+  const styles = useStyles();
+
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
       <View style={styles.left}>

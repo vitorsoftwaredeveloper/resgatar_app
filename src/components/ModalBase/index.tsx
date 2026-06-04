@@ -1,9 +1,9 @@
 import Toast from "react-native-toast-message";
-import { styles } from "./styles";
+import { useStyles } from "./styles";
 import { Modal, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { IconButton } from "../IconButton";
-import { COLORS } from "@/theme";
+import { useAppTheme } from "@/context/ThemeContext";
 import { X } from "lucide-react-native";
 
 interface IModalBase {
@@ -19,6 +19,9 @@ export const ModalBase: React.FC<IModalBase> = ({
   onClose,
   children,
 }) => {
+  const { colors } = useAppTheme();
+  const styles = useStyles();
+
   return (
     <Modal
       visible={visible}
@@ -32,7 +35,7 @@ export const ModalBase: React.FC<IModalBase> = ({
           <View style={styles.header}>
             <Text style={styles.headerTitle}>{title}</Text>
 
-            <IconButton color={COLORS.white} icon={X} onPress={onClose} />
+            <IconButton color={colors.white} icon={X} onPress={onClose} />
           </View>
         )}
         {children}

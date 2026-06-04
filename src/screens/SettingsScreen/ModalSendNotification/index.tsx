@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { View, Text } from "react-native";
 import { AlertTriangle, CircleAlert, Info, Send } from "lucide-react-native";
-import { styles } from "./styles";
-import { COLORS } from "@/theme";
+import { useStyles } from "./styles";
+import { useAppTheme } from "@/context/ThemeContext";
 import { NotificationCard } from "@/components/NotificationCard";
 import { Input } from "@/components/Input";
 import { Card } from "@/components/Card";
@@ -32,6 +32,8 @@ const notificationSchema = Yup.object().shape({
 });
 
 export function ModalSendNotification({ visible, onClose }: Props) {
+  const { colors } = useAppTheme();
+  const styles = useStyles();
   const [expanded, setExpanded] = useState(false);
 
   const initialValues = {
@@ -163,7 +165,7 @@ export function ModalSendNotification({ visible, onClose }: Props) {
             <View style={styles.footer}>
               <Button
                 title="Enviar"
-                leftIcon={<Send color={COLORS.white} size={18} />}
+                leftIcon={<Send color={colors.white} size={18} />}
                 onPress={async () => {
                   const formErrors = await validateForm();
 

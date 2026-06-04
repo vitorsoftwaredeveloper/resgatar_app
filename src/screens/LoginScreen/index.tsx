@@ -10,13 +10,15 @@ import { AuthContext } from "@/context/AuthContext";
 import { Input } from "@/components/Input";
 import { Button } from "@/components/Button";
 import { Eye, EyeOff, LogIn, Mail } from "lucide-react-native";
-import { styles } from "./styles";
-import { COLORS } from "@/theme";
+import { useStyles } from "./styles";
+import { useAppTheme } from "@/context/ThemeContext";
 import { ToastMessage } from "@/components/Toast";
 import { LogoResgatar } from "@/components/Svg/Logo";
 
 export const LoginScreen = () => {
   const { login } = useContext(AuthContext);
+  const { colors } = useAppTheme();
+  const styles = useStyles();
   const [loading, setLoading] = useState(false);
 
   const [credentials, setCredentials] = useState({
@@ -51,7 +53,7 @@ export const LoginScreen = () => {
       >
         <View style={styles.card}>
           <View style={styles.logoContainer}>
-            <LogoResgatar color={COLORS.muted} size={300} />
+            <LogoResgatar color={colors.muted} size={300} />
           </View>
 
           <Text style={styles.title}>Comunidade Resgatar</Text>
@@ -75,7 +77,7 @@ export const LoginScreen = () => {
               }
               keyboardType="email-address"
               autoCapitalize="none"
-              rightIcon={<Mail size={24} color={COLORS.muted} />}
+              rightIcon={<Mail size={24} color={colors.muted} />}
             />
 
             <Input
@@ -90,9 +92,9 @@ export const LoginScreen = () => {
                   onPress={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
-                    <Eye size={24} color={COLORS.muted} />
+                    <Eye size={24} color={colors.muted} />
                   ) : (
-                    <EyeOff size={24} color={COLORS.muted} />
+                    <EyeOff size={24} color={colors.muted} />
                   )}
                 </TouchableOpacity>
               }

@@ -1,10 +1,10 @@
-import { COLORS } from "@/theme";
+import { useAppTheme } from "@/context/ThemeContext";
 import { TRANSACTION_STATUS } from "@/types/Charge";
 import { CreditCard, Share2 } from "lucide-react-native";
 import React from "react";
 import { Text, View } from "react-native";
 import { Button } from "../Button";
-import { styles } from "./styles";
+import { useStyles } from "./styles";
 
 interface Contribution {
   id: string;
@@ -25,6 +25,8 @@ interface Props {
 }
 
 export function ContributionItem({ data, onPay, onShare }: Props) {
+  const { colors, mode } = useAppTheme();
+  const styles = useStyles();
   const isPending = data.status === TRANSACTION_STATUS.PENDING;
 
   return (
@@ -72,14 +74,19 @@ export function ContributionItem({ data, onPay, onShare }: Props) {
             await onPay();
           }}
           styleCustom={{ marginTop: 16 }}
-          leftIcon={<CreditCard size={20} color={COLORS.white} />}
+          leftIcon={
+            <CreditCard
+              size={20}
+              color={mode === "dark" ? colors.black : colors.white}
+            />
+          }
         />
       ) : (
         <Button
           title="Comprovante"
           onPress={onShare}
           styleCustom={{ marginTop: 16, color: "red" }}
-          leftIcon={<Share2 size={20} color={COLORS.primary} />}
+          leftIcon={<Share2 size={20} color={colors.primary} />}
           variant="secondary"
           loading={false}
         />

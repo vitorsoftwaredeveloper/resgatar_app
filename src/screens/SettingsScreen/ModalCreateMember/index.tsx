@@ -5,7 +5,7 @@ import { ModalBase } from "@/components/ModalBase";
 import { Row } from "@/components/Row";
 import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";
-import { COLORS } from "@/theme";
+import { useAppTheme } from "@/context/ThemeContext";
 import { IMemberState } from "@/types/Member";
 import { parseDateBRToTimestamp } from "@/utils/helper";
 import {
@@ -21,7 +21,7 @@ import { Eye, EyeOff } from "lucide-react-native";
 import React, { useContext, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import * as Yup from "yup";
-import { styles } from "./styles";
+import { useStyles } from "./styles";
 
 interface IModalEditProfile {
   createMemberModal: boolean;
@@ -93,6 +93,8 @@ export const ModalCreateMember = ({
   onClose,
 }: IModalEditProfile) => {
   const { createMember } = useContext(AuthContext);
+  const { colors } = useAppTheme();
+  const styles = useStyles();
   const [showPassword, setShowPassword] = useState(false);
 
   const initialValues = {
@@ -216,9 +218,9 @@ export const ModalCreateMember = ({
                         onPress={() => setShowPassword(!showPassword)}
                       >
                         {showPassword ? (
-                          <Eye size={24} color={COLORS.muted} />
+                          <Eye size={24} color={colors.muted} />
                         ) : (
-                          <EyeOff size={24} color={COLORS.muted} />
+                          <EyeOff size={24} color={colors.muted} />
                         )}
                       </TouchableOpacity>
                     }

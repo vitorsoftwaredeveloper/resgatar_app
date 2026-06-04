@@ -6,6 +6,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AuthProvider } from "./context/AuthContext";
 import AppNavigator from "./navigation/AppNavigator";
 import { ChargeProvider } from "./context/ChargeContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import Toast from "react-native-toast-message";
 import * as Notifications from "expo-notifications";
 import { useContributionNotifications } from "./hooks/useContributionNotification";
@@ -28,15 +29,17 @@ export const App = () => {
   }, []);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <AuthProvider>
-        <ChargeProvider>
-          <NavigationContainer>
-            <AppNavigator />
-          </NavigationContainer>
-          <Toast />
-        </ChargeProvider>
-      </AuthProvider>
-    </GestureHandlerRootView>
+    <ThemeProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <AuthProvider>
+          <ChargeProvider>
+            <NavigationContainer>
+              <AppNavigator />
+            </NavigationContainer>
+            <Toast />
+          </ChargeProvider>
+        </AuthProvider>
+      </GestureHandlerRootView>
+    </ThemeProvider>
   );
 };

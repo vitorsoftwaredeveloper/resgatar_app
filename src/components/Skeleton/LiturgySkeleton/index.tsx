@@ -6,9 +6,10 @@ import Animated, {
   withRepeat,
   withTiming,
 } from "react-native-reanimated";
-import { styles } from "./styles";
+import { useStyles } from "./styles";
 
 export function LiturgySkeleton() {
+  const styles = useStyles();
   const opacity = useSharedValue(0.4);
   opacity.value = withRepeat(withTiming(1, { duration: 800 }), -1, true);
   const animatedStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));

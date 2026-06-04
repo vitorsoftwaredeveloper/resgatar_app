@@ -6,7 +6,7 @@ import Animated, {
   withTiming,
   Easing,
 } from "react-native-reanimated";
-import { styles } from "./styles";
+import { useStyles } from "./styles";
 import { Ionicons } from "@expo/vector-icons";
 import { INotification } from "@/types/Notification";
 import { timeAgo } from "@/utils/helper";
@@ -44,6 +44,7 @@ export const NotificationCard = ({
   expanded,
   onToggle,
 }: Props) => {
+  const styles = useStyles();
   const animatedHeight = useSharedValue(0);
   const rotate = useSharedValue(0);
   const [contentHeight, setContentHeight] = useState(0);
@@ -93,7 +94,7 @@ export const NotificationCard = ({
         <View style={styles.header}>
           <View style={styles.titleRow}>
             <Text style={styles.title} numberOfLines={expanded ? undefined : 1}>
-              {notification.title || "Título"}
+              {notification.title || "Título"}
             </Text>
 
             <View style={styles.toggleButton}>
@@ -139,14 +140,14 @@ export const NotificationCard = ({
 
         {!expanded && (
           <Text style={styles.descriptionPreview} numberOfLines={2}>
-            {notification.description || "Descrição da notificação"}
+            {notification.description || "Descrição da notificação"}
           </Text>
         )}
 
         <Animated.View style={[styles.expandable, animatedStyle]}>
           <View onLayout={handleContentLayout}>
             <Text style={styles.descriptionFull}>
-              {notification.description || "Descrição da notificação"}
+              {notification.description || "Descrição da notificação"}
             </Text>
           </View>
         </Animated.View>

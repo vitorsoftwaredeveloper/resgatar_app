@@ -2,7 +2,7 @@ import { ILiturgia, LITURGICAL_ACCENT, LITURGICAL_BG } from "@/types/Liturgy";
 import { formatLiturgicalDate } from "@/utils/helper";
 import React from "react";
 import { Text, View } from "react-native";
-import { styles } from "./styles";
+import { useStyles } from "./styles";
 
 interface Props {
   liturgia: string;
@@ -11,6 +11,7 @@ interface Props {
 }
 
 export function LiturgySeasonBanner({ liturgia, data, cor }: Props) {
+  const styles = useStyles();
   const accent = LITURGICAL_ACCENT[cor];
   const bg = LITURGICAL_BG[cor];
 
@@ -18,7 +19,10 @@ export function LiturgySeasonBanner({ liturgia, data, cor }: Props) {
     <View
       style={[
         styles.container,
-        { backgroundColor: bg, borderLeftColor: accent },
+        {
+          backgroundColor: styles.container.backgroundColor,
+          borderLeftColor: accent,
+        },
       ]}
     >
       <View style={[styles.dot, { backgroundColor: accent }]} />

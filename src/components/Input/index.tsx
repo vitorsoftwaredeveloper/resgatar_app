@@ -1,6 +1,7 @@
 import { Text, TextInput, TextInputProps, View } from "react-native";
 import { useState, ReactNode } from "react";
-import { styles } from "./styles";
+import { useStyles } from "./styles";
+import { useAppTheme } from "@/context/ThemeContext";
 
 type InputProps = TextInputProps & {
   label?: string;
@@ -24,6 +25,8 @@ export const Input = ({
   flex = 1,
   ...props
 }: InputProps) => {
+  const { colors } = useAppTheme();
+  const styles = useStyles();
   const [isFocused, setIsFocused] = useState(false);
 
   const hasError = Boolean(error);
@@ -36,7 +39,7 @@ export const Input = ({
         style={[
           styles.inputContainer,
           (highlighted || isFocused) && styles.inputHighlighted,
-          hasError && styles.inputError, // 👈 erro visual
+          hasError && styles.inputError,
         ]}
       >
         {leftIcon && <View style={styles.iconLeft}>{leftIcon}</View>}
@@ -44,7 +47,7 @@ export const Input = ({
         <TextInput
           value={value}
           onChangeText={onChangeText}
-          placeholderTextColor="#9E8E80"
+          placeholderTextColor={colors.textMuted}
           style={styles.input}
           {...props}
           onFocus={() => setIsFocused(true)}

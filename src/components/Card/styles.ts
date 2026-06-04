@@ -1,22 +1,30 @@
-import { COLORS } from "@/theme";
+import { useMemo } from "react";
 import { StyleSheet } from "react-native";
+import { useAppTheme } from "@/context/ThemeContext";
 
-export const styles = StyleSheet.create({
-  card: {
-    backgroundColor: COLORS.card,
-    margin: 16,
-    padding: 16,
-    borderRadius: 24,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: COLORS.text,
-    marginBottom: 4,
-  },
-  cardDescription: {
-    fontSize: 13,
-    color: COLORS.muted,
-    marginBottom: 12,
-  },
-});
+export function useStyles() {
+  const { colors } = useAppTheme();
+  return useMemo(
+    () =>
+      StyleSheet.create({
+        card: {
+          backgroundColor: colors.card,
+          margin: 16,
+          padding: 16,
+          borderRadius: 24,
+        },
+        cardTitle: {
+          fontSize: 18,
+          fontWeight: "700",
+          color: colors.text,
+          marginBottom: 4,
+        },
+        cardDescription: {
+          fontSize: 13,
+          color: colors.muted,
+          marginBottom: 12,
+        },
+      }),
+    [colors],
+  );
+}

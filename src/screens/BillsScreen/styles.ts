@@ -1,13 +1,22 @@
-import { COLORS, SPACING } from "@/theme";
+import { SPACING } from "@/theme";
+import { useMemo } from "react";
 import { StyleSheet } from "react-native";
+import { useAppTheme } from "@/context/ThemeContext";
 
-export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  list: {
-    padding: SPACING.lg,
-    paddingBottom: SPACING.xxl,
-  },
-});
+export function useStyles() {
+  const { colors } = useAppTheme();
+  return useMemo(
+    () =>
+      StyleSheet.create({
+        container: {
+          flex: 1,
+          backgroundColor: colors.background,
+        },
+        list: {
+          padding: SPACING.lg,
+          paddingBottom: SPACING.xxl,
+        },
+      }),
+    [colors],
+  );
+}

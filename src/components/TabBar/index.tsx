@@ -5,16 +5,12 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Home, FileText, User, Settings } from "lucide-react-native";
-import {
-  styles,
-  TAB_WIDTH,
-  ACTIVE_COLOR,
-  INACTIVE_COLOR,
-  TAB_WIDTH_ADMIN,
-} from "./styles";
+import { useStyles, TAB_WIDTH, TAB_WIDTH_ADMIN } from "./styles";
 
 export function TabBar({ state, navigation, isAdmin }: any) {
   const { bottom } = useSafeAreaInsets();
+  const { styles, ACTIVE_COLOR, INACTIVE_COLOR } = useStyles();
+
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
       {

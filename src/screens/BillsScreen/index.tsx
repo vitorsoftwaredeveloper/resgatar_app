@@ -12,7 +12,7 @@ import React, { useContext, useMemo, useState } from "react";
 import { FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { PixPaymentModal } from "./PixPaymentModal";
-import { styles } from "./styles";
+import { useStyles } from "./styles";
 
 const MONTH: Record<string, string> = {
   january: "Janeiro",
@@ -33,6 +33,7 @@ export const BillsScreen = () => {
   const tabBarHeight = useBottomTabBarHeight();
   const { createCharge } = useContext(ChargeContext);
   const { member } = useContext(AuthContext);
+  const styles = useStyles();
 
   const [modalPayVisible, setModalPayVisible] = useState(false);
 

@@ -1,4 +1,6 @@
+import { useMemo } from "react";
 import { StyleSheet } from "react-native";
+import { useAppTheme } from "@/context/ThemeContext";
 
 export const typeColors = {
   info: {
@@ -20,18 +22,25 @@ export const typeColors = {
   },
 };
 
-export const styles = StyleSheet.create({
-  typeButton: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: 16,
-    backgroundColor: "#EFE9E1",
-    alignItems: "center",
-    justifyContent: "center",
-  },
+export function useStyles() {
+  const { colors } = useAppTheme();
+  return useMemo(
+    () =>
+      StyleSheet.create({
+        typeButton: {
+          flex: 1,
+          paddingVertical: 14,
+          borderRadius: 16,
+          backgroundColor: colors.softBrown,
+          alignItems: "center",
+          justifyContent: "center",
+        },
 
-  typeButtonText: {
-    fontSize: 13,
-    color: "#8A7E73",
-  },
-});
+        typeButtonText: {
+          fontSize: 13,
+          color: colors.muted,
+        },
+      }),
+    [colors],
+  );
+}

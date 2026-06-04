@@ -1,7 +1,9 @@
 import { Text, View } from "react-native";
-import { styles } from "./styles";
+import { useStyles } from "./styles";
 
 export const Card = ({ title, description, children }: any) => {
+  const styles = useStyles();
+
   return (
     <View style={styles.card}>
       <Text style={styles.cardTitle}>{title}</Text>

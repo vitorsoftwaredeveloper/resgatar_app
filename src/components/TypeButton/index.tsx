@@ -1,5 +1,5 @@
 import { Pressable, Text, View } from "react-native";
-import { styles, typeColors } from "./styles";
+import { useStyles, typeColors } from "./styles";
 
 export type NotificationType = "info" | "alert" | "warning";
 
@@ -18,6 +18,7 @@ export function TypeButton({
   selected,
   onPress,
 }: TypeButtonProps) {
+  const styles = useStyles();
   const colors = typeColors[type];
 
   return (
