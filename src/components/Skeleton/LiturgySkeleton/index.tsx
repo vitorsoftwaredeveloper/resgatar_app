@@ -12,7 +12,9 @@ export function LiturgySkeleton() {
   const styles = useStyles();
   const opacity = useSharedValue(0.4);
   opacity.value = withRepeat(withTiming(1, { duration: 800 }), -1, true);
-  const animatedStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+  }));
 
   return (
     <Animated.View style={animatedStyle}>

@@ -9,8 +9,7 @@ import { shareComprovantePDF } from "@/utils/generatePixReceipt";
 import { formatDateFromTimestamp } from "@/utils/helper";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import React, { useContext, useMemo, useState } from "react";
-import { FlatList } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { FlatList, View } from "react-native";
 import { PixPaymentModal } from "./PixPaymentModal";
 import { useStyles } from "./styles";
 
@@ -73,13 +72,13 @@ export const BillsScreen = () => {
 
   return (
     <SwipeableTab>
-      <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
+      <View style={styles.container}>
         <Header name={member?.firstName + " " + member?.lastName} />
 
         <FlatList
           contentContainerStyle={[
             styles.list,
-            { paddingBottom: tabBarHeight + 15 },
+            { paddingBottom: tabBarHeight + 20 },
           ]}
           data={contributions}
           keyExtractor={(item) => item.id}
@@ -105,7 +104,7 @@ export const BillsScreen = () => {
             onClose={() => setModalPayVisible(false)}
           />
         )}
-      </SafeAreaView>
+      </View>
     </SwipeableTab>
   );
 };

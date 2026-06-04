@@ -1,7 +1,7 @@
+import { useAppTheme } from "@/context/ThemeContext";
 import { RADIUS, SPACING, TYPOGRAPHY } from "@/theme";
 import { useMemo } from "react";
 import { StyleSheet } from "react-native";
-import { useAppTheme } from "@/context/ThemeContext";
 
 export function useStyles() {
   const { colors } = useAppTheme();
@@ -17,9 +17,12 @@ export function useStyles() {
         },
         content: {
           paddingLeft: SPACING.lg,
+          backgroundColor: colors.softBrown,
           paddingRight: SPACING.lg,
-          paddingBottom: SPACING.xxl,
           paddingTop: SPACING.lg,
+          borderTopLeftRadius: RADIUS.xl,
+          borderTopRightRadius: RADIUS.xl,
+          minHeight: "100%",
         },
         errorContainer: {
           alignItems: "center",

@@ -1,7 +1,7 @@
 import { useAppTheme } from "@/context/ThemeContext";
+import { Moon, Sun } from "lucide-react-native";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import { Moon, Sun } from "lucide-react-native";
 import { LogoResgatar } from "../Svg/Logo";
 import { useStyles } from "./styles";
 

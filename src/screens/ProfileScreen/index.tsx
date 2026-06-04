@@ -9,7 +9,6 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { Lock, LogOut, User } from "lucide-react-native";
 import React, { useContext, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../../context/AuthContext";
 import { ModalEditProfile } from "./ModalEditProfile";
 import { ModalUpdatePassword } from "./ModalUpdatePassword";
@@ -31,7 +30,7 @@ export const ProfileScreen = () => {
 
   return (
     <SwipeableTab>
-      <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
+      <View style={styles.container}>
         <Header name={member?.firstName + " " + member?.lastName} />
 
         <View style={[styles.content, { paddingBottom: tabBarHeight }]}>
@@ -97,7 +96,7 @@ export const ProfileScreen = () => {
             />
           )}
         </View>
-      </SafeAreaView>
+      </View>
     </SwipeableTab>
   );
 };

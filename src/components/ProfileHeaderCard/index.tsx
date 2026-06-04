@@ -1,9 +1,10 @@
-import React from "react";
-import { View, Text } from "react-native";
-import { useStyles } from "./styles";
 import { useAppTheme } from "@/context/ThemeContext";
-import { UserIcon } from "lucide-react-native";
 import { IMember } from "@/types/Member";
+import { maskCPFOrCNPJ } from "@/utils/mask";
+import { UserIcon } from "lucide-react-native";
+import React from "react";
+import { Text, View } from "react-native";
+import { useStyles } from "./styles";
 
 interface Props {
   member: IMember;
@@ -24,7 +25,7 @@ export function ProfileHeaderCard({ member }: Props) {
           {member.firstName} {member.lastName}
         </Text>
         <Text style={styles.document} numberOfLines={1} ellipsizeMode="tail">
-          {member.identification.numberType}
+          {maskCPFOrCNPJ(member.identification.numberType, "CPF")}
         </Text>
         <Text style={styles.document} numberOfLines={1} ellipsizeMode="tail">
           {member.email}

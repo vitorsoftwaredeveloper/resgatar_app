@@ -1,7 +1,7 @@
+import { useAppTheme } from "@/context/ThemeContext";
 import { SPACING } from "@/theme";
 import { useMemo } from "react";
 import { StyleSheet } from "react-native";
-import { useAppTheme } from "@/context/ThemeContext";
 
 export function useStyles() {
   const { colors } = useAppTheme();
@@ -12,18 +12,15 @@ export function useStyles() {
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
+          backgroundColor: colors.background,
           paddingBottom: 0,
+          paddingTop: SPACING.xxl,
         },
         left: {
           flexDirection: "row",
           alignItems: "center",
           flex: 1,
-          backgroundColor: colors.headerGlass,
           padding: SPACING.lg,
-          borderTopEndRadius: 0,
-          borderTopStartRadius: 0,
-          borderBottomStartRadius: 16,
-          borderBottomEndRadius: 16,
         },
         textContainer: {
           flex: 1,

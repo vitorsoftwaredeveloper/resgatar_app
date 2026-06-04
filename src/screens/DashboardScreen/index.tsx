@@ -13,7 +13,6 @@ import { useFocusEffect } from "@react-navigation/native";
 import { RefreshCw } from "lucide-react-native";
 import React, { useCallback, useContext, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useStyles } from "./styles";
 
 export function DashboardScreen() {
@@ -50,14 +49,14 @@ export function DashboardScreen() {
 
   return (
     <SwipeableTab>
-      <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
+      <View style={styles.container}>
         <Header name={`${member?.firstName} ${member?.lastName}`} />
 
         <ScrollView
           style={styles.scroll}
           contentContainerStyle={[
             styles.content,
-            { paddingBottom: tabBarHeight + 15 },
+            { paddingBottom: tabBarHeight + 20 },
           ]}
           showsVerticalScrollIndicator={false}
         >
@@ -130,7 +129,7 @@ export function DashboardScreen() {
             </>
           ) : null}
         </ScrollView>
-      </SafeAreaView>
+      </View>
     </SwipeableTab>
   );
 }
