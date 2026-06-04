@@ -2,6 +2,7 @@ import { Dialog } from "@/components/Dialog";
 import { Header } from "@/components/Header";
 import { ItemActionList } from "@/components/ItemActionList";
 import { ProfileHeaderCard } from "@/components/ProfileHeaderCard";
+import { SwipeableTab } from "@/components/SwipeableTab";
 import { COLORS } from "@/theme";
 import { IMember } from "@/types/Member";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
@@ -27,72 +28,74 @@ export const ProfileScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
-      <Header name={member?.firstName + " " + member?.lastName} />
+    <SwipeableTab>
+      <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
+        <Header name={member?.firstName + " " + member?.lastName} />
 
-      <View style={[styles.content, { paddingBottom: tabBarHeight }]}>
-        <ProfileHeaderCard member={member as IMember} />
+        <View style={[styles.content, { paddingBottom: tabBarHeight }]}>
+          <ProfileHeaderCard member={member as IMember} />
 
-        <View style={styles.menuCard}>
-          <ItemActionList
-            title="Meus dados"
-            description="Visualize ou edite seus dados pessoais"
-            onPress={() => setEditModalVisible(true)}
-            icon={<User color={COLORS.primary} />}
-          />
+          <View style={styles.menuCard}>
+            <ItemActionList
+              title="Meus dados"
+              description="Visualize ou edite seus dados pessoais"
+              onPress={() => setEditModalVisible(true)}
+              icon={<User color={COLORS.primary} />}
+            />
 
-          <ItemActionList
-            title="Atualizar senha"
-            description="Atualize sua senha de login do aplicativo"
-            onPress={() => setPasswordModalVisible(true)}
-            icon={<Lock color={COLORS.primary} />}
-            isLast
-          />
+            <ItemActionList
+              title="Atualizar senha"
+              description="Atualize sua senha de login do aplicativo"
+              onPress={() => setPasswordModalVisible(true)}
+              icon={<Lock color={COLORS.primary} />}
+              isLast
+            />
+          </View>
+
+          <TouchableOpacity
+            style={styles.logout}
+            onPress={() => setDialogLogoutVisible(true)}
+          >
+            <LogOut color={COLORS.error} />
+            <Text style={styles.logoutText}>Sair da conta</Text>
+          </TouchableOpacity>
+
+          {editModalVisible && (
+            <ModalEditProfile
+              editModalVisible={editModalVisible}
+              onClose={() => setEditModalVisible(false)}
+            />
+          )}
+
+          {passwordModalVisible && (
+            <ModalUpdatePassword
+              passwordModalVisible={passwordModalVisible}
+              onClose={() => setPasswordModalVisible(false)}
+            />
+          )}
+
+          {dialogLogoutVisible && (
+            <Dialog
+              visible={dialogLogoutVisible}
+              title="Tem certeza que deseja sair?"
+              description="Você pode realizar o login novamente e ter acesso a todas as funcionalidades do nosso aplicativo."
+              onClose={() => setDialogLogoutVisible(false)}
+              actions={[
+                {
+                  label: "cancelar",
+                  onPress: () => setDialogLogoutVisible(false),
+                  variant: "secondary",
+                },
+                {
+                  label: "sair",
+                  onPress: handleLgout,
+                  variant: "primary",
+                },
+              ]}
+            />
+          )}
         </View>
-
-        <TouchableOpacity
-          style={styles.logout}
-          onPress={() => setDialogLogoutVisible(true)}
-        >
-          <LogOut color={COLORS.error} />
-          <Text style={styles.logoutText}>Sair da conta</Text>
-        </TouchableOpacity>
-
-        {editModalVisible && (
-          <ModalEditProfile
-            editModalVisible={editModalVisible}
-            onClose={() => setEditModalVisible(false)}
-          />
-        )}
-
-        {passwordModalVisible && (
-          <ModalUpdatePassword
-            passwordModalVisible={passwordModalVisible}
-            onClose={() => setPasswordModalVisible(false)}
-          />
-        )}
-
-        {dialogLogoutVisible && (
-          <Dialog
-            visible={dialogLogoutVisible}
-            title="Tem certeza que deseja sair?"
-            description="Você pode realizar o login novamente e ter acesso a todas as funcionalidades do nosso aplicativo."
-            onClose={() => setDialogLogoutVisible(false)}
-            actions={[
-              {
-                label: "cancelar",
-                onPress: () => setDialogLogoutVisible(false),
-                variant: "secondary",
-              },
-              {
-                label: "sair",
-                onPress: handleLgout,
-                variant: "primary",
-              },
-            ]}
-          />
-        )}
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </SwipeableTab>
   );
 };

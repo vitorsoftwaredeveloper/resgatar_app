@@ -2,6 +2,7 @@ import "react-native-get-random-values";
 import "./config/amplify";
 import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AuthProvider } from "./context/AuthContext";
 import AppNavigator from "./navigation/AppNavigator";
 import { ChargeProvider } from "./context/ChargeContext";
@@ -27,13 +28,15 @@ export const App = () => {
   }, []);
 
   return (
-    <AuthProvider>
-      <ChargeProvider>
-        <NavigationContainer>
-          <AppNavigator />
-        </NavigationContainer>
-        <Toast />
-      </ChargeProvider>
-    </AuthProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AuthProvider>
+        <ChargeProvider>
+          <NavigationContainer>
+            <AppNavigator />
+          </NavigationContainer>
+          <Toast />
+        </ChargeProvider>
+      </AuthProvider>
+    </GestureHandlerRootView>
   );
 };

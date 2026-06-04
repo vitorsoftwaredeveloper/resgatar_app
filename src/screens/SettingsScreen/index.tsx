@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { Lock, Send, UserRoundMinus, UserRoundPlus } from "lucide-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { SwipeableTab } from "@/components/SwipeableTab";
 import { AuthContext } from "../../context/AuthContext";
 import { ModalCreateMember } from "./ModalCreateMember";
 import { ItemActionList } from "@/components/ItemActionList";
@@ -23,6 +24,7 @@ export const SettingsScreen = () => {
   const [openSendNotification, setOpenSendNotification] = useState(false);
 
   return (
+    <SwipeableTab>
     <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
       <Header name={member?.firstName + " " + member?.lastName} />
 
@@ -83,5 +85,6 @@ export const SettingsScreen = () => {
         )}
       </View>
     </SafeAreaView>
+    </SwipeableTab>
   );
 };

@@ -3,6 +3,7 @@ import { LiturgySeasonBanner } from "@/components/LiturgySeasonBanner";
 import { PsalmCard } from "@/components/PsalmCard";
 import { ReadingCard } from "@/components/ReadingCard";
 import { LiturgySkeleton } from "@/components/Skeleton/LiturgySkeleton";
+import { SwipeableTab } from "@/components/SwipeableTab";
 import { AuthContext } from "@/context/AuthContext";
 import { LiturgyService } from "@/services/LiturgyService";
 import { COLORS } from "@/theme";
@@ -46,83 +47,88 @@ export function DashboardScreen() {
     : COLORS.primary;
 
   return (
-    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
-      <Header name={`${member?.firstName} ${member?.lastName}`} />
+    <SwipeableTab>
+      <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
+        <Header name={`${member?.firstName} ${member?.lastName}`} />
 
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={[
-          styles.content,
-          { paddingBottom: tabBarHeight + 15 },
-        ]}
-        showsVerticalScrollIndicator={false}
-      >
-        {loading ? (
-          <LiturgySkeleton />
-        ) : error ? (
-          <View style={styles.errorContainer}>
-            <Text style={styles.errorTitle}>Não foi possível carregar</Text>
-            <Text style={styles.errorSubtitle}>
-              Verifique sua conexão e tente novamente.
-            </Text>
-            <TouchableOpacity style={styles.retryButton} onPress={fetchLiturgy}>
-              <RefreshCw size={16} color={COLORS.primary} />
-              <Text style={styles.retryText}>Tentar novamente</Text>
-            </TouchableOpacity>
-          </View>
-        ) : liturgy ? (
-          <>
-            <LiturgySeasonBanner
-              liturgia={liturgy.liturgia}
-              data={liturgy.data}
-              cor={liturgy.cor}
-            />
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={[
+            styles.content,
+            { paddingBottom: tabBarHeight + 15 },
+          ]}
+          showsVerticalScrollIndicator={false}
+        >
+          {loading ? (
+            <LiturgySkeleton />
+          ) : error ? (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorTitle}>Não foi possível carregar</Text>
+              <Text style={styles.errorSubtitle}>
+                Verifique sua conexão e tente novamente.
+              </Text>
+              <TouchableOpacity
+                style={styles.retryButton}
+                onPress={fetchLiturgy}
+              >
+                <RefreshCw size={16} color={COLORS.primary} />
+                <Text style={styles.retryText}>Tentar novamente</Text>
+              </TouchableOpacity>
+            </View>
+          ) : liturgy ? (
+            <>
+              <LiturgySeasonBanner
+                liturgia={liturgy.liturgia}
+                data={liturgy.data}
+                cor={liturgy.cor}
+              />
 
-            <ReadingCard
-              label="PRIMEIRA LEITURA"
-              referencia={liturgy.leituras.primeiraLeitura.referencia}
-              titulo={liturgy.leituras.primeiraLeitura.titulo}
-              texto={liturgy.leituras.primeiraLeitura.texto}
-              accentColor={accent}
-            />
-
-            <PsalmCard
-              referencia={liturgy.leituras.salmo.referencia}
-              refrao={liturgy.leituras.salmo.refrao}
-              texto={liturgy.leituras.salmo.texto}
-              accentColor={accent}
-            />
-
-            {!!liturgy.leituras.segundaLeitura && (
               <ReadingCard
-                label="SEGUNDA LEITURA"
-                referencia={liturgy.leituras.segundaLeitura.referencia}
-                titulo={liturgy.leituras.segundaLeitura.titulo}
-                texto={liturgy.leituras.segundaLeitura.texto}
+                label="PRIMEIRA LEITURA"
+                referencia={liturgy.leituras.primeiraLeitura.referencia}
+                titulo={liturgy.leituras.primeiraLeitura.titulo}
+                texto={liturgy.leituras.primeiraLeitura.texto}
                 accentColor={accent}
               />
-            )}
 
-            <ReadingCard
-              label="✝  EVANGELHO"
-              referencia={liturgy.leituras.evangelho.referencia}
-              titulo={liturgy.leituras.evangelho.titulo}
-              texto={liturgy.leituras.evangelho.texto}
-              accentColor={accent}
-              isGospel
-            />
-
-            {!!liturgy.oracoes?.coleta && (
-              <ReadingCard
-                label="ORAÇÃO DO DIA"
-                referencia=""
-                texto={liturgy.oracoes.coleta}
+              <PsalmCard
+                referencia={liturgy.leituras.salmo.referencia}
+                refrao={liturgy.leituras.salmo.refrao}
+                texto={liturgy.leituras.salmo.texto}
                 accentColor={accent}
               />
-            )}
-          </>
-        ) : null}
-      </ScrollView>
-    </SafeAreaView>
+
+              {!!liturgy.leituras.segundaLeitura && (
+                <ReadingCard
+                  label="SEGUNDA LEITURA"
+                  referencia={liturgy.leituras.segundaLeitura.referencia}
+                  titulo={liturgy.leituras.segundaLeitura.titulo}
+                  texto={liturgy.leituras.segundaLeitura.texto}
+                  accentColor={accent}
+                />
+              )}
+
+              <ReadingCard
+                label="✝  EVANGELHO"
+                referencia={liturgy.leituras.evangelho.referencia}
+                titulo={liturgy.leituras.evangelho.titulo}
+                texto={liturgy.leituras.evangelho.texto}
+                accentColor={accent}
+                isGospel
+              />
+
+              {!!liturgy.oracoes?.coleta && (
+                <ReadingCard
+                  label="ORAÇÃO DO DIA"
+                  referencia=""
+                  texto={liturgy.oracoes.coleta}
+                  accentColor={accent}
+                />
+              )}
+            </>
+          ) : null}
+        </ScrollView>
+      </SafeAreaView>
+    </SwipeableTab>
   );
 }

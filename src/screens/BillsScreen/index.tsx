@@ -1,5 +1,6 @@
 import { ContributionItem } from "@/components/ContributionItem";
 import { Header } from "@/components/Header";
+import { SwipeableTab } from "@/components/SwipeableTab";
 import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";
 import { ChargeContext } from "@/context/ChargeContext";
@@ -70,38 +71,40 @@ export const BillsScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
-      <Header name={member?.firstName + " " + member?.lastName} />
+    <SwipeableTab>
+      <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
+        <Header name={member?.firstName + " " + member?.lastName} />
 
-      <FlatList
-        contentContainerStyle={[
-          styles.list,
-          { paddingBottom: tabBarHeight + 15 },
-        ]}
-        data={contributions}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <ContributionItem
-            data={item}
-            onPay={() => handlePay(item)}
-            onShare={() =>
-              shareComprovantePDF({
-                ...item,
-                cpf: member?.identification.numberType as string,
-                name: member?.firstName as string,
-                email: member?.email as string,
-              })
-            }
+        <FlatList
+          contentContainerStyle={[
+            styles.list,
+            { paddingBottom: tabBarHeight + 15 },
+          ]}
+          data={contributions}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <ContributionItem
+              data={item}
+              onPay={() => handlePay(item)}
+              onShare={() =>
+                shareComprovantePDF({
+                  ...item,
+                  cpf: member?.identification.numberType as string,
+                  name: member?.firstName as string,
+                  email: member?.email as string,
+                })
+              }
+            />
+          )}
+        />
+
+        {modalPayVisible && (
+          <PixPaymentModal
+            visible={modalPayVisible}
+            onClose={() => setModalPayVisible(false)}
           />
         )}
-      />
-
-      {modalPayVisible && (
-        <PixPaymentModal
-          visible={modalPayVisible}
-          onClose={() => setModalPayVisible(false)}
-        />
-      )}
-    </SafeAreaView>
+      </SafeAreaView>
+    </SwipeableTab>
   );
 };
