@@ -1,7 +1,7 @@
-import React from "react";
-import { View, Text } from "react-native";
 import { ILiturgia, LITURGICAL_ACCENT, LITURGICAL_BG } from "@/types/Liturgy";
 import { formatLiturgicalDate } from "@/utils/helper";
+import React from "react";
+import { Text, View } from "react-native";
 import { styles } from "./styles";
 
 interface Props {
@@ -23,14 +23,10 @@ export function LiturgySeasonBanner({ liturgia, data, cor }: Props) {
     >
       <View style={[styles.dot, { backgroundColor: accent }]} />
       <View style={styles.textBlock}>
-        <Text
-          style={[styles.season, { color: accent }]}
-          numberOfLines={1}
-          ellipsizeMode="tail"
-        >
+        <Text style={[styles.season, { color: accent }]} ellipsizeMode="tail">
           {liturgia}
         </Text>
-        <Text style={styles.date} numberOfLines={1} ellipsizeMode="tail">
+        <Text style={styles.date} ellipsizeMode="tail">
           {formatLiturgicalDate(data)}
         </Text>
       </View>
