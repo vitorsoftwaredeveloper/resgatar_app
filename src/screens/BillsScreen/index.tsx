@@ -1,16 +1,17 @@
-import React, { useContext, useState, useMemo } from "react";
+import { ContributionItem } from "@/components/ContributionItem";
+import { Header } from "@/components/Header";
+import { ToastMessage } from "@/components/Toast";
+import { AuthContext } from "@/context/AuthContext";
+import { ChargeContext } from "@/context/ChargeContext";
+import { TRANSACTION_STATUS } from "@/types/Charge";
+import { shareComprovantePDF } from "@/utils/generatePixReceipt";
+import { formatDateFromTimestamp } from "@/utils/helper";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import React, { useContext, useMemo, useState } from "react";
 import { FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { styles } from "./styles";
-import { ContributionItem } from "@/components/ContributionItem";
 import { PixPaymentModal } from "./PixPaymentModal";
-import { Header } from "@/components/Header";
-import { ChargeContext } from "@/context/ChargeContext";
-import { AuthContext } from "@/context/AuthContext";
-import { TRANSACTION_STATUS } from "@/types/Charge";
-import { formatDateFromTimestamp } from "@/utils/helper";
-import { shareComprovantePDF } from "@/utils/generatePixReceipt";
-import { ToastMessage } from "@/components/Toast";
+import { styles } from "./styles";
 
 const MONTH: Record<string, string> = {
   january: "Janeiro",
@@ -28,6 +29,7 @@ const MONTH: Record<string, string> = {
 };
 
 export const BillsScreen = () => {
+  const tabBarHeight = useBottomTabBarHeight();
   const { createCharge } = useContext(ChargeContext);
   const { member } = useContext(AuthContext);
 
@@ -72,7 +74,10 @@ export const BillsScreen = () => {
       <Header name={member?.firstName + " " + member?.lastName} />
 
       <FlatList
-        contentContainerStyle={styles.list}
+        contentContainerStyle={[
+          styles.list,
+          { paddingBottom: tabBarHeight + 15 },
+        ]}
         data={contributions}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (

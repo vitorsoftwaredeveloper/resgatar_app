@@ -4,6 +4,7 @@ import { ItemActionList } from "@/components/ItemActionList";
 import { ProfileHeaderCard } from "@/components/ProfileHeaderCard";
 import { COLORS } from "@/theme";
 import { IMember } from "@/types/Member";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { Lock, LogOut, User } from "lucide-react-native";
 import React, { useContext, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -15,6 +16,7 @@ import { styles } from "./styles";
 
 export const ProfileScreen = () => {
   const { logout, member } = useContext(AuthContext);
+  const tabBarHeight = useBottomTabBarHeight();
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
   const [dialogLogoutVisible, setDialogLogoutVisible] = useState(false);
@@ -28,7 +30,7 @@ export const ProfileScreen = () => {
     <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
       <Header name={member?.firstName + " " + member?.lastName} />
 
-      <View style={styles.content}>
+      <View style={[styles.content, { paddingBottom: tabBarHeight }]}>
         <ProfileHeaderCard member={member as IMember} />
 
         <View style={styles.menuCard}>

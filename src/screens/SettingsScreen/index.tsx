@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { View } from "react-native";
 import { Lock, Send, UserRoundMinus, UserRoundPlus } from "lucide-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { AuthContext } from "../../context/AuthContext";
 import { ModalCreateMember } from "./ModalCreateMember";
 import { ItemActionList } from "@/components/ItemActionList";
@@ -14,6 +15,7 @@ import { COLORS } from "@/theme";
 
 export const SettingsScreen = () => {
   const { member } = useContext(AuthContext);
+  const tabBarHeight = useBottomTabBarHeight();
 
   const [createMemberModal, setCreateMemberModal] = useState(false);
   const [openRemoveMember, setOpenRemoveMember] = useState(false);
@@ -24,7 +26,7 @@ export const SettingsScreen = () => {
     <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
       <Header name={member?.firstName + " " + member?.lastName} />
 
-      <View style={styles.content}>
+      <View style={[styles.content, { paddingBottom: tabBarHeight }]}>
         <View style={styles.menuCard}>
           <ItemActionList
             title="Novo membro"

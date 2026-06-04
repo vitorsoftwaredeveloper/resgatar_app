@@ -3,21 +3,21 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.background,
-    borderRadius: 16,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: SPACING.lg,
     paddingBottom: 0,
   },
   left: {
     flexDirection: "row",
     alignItems: "center",
     flex: 1,
-    borderBottomWidth: 0.5,
-    borderBottomColor: COLORS.primary,
-    paddingBottom: 20,
+    backgroundColor: "rgb(255, 255, 255,0.8)",
+    padding: SPACING.lg,
+    borderTopEndRadius: 0,
+    borderTopStartRadius: 0,
+    borderBottomStartRadius: 16,
+    borderBottomEndRadius: 16,
   },
   textContainer: {
     flex: 1,

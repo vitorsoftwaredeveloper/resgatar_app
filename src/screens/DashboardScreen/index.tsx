@@ -1,21 +1,23 @@
-import React, { useContext, useState, useCallback } from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useFocusEffect } from "@react-navigation/native";
-import { RefreshCw } from "lucide-react-native";
-import { AuthContext } from "@/context/AuthContext";
 import { Header } from "@/components/Header";
 import { LiturgySeasonBanner } from "@/components/LiturgySeasonBanner";
-import { ReadingCard } from "@/components/ReadingCard";
 import { PsalmCard } from "@/components/PsalmCard";
+import { ReadingCard } from "@/components/ReadingCard";
 import { LiturgySkeleton } from "@/components/Skeleton/LiturgySkeleton";
+import { AuthContext } from "@/context/AuthContext";
 import { LiturgyService } from "@/services/LiturgyService";
-import { ILiturgia, LITURGICAL_ACCENT } from "@/types/Liturgy";
 import { COLORS } from "@/theme";
+import { ILiturgia, LITURGICAL_ACCENT } from "@/types/Liturgy";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useFocusEffect } from "@react-navigation/native";
+import { RefreshCw } from "lucide-react-native";
+import React, { useCallback, useContext, useState } from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./styles";
 
 export function DashboardScreen() {
   const { member } = useContext(AuthContext);
+  const tabBarHeight = useBottomTabBarHeight();
   const [loading, setLoading] = useState(true);
   const [liturgy, setLiturgy] = useState<ILiturgia | null>(null);
   const [error, setError] = useState(false);
@@ -33,9 +35,15 @@ export function DashboardScreen() {
     }
   };
 
-  useFocusEffect(useCallback(() => { fetchLiturgy(); }, []));
+  useFocusEffect(
+    useCallback(() => {
+      fetchLiturgy();
+    }, []),
+  );
 
-  const accent = liturgy ? LITURGICAL_ACCENT[liturgy.cor] ?? COLORS.primary : COLORS.primary;
+  const accent = liturgy
+    ? (LITURGICAL_ACCENT[liturgy.cor] ?? COLORS.primary)
+    : COLORS.primary;
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
@@ -43,7 +51,10 @@ export function DashboardScreen() {
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={styles.content}
+        contentContainerStyle={[
+          styles.content,
+          { paddingBottom: tabBarHeight + 15 },
+        ]}
         showsVerticalScrollIndicator={false}
       >
         {loading ? (
