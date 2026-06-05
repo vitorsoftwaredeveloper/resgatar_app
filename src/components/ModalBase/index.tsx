@@ -1,10 +1,10 @@
-import Toast from "react-native-toast-message";
-import { useStyles } from "./styles";
-import { Modal, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { IconButton } from "../IconButton";
 import { useAppTheme } from "@/context/ThemeContext";
 import { X } from "lucide-react-native";
+import { Modal, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
+import { IconButton } from "../IconButton";
+import { useStyles } from "./styles";
 
 interface IModalBase {
   visible: boolean;

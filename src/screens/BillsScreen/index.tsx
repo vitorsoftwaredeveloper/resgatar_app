@@ -78,7 +78,7 @@ export const BillsScreen = () => {
         <FlatList
           contentContainerStyle={[
             styles.list,
-            { paddingBottom: tabBarHeight + 20 },
+            { paddingBottom: tabBarHeight + 70 },
           ]}
           data={contributions}
           keyExtractor={(item) => item.id}

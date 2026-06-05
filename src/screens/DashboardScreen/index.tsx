@@ -56,7 +56,7 @@ export function DashboardScreen() {
           style={styles.scroll}
           contentContainerStyle={[
             styles.content,
-            { paddingBottom: tabBarHeight + 20 },
+            { paddingBottom: tabBarHeight + 70 },
           ]}
           showsVerticalScrollIndicator={false}
         >
