@@ -1,8 +1,8 @@
-import React, { createContext, useEffect, useState } from "react";
-import { signIn, signOut, getCurrentUser } from "aws-amplify/auth";
 import { MemberServices } from "@/services/MemberService";
-import { saveMember, getStoredMember } from "@/storage/asyncStorage";
+import { getStoredMember, saveMember } from "@/storage/asyncStorage";
 import { IMemberState, IMemberWithContribution } from "@/types/Member";
+import { getCurrentUser, signIn, signOut } from "aws-amplify/auth";
+import React, { createContext, useEffect, useState } from "react";
 
 interface AuthContextData {
   isLoggedIn: boolean;
@@ -96,7 +96,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         phoneNumber: memberCurrent.phoneNumber,
         paymentInfo: {
           datePayment: parseInt(memberCurrent.datePayment),
-          amount: memberCurrent.amount.replace("R$", "").trim(),
+          amount: memberCurrent.amount
+            .replace("R$", "")
+            .replace(".", "")
+            .trim(),
         },
         identification: {
           type: memberCurrent.type as "CPF" | "CNPJ",
@@ -131,7 +134,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         phoneNumber: newMember.phoneNumber,
         paymentInfo: {
           datePayment: parseInt(newMember.datePayment),
-          amount: newMember.amount.replace("R$", "").trim(),
+          amount: newMember.amount.replace("R$", "").replace(".", "").trim(),
         },
         identification: {
           type: newMember.type as "CPF" | "CNPJ",
