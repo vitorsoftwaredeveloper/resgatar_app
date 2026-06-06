@@ -6,7 +6,7 @@ import { AuthContext } from "@/context/AuthContext";
 import { ChargeContext } from "@/context/ChargeContext";
 import { TRANSACTION_STATUS } from "@/types/Charge";
 import { shareComprovantePDF } from "@/utils/generatePixReceipt";
-import { formatDateFromTimestamp } from "@/utils/helper";
+import { formatDateFromTimestamp, formatMoneyBRL } from "@/utils/helper";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import React, { useContext, useMemo, useState } from "react";
 import { FlatList, View } from "react-native";
@@ -37,10 +37,7 @@ export const BillsScreen = () => {
   const [modalPayVisible, setModalPayVisible] = useState(false);
 
   const handlePay = async (item: any) => {
-    await createCharge(
-      item.value.replace("R$", "").trim(),
-      Object.values(MONTH).indexOf(item.month),
-    )
+    await createCharge(item.rawValue, Object.values(MONTH).indexOf(item.month))
       .then(() => {
         setModalPayVisible(true);
       })
@@ -56,9 +53,10 @@ export const BillsScreen = () => {
           id: `${index}`,
           month: MONTH[month],
           paidAt: `${formatDateFromTimestamp(new Date(paidAt).getTime())}`,
+          rawValue: paid ? String(value) : String(member?.paymentInfo.amount),
           value: paid
-            ? `R$ ${value}`.replace(".", ",")
-            : `R$ ${member?.paymentInfo.amount}`.replace(".", ","),
+            ? formatMoneyBRL(value)
+            : formatMoneyBRL(member?.paymentInfo.amount ?? 0),
           description: paid
             ? `Pago em ${formatDateFromTimestamp(new Date(paidAt).getTime())}`
             : "Pagamento a ser realizado",
@@ -90,6 +88,7 @@ export const BillsScreen = () => {
                 shareComprovantePDF({
                   ...item,
                   cpf: member?.identification.numberType as string,
+                  docType: member?.identification.type,
                   name: member?.firstName as string,
                   email: member?.email as string,
                 })

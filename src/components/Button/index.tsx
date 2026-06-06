@@ -67,7 +67,7 @@ export function Button({
         <ActivityIndicator size="small" color="#FFF" />
       ) : (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-          {leftIcon}
+          {leftIcon && leftIcon}
           <Text
             style={[
               styles.buttonText,
@@ -77,7 +77,7 @@ export function Button({
           >
             {title}
           </Text>
-          {rigthtIcon}
+          {rigthtIcon && rigthtIcon}
         </View>
       )}
     </TouchableOpacity>

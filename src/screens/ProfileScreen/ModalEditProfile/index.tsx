@@ -56,8 +56,10 @@ const profileValidationSchema = Yup.object().shape({
     .required("Data de nascimento obrigatória")
     .test("valid-date", "Data inválida", (value?: string) => {
       if (!value || value.length !== 10) return false;
+
       const [day, month, year] = value.split("/").map(Number);
       const date = new Date(year, month - 1, day);
+
       return (
         date.getFullYear() === year &&
         date.getMonth() === month - 1 &&
@@ -133,7 +135,7 @@ export const ModalEditProfile = ({
   const styles = useStyles();
   const savedDocValues = useRef<Record<string, string>>({
     CPF: maskCPFOrCNPJ(member?.identification?.numberType || "", "CPF"),
-    CNPJ: "",
+    CNPJ: maskCPFOrCNPJ(member?.identification?.numberType || "", "CNPJ"),
   });
 
   const initialValues: IMemberState = {

@@ -9,16 +9,12 @@ export function useStyles() {
       StyleSheet.create({
         background: {
           flex: 1,
-          backgroundColor: colors.softBrown,
-        },
-        scrollContent: {
-          flexGrow: 1,
+          backgroundColor: colors.background,
           justifyContent: "center",
           padding: 24,
         },
-
         card: {
-          backgroundColor: colors.inputBg,
+          backgroundColor: colors.card,
           borderRadius: 32,
           paddingHorizontal: 24,
           paddingVertical: 32,
@@ -26,29 +22,25 @@ export function useStyles() {
           justifyContent: "space-between",
           alignItems: "center",
         },
-
         title: {
           fontSize: 28,
           fontWeight: "700",
           textAlign: "center",
-          color: colors.muted,
+          color: colors.primary,
           marginTop: 32,
         },
-
         subtitle: {
           textAlign: "center",
           fontSize: 16,
-          color: colors.muted,
+          color: colors.textMuted,
           marginBottom: 32,
           marginTop: 8,
           fontStyle: "italic",
         },
-
         submitButton: {
           marginTop: 24,
           width: "100%",
         },
-
         motion: {
           flexDirection: "row",
           alignItems: "center",
@@ -56,23 +48,21 @@ export function useStyles() {
         },
         motionText: {
           marginHorizontal: 12,
-          color: colors.muted,
+          color: colors.textMuted,
           fontSize: 16,
           fontStyle: "italic",
         },
         divider: {
           flex: 1,
           height: 1,
-          backgroundColor: colors.softBrown,
+          backgroundColor: colors.border,
         },
-
         logoContainer: {
           width: 160,
           height: 160,
           justifyContent: "center",
           alignItems: "center",
         },
-
         form: {
           marginBottom: 16,
           minHeight: 120,

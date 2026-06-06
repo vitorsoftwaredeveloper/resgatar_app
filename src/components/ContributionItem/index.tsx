@@ -1,6 +1,6 @@
 import { useAppTheme } from "@/context/ThemeContext";
 import { TRANSACTION_STATUS } from "@/types/Charge";
-import { CreditCard, Share2 } from "lucide-react-native";
+import { QrCode, Share2 } from "lucide-react-native";
 import React from "react";
 import { Text, View } from "react-native";
 import { Button } from "../Button";
@@ -69,13 +69,13 @@ export function ContributionItem({ data, onPay, onShare }: Props) {
 
       {isPending ? (
         <Button
-          title="Pagar com Pix"
+          title="Pagar"
           onPress={async () => {
             await onPay();
           }}
           styleCustom={{ marginTop: 16 }}
           leftIcon={
-            <CreditCard
+            <QrCode
               size={20}
               color={mode === "dark" ? colors.black : colors.white}
             />
@@ -85,7 +85,7 @@ export function ContributionItem({ data, onPay, onShare }: Props) {
         <Button
           title="Comprovante"
           onPress={onShare}
-          styleCustom={{ marginTop: 16, color: "red" }}
+          styleCustom={{ marginTop: 16 }}
           leftIcon={<Share2 size={20} color={colors.primary} />}
           variant="secondary"
           loading={false}

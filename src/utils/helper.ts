@@ -75,10 +75,19 @@ function formatLiturgicalDate(dataBR: string): string {
   return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 }
 
+const formatMoneyBRL = (amount: string | number): string => {
+  const num = typeof amount === "string" ? parseFloat(amount) : amount;
+  if (isNaN(num)) return "R$ 0,00";
+  return `R$ ${num.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+};
 export {
-  timeAgo,
   formatDateFromTimestamp,
-  parseDateBRToTimestamp,
-  normalizeText,
   formatLiturgicalDate,
+  formatMoneyBRL,
+  normalizeText,
+  parseDateBRToTimestamp,
+  timeAgo,
 };

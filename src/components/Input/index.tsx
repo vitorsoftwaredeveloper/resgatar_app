@@ -1,14 +1,14 @@
-import { Text, TextInput, TextInputProps, View } from "react-native";
-import { useState, ReactNode } from "react";
-import { useStyles } from "./styles";
 import { useAppTheme } from "@/context/ThemeContext";
+import { ReactNode, useState } from "react";
+import { Text, TextInput, TextInputProps, View } from "react-native";
+import { useStyles } from "./styles";
 
 type InputProps = TextInputProps & {
   label?: string;
-  value: string;
+  value?: string;
   flex?: number;
   highlighted?: boolean;
-  onChangeText: (text: string) => void;
+  onChangeText?: (text: string) => void;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
   error?: string | false;
@@ -25,8 +25,8 @@ export const Input = ({
   flex = 1,
   ...props
 }: InputProps) => {
-  const { colors } = useAppTheme();
   const styles = useStyles();
+  const { colors } = useAppTheme();
   const [isFocused, setIsFocused] = useState(false);
 
   const hasError = Boolean(error);

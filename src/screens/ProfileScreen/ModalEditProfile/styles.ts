@@ -46,7 +46,7 @@ export function useStyles() {
           paddingHorizontal: 16,
         },
         inputHighlighted: {
-          borderColor: "#E0B96A",
+          borderColor: colors.waiting,
           borderWidth: 2,
         },
         inputText: {
@@ -100,7 +100,7 @@ export function useStyles() {
           fontWeight: "600",
         },
         dayTextActive: {
-          color: "#FFF",
+          color: colors.white,
         },
 
         toggle: {
@@ -124,7 +124,7 @@ export function useStyles() {
           fontWeight: "600",
         },
         toggleTextActive: {
-          color: "#FFF",
+          color: colors.white,
           fontWeight: "700",
         },
 
@@ -139,7 +139,7 @@ export function useStyles() {
           alignItems: "center",
         },
         saveText: {
-          color: "#FFF",
+          color: colors.white,
           fontSize: 18,
           fontWeight: "700",
         },

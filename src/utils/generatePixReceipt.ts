@@ -17,6 +17,7 @@ export const generateComprovanteHTML = ({
   userName,
   userEmail,
   userCpf,
+  userDocType,
   month,
   value,
   paidDate,
@@ -24,6 +25,7 @@ export const generateComprovanteHTML = ({
   userName: string;
   userEmail: string;
   userCpf?: string;
+  userDocType?: string;
   month: string;
   value: string;
   paidDate: string;
@@ -201,7 +203,7 @@ export const generateComprovanteHTML = ({
       userCpf
         ? `
       <div class="value-row last">
-        <div class="label">CPF</div>
+        <div class="label">${userDocType ?? "CPF"}</div>
         <div class="value">${userCpf}</div>
       </div>
     `
@@ -228,7 +230,7 @@ export const generateComprovanteHTML = ({
       <div class="value">PIX</div>
     </div>
 
-   
+
   </div>
 
   <!-- Total -->
@@ -265,6 +267,7 @@ export const shareComprovantePDF = async (item: {
   paidAt: string;
   value: string;
   cpf: string;
+  docType?: string;
 }) => {
   try {
     const html = generateComprovanteHTML({
@@ -273,6 +276,7 @@ export const shareComprovantePDF = async (item: {
       month: item.month,
       paidDate: item.paidAt,
       userCpf: item.cpf,
+      userDocType: item.docType,
       value: item.value,
     });
 
