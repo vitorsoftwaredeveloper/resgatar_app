@@ -1,7 +1,7 @@
+import { useAppTheme } from "@/context/ThemeContext";
 import { RADIUS, SHADOW, SPACING, TYPOGRAPHY } from "@/theme";
 import { useMemo } from "react";
 import { StyleSheet } from "react-native";
-import { useAppTheme } from "@/context/ThemeContext";
 
 export function useStyles() {
   const { colors } = useAppTheme();
@@ -21,7 +21,7 @@ export function useStyles() {
           width: 56,
           height: 56,
           borderRadius: 28,
-          backgroundColor: colors.softBrown,
+          backgroundColor: colors.background,
           justifyContent: "center",
           alignItems: "center",
           marginRight: SPACING.md,

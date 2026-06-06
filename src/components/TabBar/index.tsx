@@ -4,7 +4,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Home, FileText, User, Settings } from "lucide-react-native";
+import { Home, FileText, UserRound, Settings } from "lucide-react-native";
 import { useStyles, TAB_WIDTH, TAB_WIDTH_ADMIN } from "./styles";
 
 export function TabBar({ state, navigation, isAdmin }: any) {
@@ -43,7 +43,7 @@ export function TabBar({ state, navigation, isAdmin }: any) {
           const icons: any = {
             Dashboard: <Home size={24} color={iconColor} />,
             Bills: <FileText size={24} color={iconColor} />,
-            Profile: <User size={24} color={iconColor} />,
+            Profile: <UserRound size={24} color={iconColor} />,
             ...(isAdmin && {
               Settings: <Settings size={24} color={iconColor} />,
             }),

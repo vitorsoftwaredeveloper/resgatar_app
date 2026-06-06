@@ -53,7 +53,17 @@ const createMemberSchema = Yup.object().shape({
 
   dateOfBirth: Yup.string()
     .matches(/^\d{2}\/\d{2}\/\d{4}$/, "Data inválida")
-    .required("Data de nascimento obrigatória"),
+    .required("Data de nascimento obrigatória")
+    .test("min-year-1970", "Data deve ser a partir de 1970", (value) => {
+      if (!value) return true;
+      const year = parseInt(value.split("/")[2] ?? "0", 10);
+      return year >= 1970;
+    })
+    .test("not-future", "Data de nascimento não pode ser no futuro", (value) => {
+      if (!value || value.length !== 10) return true;
+      const [day, month, year] = value.split("/").map(Number);
+      return new Date(year, month - 1, day) <= new Date();
+    }),
 
   datePayment: Yup.string().required("Selecione o dia"),
 
@@ -400,7 +410,6 @@ export const ModalCreateMember = ({
 
                     handleSubmit();
                   }}
-                  // disabled={isSubmitting}
                   loading={isSubmitting}
                 />
               </View>

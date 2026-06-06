@@ -3,7 +3,12 @@ import { ItemActionList } from "@/components/ItemActionList";
 import { SwipeableTab } from "@/components/SwipeableTab";
 import { useAppTheme } from "@/context/ThemeContext";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { Lock, Send, UserRoundMinus, UserRoundPlus } from "lucide-react-native";
+import {
+  Mail,
+  UserRoundMinus,
+  UserRoundPen,
+  UserRoundPlus,
+} from "lucide-react-native";
 import React, { useContext, useState } from "react";
 import { View } from "react-native";
 import { AuthContext } from "../../context/AuthContext";
@@ -49,14 +54,14 @@ export const SettingsScreen = () => {
               title="Atualizar senha de membro"
               description="Essa funcionalidade permite atualizar a senha de acesso ao aplicativo de um membro caso ela venha a esquecer."
               onPress={() => setOpenEditMember(true)}
-              icon={<Lock color={colors.primary} />}
+              icon={<UserRoundPen color={colors.primary} />}
             />
 
             <ItemActionList
               title="Enviar notificação"
               description="Envie notificações para os membros da comunidade"
               onPress={() => setOpenSendNotification(true)}
-              icon={<Send color={colors.primary} />}
+              icon={<Mail color={colors.primary} />}
               isLast
             />
           </View>

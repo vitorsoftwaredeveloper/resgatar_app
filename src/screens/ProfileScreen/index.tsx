@@ -6,7 +6,7 @@ import { SwipeableTab } from "@/components/SwipeableTab";
 import { useAppTheme } from "@/context/ThemeContext";
 import { IMember } from "@/types/Member";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { Lock, LogOut, User } from "lucide-react-native";
+import { Lock, LogOut, Pencil } from "lucide-react-native";
 import React, { useContext, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { AuthContext } from "../../context/AuthContext";
@@ -41,7 +41,7 @@ export const ProfileScreen = () => {
               title="Meus dados"
               description="Visualize ou edite seus dados pessoais"
               onPress={() => setEditModalVisible(true)}
-              icon={<User color={colors.primary} />}
+              icon={<Pencil color={colors.primary} />}
             />
 
             <ItemActionList

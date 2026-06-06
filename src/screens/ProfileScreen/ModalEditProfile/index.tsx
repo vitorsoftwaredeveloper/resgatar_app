@@ -56,15 +56,18 @@ const profileValidationSchema = Yup.object().shape({
     .required("Data de nascimento obrigatória")
     .test("valid-date", "Data inválida", (value?: string) => {
       if (!value || value.length !== 10) return false;
-
       const [day, month, year] = value.split("/").map(Number);
       const date = new Date(year, month - 1, day);
-
       return (
         date.getFullYear() === year &&
         date.getMonth() === month - 1 &&
         date.getDate() === day
       );
+    })
+    .test("min-year-1970", "Data deve ser a partir de 1970", (value?: string) => {
+      if (!value) return true;
+      const year = parseInt(value.split("/")[2] ?? "0", 10);
+      return year >= 1970;
     })
     .test(
       "not-future",
@@ -72,8 +75,7 @@ const profileValidationSchema = Yup.object().shape({
       (value?: string) => {
         if (!value || value.length !== 10) return true;
         const [day, month, year] = value.split("/").map(Number);
-        const date = new Date(year, month - 1, day);
-        return date <= new Date();
+        return new Date(year, month - 1, day) <= new Date();
       },
     ),
 

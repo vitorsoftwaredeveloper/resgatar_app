@@ -1,7 +1,7 @@
 import { useAppTheme } from "@/context/ThemeContext";
 import { IMember } from "@/types/Member";
 import { maskCPFOrCNPJ } from "@/utils/mask";
-import { UserIcon } from "lucide-react-native";
+import { UserRound } from "lucide-react-native";
 import React from "react";
 import { Text, View } from "react-native";
 import { useStyles } from "./styles";
@@ -17,7 +17,7 @@ export function ProfileHeaderCard({ member }: Props) {
   return (
     <View style={styles.card}>
       <View style={styles.avatar}>
-        <UserIcon size={25} color={colors.primary} />
+        <UserRound size={25} color={colors.primary} />
       </View>
 
       <View style={styles.info}>
