@@ -1,28 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Pressable, LayoutChangeEvent } from "react-native";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  Easing,
-} from "react-native-reanimated";
+import { useAppTheme } from "@/context/ThemeContext";
 import { ChevronDown } from "lucide-react-native";
+import React, { useEffect, useState } from "react";
+import { LayoutChangeEvent, Pressable, Text, View } from "react-native";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import { useStyles } from "./styles";
 
 interface Props {
   referencia: string;
   refrao?: string;
   texto: string;
-  accentColor: string;
 }
 
-export function PsalmCard({ referencia, refrao, texto, accentColor }: Props) {
+export function PsalmCard({ referencia, refrao, texto }: Props) {
   const styles = useStyles();
   const [expanded, setExpanded] = useState(false);
   const [contentHeight, setContentHeight] = useState(0);
   const animatedHeight = useSharedValue(0);
   const rotate = useSharedValue(0);
-
+  const { colors } = useAppTheme();
   const handleContentLayout = (e: LayoutChangeEvent) => {
     const { height } = e.nativeEvent.layout;
     if (height > 0 && contentHeight === 0) setContentHeight(height + 8);
@@ -52,19 +52,19 @@ export function PsalmCard({ referencia, refrao, texto, accentColor }: Props) {
 
   return (
     <Pressable
-      style={[styles.card, { borderLeftColor: accentColor }]}
+      style={[styles.card]}
       onPress={() => setExpanded((v) => !v)}
       accessibilityRole="button"
     >
-      <View style={[styles.labelBadge, { backgroundColor: accentColor + "22" }]}>
-        <Text style={[styles.label, { color: accentColor }]}>SALMO RESPONSORIAL</Text>
+      <View style={[styles.labelBadge]}>
+        <Text style={[styles.label]}>SALMO RESPONSORIAL</Text>
       </View>
 
       <Text style={styles.referencia}>{referencia}</Text>
 
       {!!refrao && (
-        <View style={[styles.refraoBlock, { borderColor: accentColor + "55", backgroundColor: accentColor + "11" }]}>
-          <Text style={[styles.refraoLabel, { color: accentColor }]}>Refrão</Text>
+        <View style={[styles.refraoBlock]}>
+          <Text style={[styles.refraoLabel]}>Refrão</Text>
           <Text style={styles.refraoText}>{refrao}</Text>
         </View>
       )}
@@ -82,11 +82,11 @@ export function PsalmCard({ referencia, refrao, texto, accentColor }: Props) {
       )}
 
       <View style={styles.footer}>
-        <Text style={[styles.toggleText, { color: accentColor }]}>
-          {expanded ? "Fechar" : "Ler salmo completo"}
+        <Text style={[styles.toggleText]}>
+          {expanded ? "Ocultar" : "Ver mais"}
         </Text>
         <Animated.View style={arrowStyle}>
-          <ChevronDown size={16} color={accentColor} />
+          <ChevronDown size={16} color={colors.primary} />
         </Animated.View>
       </View>
     </Pressable>

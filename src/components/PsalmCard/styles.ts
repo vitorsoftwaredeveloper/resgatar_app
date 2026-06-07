@@ -1,7 +1,7 @@
-import { RADIUS, SHADOW, SPACING, TYPOGRAPHY } from "@/theme";
+import { useAppTheme } from "@/context/ThemeContext";
+import { RADIUS, SPACING, TYPOGRAPHY } from "@/theme";
 import { useMemo } from "react";
 import { StyleSheet } from "react-native";
-import { useAppTheme } from "@/context/ThemeContext";
 
 export function useStyles() {
   const { colors } = useAppTheme();
@@ -11,14 +11,13 @@ export function useStyles() {
         card: {
           backgroundColor: colors.card,
           borderRadius: RADIUS.md,
-          borderLeftWidth: 4,
           padding: SPACING.md,
           marginBottom: SPACING.md,
-          ...SHADOW.card,
+          borderWidth: 0.3,
+          borderColor: colors.primary,
         },
         labelBadge: {
           alignSelf: "flex-start",
-          paddingHorizontal: SPACING.xxs,
           paddingVertical: 3,
           borderRadius: 6,
           marginBottom: SPACING.xxs,
@@ -27,29 +26,33 @@ export function useStyles() {
           fontSize: TYPOGRAPHY.xsmall,
           fontWeight: "800",
           letterSpacing: 0.8,
+          color: colors.textMuted,
         },
         referencia: {
           fontSize: TYPOGRAPHY.subtitle,
           fontWeight: "700",
-          color: colors.textStrong,
+          color: colors.primary,
           marginBottom: SPACING.sm2,
         },
         refraoBlock: {
-          borderWidth: 1,
           borderRadius: RADIUS.sm,
           padding: SPACING.sm2,
           marginBottom: SPACING.sm,
+          backgroundColor: colors.softBrown,
+          borderWidth: 0.2,
+          borderColor: colors.primary,
         },
         refraoLabel: {
           fontSize: TYPOGRAPHY.xsmall,
           fontWeight: "800",
           letterSpacing: 0.6,
           textTransform: "uppercase",
+          color: colors.textMuted,
           marginBottom: 4,
         },
         refraoText: {
           fontSize: TYPOGRAPHY.body,
-          color: colors.textStrong,
+          color: colors.primary,
           fontStyle: "italic",
           lineHeight: 22,
         },
@@ -72,8 +75,9 @@ export function useStyles() {
           marginTop: SPACING.sm,
         },
         toggleText: {
-          fontSize: TYPOGRAPHY.small,
+          fontSize: TYPOGRAPHY.body,
           fontWeight: "600",
+          color: colors.primary,
         },
       }),
     [colors],

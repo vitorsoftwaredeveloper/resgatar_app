@@ -7,7 +7,7 @@ import { SwipeableTab } from "@/components/SwipeableTab";
 import { AuthContext } from "@/context/AuthContext";
 import { useAppTheme } from "@/context/ThemeContext";
 import { LiturgyService } from "@/services/LiturgyService";
-import { ILiturgia, LITURGICAL_ACCENT } from "@/types/Liturgy";
+import { ILiturgia } from "@/types/Liturgy";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useFocusEffect } from "@react-navigation/native";
 import { RefreshCw } from "lucide-react-native";
@@ -42,10 +42,6 @@ export function DashboardScreen() {
       fetchLiturgy();
     }, []),
   );
-
-  const accent = liturgy
-    ? (LITURGICAL_ACCENT[liturgy.cor] ?? colors.primary)
-    : colors.primary;
 
   return (
     <SwipeableTab>
@@ -89,14 +85,13 @@ export function DashboardScreen() {
                 referencia={liturgy.leituras.primeiraLeitura.referencia}
                 titulo={liturgy.leituras.primeiraLeitura.titulo}
                 texto={liturgy.leituras.primeiraLeitura.texto}
-                accentColor={accent}
+                formulaFinal="Palavra do Senhor."
               />
 
               <PsalmCard
                 referencia={liturgy.leituras.salmo.referencia}
                 refrao={liturgy.leituras.salmo.refrao}
                 texto={liturgy.leituras.salmo.texto}
-                accentColor={accent}
               />
 
               {!!liturgy.leituras.segundaLeitura && (
@@ -105,7 +100,7 @@ export function DashboardScreen() {
                   referencia={liturgy.leituras.segundaLeitura.referencia}
                   titulo={liturgy.leituras.segundaLeitura.titulo}
                   texto={liturgy.leituras.segundaLeitura.texto}
-                  accentColor={accent}
+                  formulaFinal="Palavra do Senhor."
                 />
               )}
 
@@ -114,8 +109,7 @@ export function DashboardScreen() {
                 referencia={liturgy.leituras.evangelho.referencia}
                 titulo={liturgy.leituras.evangelho.titulo}
                 texto={liturgy.leituras.evangelho.texto}
-                accentColor={accent}
-                isGospel
+                formulaFinal="Palavra da Salvação."
               />
 
               {!!liturgy.oracoes?.coleta && (
@@ -123,7 +117,6 @@ export function DashboardScreen() {
                   label="ORAÇÃO DO DIA"
                   referencia=""
                   texto={liturgy.oracoes.coleta}
-                  accentColor={accent}
                 />
               )}
             </>

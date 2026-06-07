@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Pressable, LayoutChangeEvent } from "react-native";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  Easing,
-} from "react-native-reanimated";
+import { useAppTheme } from "@/context/ThemeContext";
 import { ChevronDown } from "lucide-react-native";
+import React, { useEffect, useState } from "react";
+import { LayoutChangeEvent, Pressable, Text, View } from "react-native";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import { useStyles } from "./styles";
 
 interface Props {
@@ -14,8 +15,7 @@ interface Props {
   referencia: string;
   titulo?: string;
   texto: string;
-  accentColor: string;
-  isGospel?: boolean;
+  formulaFinal?: string;
   defaultExpanded?: boolean;
 }
 
@@ -39,8 +39,7 @@ export function ReadingCard({
   referencia,
   titulo,
   texto,
-  accentColor,
-  isGospel = false,
+  formulaFinal,
   defaultExpanded = false,
 }: Props) {
   const styles = useStyles();
@@ -48,6 +47,7 @@ export function ReadingCard({
   const [contentHeight, setContentHeight] = useState(0);
   const animatedHeight = useSharedValue(0);
   const rotate = useSharedValue(0);
+  const { colors } = useAppTheme();
 
   const handleContentLayout = (e: LayoutChangeEvent) => {
     const { height } = e.nativeEvent.layout;
@@ -78,28 +78,32 @@ export function ReadingCard({
 
   return (
     <Pressable
-      style={[
-        styles.card,
-        { borderLeftColor: accentColor },
-        isGospel && styles.gospelCard,
-      ]}
+      style={[styles.card]}
       onPress={() => setExpanded((v) => !v)}
       accessibilityRole="button"
     >
-      <View
-        style={[styles.labelBadge, { backgroundColor: accentColor + "22" }]}
-      >
-        <Text style={[styles.label, { color: accentColor }]}>{label}</Text>
-      </View>
+      <Text style={[styles.label]}>{label}</Text>
 
       {!!referencia && <Text style={styles.referencia}>{referencia}</Text>}
       {!!titulo && <Text style={styles.titulo}>{titulo}</Text>}
+
+      <View style={styles.toggleRow}>
+        <Text style={[styles.toggleText]}>
+          {expanded ? "Ocultar" : "Ver mais"}
+        </Text>
+        <Animated.View style={arrowStyle}>
+          <ChevronDown size={16} color={colors.primary} />
+        </Animated.View>
+      </View>
 
       <Animated.View style={expandStyle}>
         <View onLayout={handleContentLayout}>
           <Text style={styles.texto}>
             {formatVerseText(texto, styles.texto, styles.verseNumber)}
           </Text>
+          {!!formulaFinal && (
+            <Text style={[styles.formulaFinal]}>{`— ${formulaFinal}`}</Text>
+          )}
         </View>
       </Animated.View>
 
@@ -108,17 +112,11 @@ export function ReadingCard({
           <Text style={styles.texto}>
             {formatVerseText(texto, styles.texto, styles.verseNumber)}
           </Text>
+          {!!formulaFinal && (
+            <Text style={[styles.formulaFinal]}>{`— ${formulaFinal}`}</Text>
+          )}
         </View>
       )}
-
-      <View style={styles.footer}>
-        <Text style={[styles.toggleText, { color: accentColor }]}>
-          {expanded ? "Fechar" : "Ler leitura"}
-        </Text>
-        <Animated.View style={arrowStyle}>
-          <ChevronDown size={16} color={accentColor} />
-        </Animated.View>
-      </View>
     </Pressable>
   );
 }

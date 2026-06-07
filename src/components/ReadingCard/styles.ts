@@ -1,5 +1,5 @@
 import { useAppTheme } from "@/context/ThemeContext";
-import { RADIUS, SHADOW, SPACING, TYPOGRAPHY } from "@/theme";
+import { RADIUS, SPACING, TYPOGRAPHY } from "@/theme";
 import { useMemo } from "react";
 import { StyleSheet } from "react-native";
 
@@ -11,31 +11,22 @@ export function useStyles() {
         card: {
           backgroundColor: colors.card,
           borderRadius: RADIUS.md,
-          borderLeftWidth: 4,
+          borderWidth: 0.3,
+          borderColor: colors.primary,
           padding: SPACING.md,
           marginBottom: SPACING.md,
-          ...SHADOW.card,
-        },
-        gospelCard: {
-          borderLeftWidth: 6,
-          paddingVertical: SPACING.lg,
-        },
-        labelBadge: {
-          alignSelf: "flex-start",
-          paddingHorizontal: SPACING.xxs,
-          paddingVertical: 3,
-          borderRadius: 6,
-          marginBottom: SPACING.xxs,
         },
         label: {
           fontSize: TYPOGRAPHY.xsmall,
-          fontWeight: "800",
+          fontWeight: "700",
           letterSpacing: 0.8,
+          marginBottom: SPACING.xs,
+          color: colors.textMuted,
         },
         referencia: {
-          fontSize: TYPOGRAPHY.subtitle,
+          fontSize: TYPOGRAPHY.large,
           fontWeight: "700",
-          color: colors.textStrong,
+          color: colors.primary,
           marginBottom: 4,
         },
         titulo: {
@@ -44,27 +35,37 @@ export function useStyles() {
           fontStyle: "italic",
           marginBottom: SPACING.sm,
         },
+        toggleRow: {
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 4,
+          marginTop: SPACING.xs,
+          marginBottom: 2,
+        },
+        toggleText: {
+          fontSize: TYPOGRAPHY.body,
+          fontWeight: "600",
+          color: colors.primary,
+        },
         texto: {
           fontSize: TYPOGRAPHY.body,
           color: colors.text,
           lineHeight: 26,
           paddingTop: SPACING.sm,
-          paddingBottom: SPACING.sm,
+          paddingBottom: SPACING.xs,
+        },
+        formulaFinal: {
+          fontSize: TYPOGRAPHY.body,
+          fontStyle: "italic",
+          marginTop: SPACING.sm,
+          marginBottom: SPACING.xs,
+          color: colors.textMuted,
+          fontWeight: "600",
         },
         hiddenMeasure: {
           position: "absolute",
           opacity: 0,
           zIndex: -1,
-        },
-        footer: {
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 4,
-          marginTop: SPACING.sm,
-        },
-        toggleText: {
-          fontSize: TYPOGRAPHY.small,
-          fontWeight: "600",
         },
         verseNumber: {
           fontSize: TYPOGRAPHY.xsmall,

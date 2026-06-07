@@ -10,31 +10,59 @@ export function useStyles() {
       StyleSheet.create({
         container: {
           backgroundColor: colors.card,
-          flexDirection: "row",
-          alignItems: "center",
           borderRadius: RADIUS.md,
           padding: SPACING.md,
           marginBottom: SPACING.md,
-          borderLeftWidth: 4,
+          borderWidth: 1,
+          borderColor: colors.border,
         },
-        dot: {
-          width: 10,
-          height: 10,
-          borderRadius: 5,
-          marginRight: SPACING.sm2,
-          flexShrink: 0,
+        header: {
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: SPACING.sm2,
         },
-        textBlock: {
-          flex: 1,
+        label: {
+          fontSize: TYPOGRAPHY.xsmall,
+          fontWeight: "600",
+          color: colors.textMuted,
+          letterSpacing: 0.8,
         },
-        season: {
-          fontSize: TYPOGRAPHY.body,
+        badge: {
+          borderWidth: 1,
+          borderRadius: 999,
+          paddingHorizontal: SPACING.sm,
+          paddingVertical: 2,
+        },
+        badgeText: {
+          fontSize: TYPOGRAPHY.xsmall,
+          fontWeight: "600",
+          letterSpacing: 0.5,
+        },
+        title: {
+          fontSize: TYPOGRAPHY.large,
           fontWeight: "700",
+          color: colors.primary,
+          marginBottom: SPACING.sm2,
+          lineHeight: TYPOGRAPHY.large * 1.3,
+        },
+        footer: {
+          flexDirection: "row",
+          alignItems: "center",
+          gap: SPACING.xs,
         },
         date: {
           fontSize: TYPOGRAPHY.small,
           color: colors.textMuted,
-          marginTop: 2,
+        },
+        dot: {
+          width: 8,
+          height: 8,
+          borderRadius: 4,
+        },
+        colorName: {
+          fontSize: TYPOGRAPHY.small,
+          color: colors.textMuted,
         },
       }),
     [colors],
