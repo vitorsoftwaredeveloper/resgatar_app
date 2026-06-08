@@ -9,7 +9,8 @@
     "jsEngine": "hermes",
     "ios": {
       "bundleIdentifier": "com.vitorsoftwaredeveloper.resgatar.app",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "package": "com.vitorsoftwaredeveloper.resgatar_app",
@@ -17,7 +18,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundColor": "#000000"
-      }
+      },
+      "googleServicesFile": "./google-services.json"
     },
     "plugins": [
       "expo-dev-client",
@@ -30,7 +32,16 @@
           "backgroundColor": "#000000"
         }
       ],
-      "expo-font"
+      "expo-font",
+      "@react-native-firebase/app",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/icon.png",
+          "color": "#000000",
+          "defaultChannel": "default"
+        }
+      ]
     ],
     "extra": {
       "eas": {

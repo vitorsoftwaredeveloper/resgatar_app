@@ -1,18 +1,19 @@
-import React, { useState } from "react";
-import { View, Text } from "react-native";
-import { AlertTriangle, CircleAlert, Info, Send } from "lucide-react-native";
-import { useStyles } from "./styles";
-import { useAppTheme } from "@/context/ThemeContext";
-import { NotificationCard } from "@/components/NotificationCard";
-import { Input } from "@/components/Input";
-import { Card } from "@/components/Card";
-import { TypeButton } from "@/components/TypeButton";
 import { Button } from "@/components/Button";
-import { NotificationServices } from "@/services/NotificationService";
-import { ToastMessage } from "@/components/Toast";
+import { Card } from "@/components/Card";
+import { Input } from "@/components/Input";
 import { ModalBase } from "@/components/ModalBase";
+import { NotificationCard } from "@/components/NotificationCard";
+import { ToastMessage } from "@/components/Toast";
+import { TypeButton } from "@/components/TypeButton";
+import { useAppTheme } from "@/context/ThemeContext";
+import { NotificationServices } from "@/services/NotificationService";
 import { Formik } from "formik";
+import { AlertTriangle, CircleAlert, Info, Send } from "lucide-react-native";
+import React, { useState } from "react";
+import { Text, View } from "react-native";
+import { v4 as uuid } from "uuid";
 import * as Yup from "yup";
+import { useStyles } from "./styles";
 
 type Props = {
   visible: boolean;
@@ -45,7 +46,7 @@ export function ModalSendNotification({ visible, onClose }: Props) {
   const handleSendNotification = async (values: typeof initialValues) => {
     const payload = {
       ...values,
-      _id: crypto.randomUUID(),
+      _id: uuid(),
       createdAt: new Date().toISOString(),
       isNew: true,
     };

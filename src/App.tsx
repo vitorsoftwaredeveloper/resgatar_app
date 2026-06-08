@@ -1,15 +1,15 @@
-import "react-native-get-random-values";
-import "./config/amplify";
-import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
+import * as Notifications from "expo-notifications";
+import React, { useContext } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { AuthProvider } from "./context/AuthContext";
-import AppNavigator from "./navigation/AppNavigator";
+import "react-native-get-random-values";
+import Toast from "react-native-toast-message";
+import "./config/amplify";
+import { AuthContext, AuthProvider } from "./context/AuthContext";
 import { ChargeProvider } from "./context/ChargeContext";
 import { ThemeProvider } from "./context/ThemeContext";
-import Toast from "react-native-toast-message";
-import * as Notifications from "expo-notifications";
-import { useContributionNotifications } from "./hooks/useContributionNotification";
+import { usePushNotifications } from "./hooks/usePushNotifications";
+import AppNavigator from "./navigation/AppNavigator";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -20,24 +20,27 @@ Notifications.setNotificationHandler({
   }),
 });
 
+const AppContent = () => {
+  const { isLoggedIn } = useContext(AuthContext);
+
+  usePushNotifications(isLoggedIn);
+
+  return (
+    <ChargeProvider>
+      <NavigationContainer>
+        <AppNavigator />
+      </NavigationContainer>
+      <Toast />
+    </ChargeProvider>
+  );
+};
+
 export const App = () => {
-  const { scheduleMonthlyContributionNotifications } =
-    useContributionNotifications();
-
-  useEffect(() => {
-    scheduleMonthlyContributionNotifications(9, 0);
-  }, []);
-
   return (
     <ThemeProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <AuthProvider>
-          <ChargeProvider>
-            <NavigationContainer>
-              <AppNavigator />
-            </NavigationContainer>
-            <Toast />
-          </ChargeProvider>
+          <AppContent />
         </AuthProvider>
       </GestureHandlerRootView>
     </ThemeProvider>
