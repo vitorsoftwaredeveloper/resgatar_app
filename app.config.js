@@ -1,9 +1,10 @@
 const ENV = process.env.APP_ENV ?? "hml";
 
 const googleServicesFile =
-  ENV === "production"
+  process.env.GOOGLE_SERVICES_JSON ?? //EAS injeta o caminho do secret
+  (ENV === "production"
     ? "./google-services.prod.json"
-    : "./google-services.hml.json";
+    : "./google-services.hml.json");
 
 module.exports = {
   expo: {
