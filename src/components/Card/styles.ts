@@ -1,6 +1,6 @@
+import { useAppTheme } from "@/context/ThemeContext";
 import { useMemo } from "react";
 import { StyleSheet } from "react-native";
-import { useAppTheme } from "@/context/ThemeContext";
 
 export function useStyles() {
   const { colors } = useAppTheme();
