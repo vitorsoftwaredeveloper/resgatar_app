@@ -1,6 +1,6 @@
 import { useAppTheme } from "@/context/ThemeContext";
 import { TRANSACTION_STATUS } from "@/types/Charge";
-import { QrCode, Share2 } from "lucide-react-native";
+import { Eye, QrCode } from "lucide-react-native";
 import React from "react";
 import { Text, View } from "react-native";
 import { Button } from "../Button";
@@ -86,7 +86,7 @@ export function ContributionItem({ data, onPay, onShare }: Props) {
           title="Comprovante"
           onPress={onShare}
           styleCustom={{ marginTop: 16 }}
-          leftIcon={<Share2 size={20} color={colors.primary} />}
+          leftIcon={<Eye size={20} color={colors.primary} />}
           variant="secondary"
           loading={false}
         />

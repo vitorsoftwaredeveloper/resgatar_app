@@ -222,10 +222,6 @@ export const ModalEditProfile = ({
           maskPhoneBR,
           { values, setFieldValue },
         );
-        const cepField = useMaskedFieldFromFormik("zip", maskCEP, {
-          values,
-          setFieldValue,
-        });
 
         const amountField = useMaskedFieldFromFormik(
           "amount",

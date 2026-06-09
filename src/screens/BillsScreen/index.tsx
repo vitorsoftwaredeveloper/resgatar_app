@@ -5,11 +5,11 @@ import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";
 import { ChargeContext } from "@/context/ChargeContext";
 import { TRANSACTION_STATUS } from "@/types/Charge";
-import { shareComprovantePDF } from "@/utils/generatePixReceipt";
 import { formatDateFromTimestamp, formatMoneyBRL } from "@/utils/helper";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import React, { useContext, useMemo, useState } from "react";
 import { FlatList, View } from "react-native";
+import { ModalComprovante } from "./ModalComprovante";
 import { PixPaymentModal } from "./PixPaymentModal";
 import { useStyles } from "./styles";
 
@@ -35,6 +35,15 @@ export const BillsScreen = () => {
   const styles = useStyles();
 
   const [modalPayVisible, setModalPayVisible] = useState(false);
+  const [comprovanteItem, setComprovanteItem] = useState<null | {
+    name: string;
+    email: string;
+    cpf: string;
+    docType?: string;
+    month: string;
+    paidAt: string;
+    value: string;
+  }>(null);
 
   const handlePay = async (item: any) => {
     await createCharge(item.rawValue, Object.values(MONTH).indexOf(item.month))
@@ -85,7 +94,7 @@ export const BillsScreen = () => {
               data={item}
               onPay={() => handlePay(item)}
               onShare={() =>
-                shareComprovantePDF({
+                setComprovanteItem({
                   ...item,
                   cpf: member?.identification.numberType as string,
                   docType: member?.identification.type,
@@ -101,6 +110,14 @@ export const BillsScreen = () => {
           <PixPaymentModal
             visible={modalPayVisible}
             onClose={() => setModalPayVisible(false)}
+          />
+        )}
+
+        {comprovanteItem && (
+          <ModalComprovante
+            visible={!!comprovanteItem}
+            onClose={() => setComprovanteItem(null)}
+            data={comprovanteItem}
           />
         )}
       </View>
