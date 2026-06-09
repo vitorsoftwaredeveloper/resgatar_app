@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "npx expo run:android --device",
+    "clean": "npx expo prebuild --clean --platform android",
     "reset-project": "node ./scripts/reset-project.js",
     "build": "npx expo prebuild --clean && npx expo run:android",
     "android": "expo run:android",
