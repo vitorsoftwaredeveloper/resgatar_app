@@ -30,7 +30,6 @@ const AppContent = () => {
       <NavigationContainer>
         <AppNavigator />
       </NavigationContainer>
-      <Toast />
     </ChargeProvider>
   );
 };
@@ -42,6 +41,7 @@ export const App = () => {
         <AuthProvider>
           <AppContent />
         </AuthProvider>
+        <Toast />
       </GestureHandlerRootView>
     </ThemeProvider>
   );

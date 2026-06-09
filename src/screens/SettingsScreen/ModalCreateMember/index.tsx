@@ -6,6 +6,7 @@ import { Row } from "@/components/Row";
 import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";
 import { useAppTheme } from "@/context/ThemeContext";
+import { useCepLookup } from "@/hooks/useCepLookup";
 import { IMemberState } from "@/types/Member";
 import { parseDateBRToTimestamp } from "@/utils/helper";
 import {
@@ -17,7 +18,7 @@ import {
   onlyNumbers,
 } from "@/utils/mask";
 import { Formik } from "formik";
-import { Eye, EyeOff } from "lucide-react-native";
+import { Eye, EyeOff, Loader } from "lucide-react-native";
 import React, { useContext, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import * as Yup from "yup";
@@ -59,11 +60,15 @@ const createMemberSchema = Yup.object().shape({
       const year = parseInt(value.split("/")[2] ?? "0", 10);
       return year >= 1970;
     })
-    .test("not-future", "Data de nascimento não pode ser no futuro", (value) => {
-      if (!value || value.length !== 10) return true;
-      const [day, month, year] = value.split("/").map(Number);
-      return new Date(year, month - 1, day) <= new Date();
-    }),
+    .test(
+      "not-future",
+      "Data de nascimento não pode ser no futuro",
+      (value) => {
+        if (!value || value.length !== 10) return true;
+        const [day, month, year] = value.split("/").map(Number);
+        return new Date(year, month - 1, day) <= new Date();
+      },
+    ),
 
   datePayment: Yup.string().required("Selecione o dia"),
 
@@ -106,6 +111,7 @@ export const ModalCreateMember = ({
   const { colors } = useAppTheme();
   const styles = useStyles();
   const [showPassword, setShowPassword] = useState(false);
+  const { loading: cepLoading, fetchCep } = useCepLookup();
 
   const initialValues = {
     email: "",
@@ -265,8 +271,22 @@ export const ModalCreateMember = ({
                     label="CEP"
                     value={values.zip}
                     keyboardType="numeric"
-                    onChangeText={(v) => setFieldValue("zip", maskCEP(v))}
+                    onChangeText={async (v) => {
+                      const masked = maskCEP(v);
+                      setFieldValue("zip", masked);
+                      const result = await fetchCep(masked);
+                      if (result) {
+                        setFieldValue("street", result.street);
+                        setFieldValue("city", result.city);
+                        setFieldValue("state", result.state);
+                      }
+                    }}
                     error={touched.zip && errors.zip}
+                    rightIcon={
+                      cepLoading ? (
+                        <Loader size={18} color={colors.muted} />
+                      ) : undefined
+                    }
                   />
 
                   <Row>

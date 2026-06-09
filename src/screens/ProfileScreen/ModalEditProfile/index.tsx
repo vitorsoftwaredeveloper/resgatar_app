@@ -5,6 +5,8 @@ import { ModalBase } from "@/components/ModalBase";
 import { Row } from "@/components/Row";
 import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";
+import { useAppTheme } from "@/context/ThemeContext";
+import { useCepLookup } from "@/hooks/useCepLookup";
 import { useMaskedFieldFromFormik } from "@/hooks/useMaskedField";
 import { IMemberState } from "@/types/Member";
 import {
@@ -22,6 +24,7 @@ import {
   validateCPF,
 } from "@/utils/mask";
 import { Formik } from "formik";
+import { Loader } from "lucide-react-native";
 import React, { useContext, useRef } from "react";
 import {
   KeyboardAvoidingView,
@@ -64,11 +67,15 @@ const profileValidationSchema = Yup.object().shape({
         date.getDate() === day
       );
     })
-    .test("min-year-1970", "Data deve ser a partir de 1970", (value?: string) => {
-      if (!value) return true;
-      const year = parseInt(value.split("/")[2] ?? "0", 10);
-      return year >= 1970;
-    })
+    .test(
+      "min-year-1970",
+      "Data deve ser a partir de 1970",
+      (value?: string) => {
+        if (!value) return true;
+        const year = parseInt(value.split("/")[2] ?? "0", 10);
+        return year >= 1970;
+      },
+    )
     .test(
       "not-future",
       "Data de nascimento não pode ser no futuro",
@@ -134,7 +141,9 @@ export const ModalEditProfile = ({
   onClose,
 }: IModalEditProfile) => {
   const { member, updateMember } = useContext(AuthContext);
+  const { colors } = useAppTheme();
   const styles = useStyles();
+  const { loading: cepLoading, fetchCep } = useCepLookup();
   const savedDocValues = useRef<Record<string, string>>({
     CPF: maskCPFOrCNPJ(member?.identification?.numberType || "", "CPF"),
     CNPJ: maskCPFOrCNPJ(member?.identification?.numberType || "", "CNPJ"),
@@ -303,8 +312,23 @@ export const ModalEditProfile = ({
                       <Input
                         label="CEP"
                         keyboardType="numeric"
-                        {...cepField}
+                        value={values.zip as string}
+                        onChangeText={async (v) => {
+                          const masked = maskCEP(v);
+                          setFieldValue("zip", masked);
+                          const result = await fetchCep(masked);
+                          if (result) {
+                            setFieldValue("street", result.street);
+                            setFieldValue("city", result.city);
+                            setFieldValue("state", result.state);
+                          }
+                        }}
                         error={touched.zip && errors.zip}
+                        rightIcon={
+                          cepLoading ? (
+                            <Loader size={18} color={colors.muted} />
+                          ) : undefined
+                        }
                       />
 
                       <Row>
