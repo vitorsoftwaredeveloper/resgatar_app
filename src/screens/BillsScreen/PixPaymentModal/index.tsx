@@ -3,7 +3,7 @@ import { AuthContext } from "@/context/AuthContext";
 import { ChargeContext } from "@/context/ChargeContext";
 import { TRANSACTION_STATUS } from "@/types/Charge";
 import Clipboard from "@react-native-clipboard/clipboard";
-import { Copy } from "lucide-react-native";
+import { Check, Copy } from "lucide-react-native";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Animated, Pressable, Text, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
@@ -169,7 +169,11 @@ export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
                   copyToClipboard(charge.transactionData.qrCode);
                 }}
               >
-                <Copy size={18} color="#fff" />
+                {isCopied ? (
+                  <Check size={18} color="#fff" />
+                ) : (
+                  <Copy size={18} color="#fff" />
+                )}
               </Pressable>
             </View>
           </View>
