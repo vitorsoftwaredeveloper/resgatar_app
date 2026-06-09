@@ -22,7 +22,6 @@ export function useStyles() {
         scrollContent: {
           padding: 16,
           paddingBottom: 32,
-          backgroundColor: colors.background,
         },
         header: {
           alignItems: "center",

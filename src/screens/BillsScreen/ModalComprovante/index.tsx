@@ -38,7 +38,7 @@ export function ModalComprovante({ visible, onClose, data }: Props) {
   const handleShare = async () => {
     setSharing(true);
     try {
-      await shareComprovantePDF(data);
+      await shareComprovantePDF({ ...data, themeMode: mode });
     } finally {
       setSharing(false);
     }
