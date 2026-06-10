@@ -20,7 +20,14 @@ import {
 import { Formik } from "formik";
 import { Eye, EyeOff, Loader } from "lucide-react-native";
 import React, { useContext, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import * as Yup from "yup";
 import { useStyles } from "./styles";
 
@@ -178,262 +185,270 @@ export const ModalCreateMember = ({
           title="Novo membro"
         >
           <View style={styles.overlay}>
-            <View style={styles.container}>
-              <ScrollView showsVerticalScrollIndicator={false}>
-                {/* DADOS PESSOAIS */}
-                <Card title="Dados pessoais">
-                  <Input
-                    label="Email"
-                    value={values.email}
-                    onChangeText={handleChange("email")}
-                    error={touched.email && errors.email}
-                    autoCapitalize="none"
-                  />
-
-                  <Input
-                    label="Telefone"
-                    value={values.phoneNumber}
-                    keyboardType="numeric"
-                    onChangeText={(v) =>
-                      setFieldValue("phoneNumber", maskPhoneBR(v))
-                    }
-                    error={touched.phoneNumber && errors.phoneNumber}
-                  />
-
-                  <Input
-                    label="Nome"
-                    value={values.firstName}
-                    onChangeText={handleChange("firstName")}
-                    error={touched.firstName && errors.firstName}
-                  />
-
-                  <Input
-                    label="Sobrenome"
-                    value={values.lastName}
-                    onChangeText={handleChange("lastName")}
-                    error={touched.lastName && errors.lastName}
-                  />
-
-                  <Input
-                    label="Bio"
-                    value={values.bio}
-                    onChangeText={handleChange("bio")}
-                  />
-                </Card>
-
-                {/* SEGURANÇA */}
-                <Card title="Segurança">
-                  <Input
-                    label="Senha"
-                    secureTextEntry={!showPassword}
-                    value={values.password}
-                    onChangeText={handleChange("password")}
-                    error={touched.password && errors.password}
-                    rightIcon={
-                      <TouchableOpacity
-                        onPress={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? (
-                          <Eye size={24} color={colors.muted} />
-                        ) : (
-                          <EyeOff size={24} color={colors.muted} />
-                        )}
-                      </TouchableOpacity>
-                    }
-                  />
-
-                  <Input
-                    label="Confirmar senha"
-                    secureTextEntry={!showPassword}
-                    value={values.confirmPassword}
-                    onChangeText={handleChange("confirmPassword")}
-                    error={touched.confirmPassword && errors.confirmPassword}
-                  />
-                </Card>
-
-                {/* DATA NASCIMENTO */}
-                <Card title="Data de nascimento">
-                  <Input
-                    label="Data de nascimento"
-                    placeholder="dd/mm/aaaa"
-                    value={values.dateOfBirth}
-                    onChangeText={(v) =>
-                      setFieldValue("dateOfBirth", maskDateBR(v))
-                    }
-                    keyboardType="numeric"
-                    error={touched.dateOfBirth && errors.dateOfBirth}
-                  />
-                </Card>
-
-                {/* ENDEREÇO */}
-                <Card title="Endereço">
-                  <Input
-                    label="CEP"
-                    value={values.zip}
-                    keyboardType="numeric"
-                    onChangeText={async (v) => {
-                      const masked = maskCEP(v);
-                      setFieldValue("zip", masked);
-                      const result = await fetchCep(masked);
-                      if (result) {
-                        setFieldValue("street", result.street);
-                        setFieldValue("city", result.city);
-                        setFieldValue("state", result.state);
-                      }
-                    }}
-                    error={touched.zip && errors.zip}
-                    rightIcon={
-                      cepLoading ? (
-                        <Loader size={18} color={colors.muted} />
-                      ) : undefined
-                    }
-                  />
-
-                  <Row>
+            <KeyboardAvoidingView
+              style={{ flex: 1 }}
+              behavior={Platform.OS === "ios" ? "padding" : "padding"}
+            >
+              <View style={styles.container}>
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                  keyboardShouldPersistTaps="handled"
+                >
+                  {/* DADOS PESSOAIS */}
+                  <Card title="Dados pessoais">
                     <Input
-                      label="Estado"
-                      value={values.state}
-                      autoCapitalize="characters"
-                      maxLength={2}
-                      onChangeText={handleChange("state")}
-                      error={touched.state && errors.state}
+                      label="Email"
+                      value={values.email}
+                      onChangeText={handleChange("email")}
+                      error={touched.email && errors.email}
+                      autoCapitalize="none"
                     />
 
                     <Input
-                      label="Cidade"
-                      value={values.city}
-                      onChangeText={handleChange("city")}
-                      error={touched.city && errors.city}
-                    />
-                  </Row>
-
-                  <Input
-                    label="Logradouro"
-                    value={values.street}
-                    onChangeText={handleChange("street")}
-                    error={touched.street && errors.street}
-                  />
-
-                  <Row>
-                    <Input
-                      label="Número"
+                      label="Telefone"
+                      value={values.phoneNumber}
                       keyboardType="numeric"
-                      value={values.number}
-                      onChangeText={handleChange("number")}
-                      error={touched.number && errors.number}
+                      onChangeText={(v) =>
+                        setFieldValue("phoneNumber", maskPhoneBR(v))
+                      }
+                      error={touched.phoneNumber && errors.phoneNumber}
                     />
 
                     <Input
-                      label="Complemento"
-                      value={values.complement}
-                      onChangeText={handleChange("complement")}
+                      label="Nome"
+                      value={values.firstName}
+                      onChangeText={handleChange("firstName")}
+                      error={touched.firstName && errors.firstName}
                     />
-                  </Row>
-                </Card>
 
-                {/* CONTRIBUIÇÃO */}
-                <Card title="Informações da contribuição">
-                  <Text style={styles.subLabel}>
-                    Dia do mês para pagar a contribuição
-                  </Text>
+                    <Input
+                      label="Sobrenome"
+                      value={values.lastName}
+                      onChangeText={handleChange("lastName")}
+                      error={touched.lastName && errors.lastName}
+                    />
 
-                  <View style={styles.daysGrid}>
-                    {Array.from({ length: 10 }, (_, i) => {
-                      const day = String(i + 1);
-                      return (
+                    <Input
+                      label="Bio"
+                      value={values.bio}
+                      onChangeText={handleChange("bio")}
+                    />
+                  </Card>
+
+                  {/* SEGURANÇA */}
+                  <Card title="Segurança">
+                    <Input
+                      label="Senha"
+                      secureTextEntry={!showPassword}
+                      value={values.password}
+                      onChangeText={handleChange("password")}
+                      error={touched.password && errors.password}
+                      rightIcon={
                         <TouchableOpacity
-                          key={day}
-                          onPress={() => setFieldValue("datePayment", day)}
+                          onPress={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? (
+                            <Eye size={24} color={colors.muted} />
+                          ) : (
+                            <EyeOff size={24} color={colors.muted} />
+                          )}
+                        </TouchableOpacity>
+                      }
+                    />
+
+                    <Input
+                      label="Confirmar senha"
+                      secureTextEntry={!showPassword}
+                      value={values.confirmPassword}
+                      onChangeText={handleChange("confirmPassword")}
+                      error={touched.confirmPassword && errors.confirmPassword}
+                    />
+                  </Card>
+
+                  {/* DATA NASCIMENTO */}
+                  <Card title="Data de nascimento">
+                    <Input
+                      label="Data de nascimento"
+                      placeholder="dd/mm/aaaa"
+                      value={values.dateOfBirth}
+                      onChangeText={(v) =>
+                        setFieldValue("dateOfBirth", maskDateBR(v))
+                      }
+                      keyboardType="numeric"
+                      error={touched.dateOfBirth && errors.dateOfBirth}
+                    />
+                  </Card>
+
+                  {/* ENDEREÇO */}
+                  <Card title="Endereço">
+                    <Input
+                      label="CEP"
+                      value={values.zip}
+                      keyboardType="numeric"
+                      onChangeText={async (v) => {
+                        const masked = maskCEP(v);
+                        setFieldValue("zip", masked);
+                        const result = await fetchCep(masked);
+                        if (result) {
+                          setFieldValue("street", result.street);
+                          setFieldValue("city", result.city);
+                          setFieldValue("state", result.state);
+                        }
+                      }}
+                      error={touched.zip && errors.zip}
+                      rightIcon={
+                        cepLoading ? (
+                          <Loader size={18} color={colors.muted} />
+                        ) : undefined
+                      }
+                    />
+
+                    <Row>
+                      <Input
+                        label="Estado"
+                        value={values.state}
+                        autoCapitalize="characters"
+                        maxLength={2}
+                        onChangeText={handleChange("state")}
+                        error={touched.state && errors.state}
+                      />
+
+                      <Input
+                        label="Cidade"
+                        value={values.city}
+                        onChangeText={handleChange("city")}
+                        error={touched.city && errors.city}
+                      />
+                    </Row>
+
+                    <Input
+                      label="Logradouro"
+                      value={values.street}
+                      onChangeText={handleChange("street")}
+                      error={touched.street && errors.street}
+                    />
+
+                    <Row>
+                      <Input
+                        label="Número"
+                        keyboardType="numeric"
+                        value={values.number}
+                        onChangeText={handleChange("number")}
+                        error={touched.number && errors.number}
+                      />
+
+                      <Input
+                        label="Complemento"
+                        value={values.complement}
+                        onChangeText={handleChange("complement")}
+                      />
+                    </Row>
+                  </Card>
+
+                  {/* CONTRIBUIÇÃO */}
+                  <Card title="Informações da contribuição">
+                    <Text style={styles.subLabel}>
+                      Dia do mês para pagar a contribuição
+                    </Text>
+
+                    <View style={styles.daysGrid}>
+                      {Array.from({ length: 10 }, (_, i) => {
+                        const day = String(i + 1);
+                        return (
+                          <TouchableOpacity
+                            key={day}
+                            onPress={() => setFieldValue("datePayment", day)}
+                            style={[
+                              styles.dayCircle,
+                              values.datePayment === day &&
+                                styles.dayCircleActive,
+                            ]}
+                          >
+                            <Text
+                              style={[
+                                styles.dayText,
+                                values.datePayment === day &&
+                                  styles.dayTextActive,
+                              ]}
+                            >
+                              {day}
+                            </Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </View>
+
+                    <Input
+                      label="Valor"
+                      value={values.amount}
+                      keyboardType="numeric"
+                      onChangeText={(v) =>
+                        setFieldValue("amount", maskCurrencyBRL(v))
+                      }
+                      error={touched.amount && errors.amount}
+                    />
+                  </Card>
+
+                  {/* IDENTIFICAÇÃO */}
+                  <Card title="Identificação">
+                    <View style={styles.toggle}>
+                      {["CPF", "CNPJ"].map((type) => (
+                        <TouchableOpacity
+                          key={type}
+                          onPress={() => setFieldValue("type", type)}
                           style={[
-                            styles.dayCircle,
-                            values.datePayment === day &&
-                              styles.dayCircleActive,
+                            styles.toggleItem,
+                            values.type === type && styles.toggleActive,
                           ]}
                         >
                           <Text
-                            style={[
-                              styles.dayText,
-                              values.datePayment === day &&
-                                styles.dayTextActive,
-                            ]}
+                            style={
+                              values.type === type
+                                ? styles.toggleTextActive
+                                : styles.toggleText
+                            }
                           >
-                            {day}
+                            {type}
                           </Text>
                         </TouchableOpacity>
-                      );
-                    })}
-                  </View>
+                      ))}
+                    </View>
 
-                  <Input
-                    label="Valor"
-                    value={values.amount}
-                    keyboardType="numeric"
-                    onChangeText={(v) =>
-                      setFieldValue("amount", maskCurrencyBRL(v))
-                    }
-                    error={touched.amount && errors.amount}
+                    <Input
+                      label={values.type}
+                      value={values.numberType}
+                      keyboardType="numeric"
+                      onChangeText={(v) =>
+                        setFieldValue(
+                          "numberType",
+                          maskCPFOrCNPJ(v, values.type as "CPF" | "CNPJ"),
+                        )
+                      }
+                      error={touched.numberType && errors.numberType}
+                    />
+                  </Card>
+                </ScrollView>
+
+                <View style={styles.footer}>
+                  <Button
+                    title="Salvar"
+                    onPress={async () => {
+                      const formErrors = await validateForm();
+
+                      if (Object.keys(formErrors).length > 0) {
+                        ToastMessage.error(
+                          "Campos inválidos",
+                          "Campos preenchidos incorretamente.",
+                        );
+                      }
+
+                      handleSubmit();
+                    }}
+                    loading={isSubmitting}
                   />
-                </Card>
-
-                {/* IDENTIFICAÇÃO */}
-                <Card title="Identificação">
-                  <View style={styles.toggle}>
-                    {["CPF", "CNPJ"].map((type) => (
-                      <TouchableOpacity
-                        key={type}
-                        onPress={() => setFieldValue("type", type)}
-                        style={[
-                          styles.toggleItem,
-                          values.type === type && styles.toggleActive,
-                        ]}
-                      >
-                        <Text
-                          style={
-                            values.type === type
-                              ? styles.toggleTextActive
-                              : styles.toggleText
-                          }
-                        >
-                          {type}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-
-                  <Input
-                    label={values.type}
-                    value={values.numberType}
-                    keyboardType="numeric"
-                    onChangeText={(v) =>
-                      setFieldValue(
-                        "numberType",
-                        maskCPFOrCNPJ(v, values.type as "CPF" | "CNPJ"),
-                      )
-                    }
-                    error={touched.numberType && errors.numberType}
-                  />
-                </Card>
-              </ScrollView>
-
-              <View style={styles.footer}>
-                <Button
-                  title="Salvar"
-                  onPress={async () => {
-                    const formErrors = await validateForm();
-
-                    if (Object.keys(formErrors).length > 0) {
-                      ToastMessage.error(
-                        "Campos inválidos",
-                        "Campos preenchidos incorretamente.",
-                      );
-                    }
-
-                    handleSubmit();
-                  }}
-                  loading={isSubmitting}
-                />
+                </View>
               </View>
-            </View>
+            </KeyboardAvoidingView>
           </View>
         </ModalBase>
       )}

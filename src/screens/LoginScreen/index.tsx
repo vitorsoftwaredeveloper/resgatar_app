@@ -6,7 +6,14 @@ import { AuthContext } from "@/context/AuthContext";
 import { useAppTheme } from "@/context/ThemeContext";
 import { Eye, EyeOff, LogIn, Mail } from "lucide-react-native";
 import React, { useContext, useRef, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useStyles } from "../../../src/screens/LoginScreen/styles";
 
 export const LoginScreen = () => {
@@ -36,6 +43,15 @@ export const LoginScreen = () => {
   };
 
   return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
     <View style={styles.background}>
       <View style={styles.card}>
         <View style={styles.logoContainer}>
@@ -92,5 +108,7 @@ export const LoginScreen = () => {
         />
       </View>
     </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
