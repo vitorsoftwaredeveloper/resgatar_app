@@ -26,10 +26,20 @@ export const LoginScreen = () => {
   const emailRef = useRef<string>("");
   const passwordRef = useRef<string>("");
 
+  const isValidEmail = (email: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+
   const handleLogin = async () => {
     setLoading(true);
+
     if (!emailRef.current || !passwordRef.current) {
       ToastMessage.error("Erro", "Preencha todos os campos.");
+      setLoading(false);
+      return;
+    }
+
+    if (!isValidEmail(emailRef.current)) {
+      ToastMessage.error("Erro", "Informe um e-mail válido.");
       setLoading(false);
       return;
     }
