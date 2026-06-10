@@ -38,6 +38,7 @@ module.exports = {
         },
       ],
       "expo-font",
+      "expo-secure-store",
       "@react-native-firebase/app",
       [
         "expo-notifications",
