@@ -25,7 +25,7 @@ export function ProfileHeaderCard({ member }: Props) {
           {member.firstName} {member.lastName}
         </Text>
         <Text style={styles.document} numberOfLines={1} ellipsizeMode="tail">
-          {maskCPFOrCNPJ(member.identification.numberType, "CPF")}
+          {maskCPFOrCNPJ(member.identification.numberType, member.identification.type)}
         </Text>
         <Text style={styles.document} numberOfLines={1} ellipsizeMode="tail">
           {member.email}
