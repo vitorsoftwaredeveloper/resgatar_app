@@ -16,6 +16,8 @@ import {
   maskDateBR,
   maskPhoneBR,
   onlyNumbers,
+  validateCNPJ,
+  validateCPF,
 } from "@/utils/mask";
 import { Formik } from "formik";
 import { Eye, EyeOff, Loader } from "lucide-react-native";
@@ -92,8 +94,9 @@ const createMemberSchema = Yup.object().shape({
   numberType: Yup.string()
     .test("doc", "Documento inválido", (value, ctx) => {
       const type = ctx.parent.type;
-      const digits = onlyNumbers(value || "");
-      return type === "CPF" ? digits.length === 11 : digits.length === 14;
+      return type === "CPF"
+        ? validateCPF(value || "")
+        : validateCNPJ(value || "");
     })
     .required("Documento obrigatório"),
 
