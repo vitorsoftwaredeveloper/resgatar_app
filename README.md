@@ -133,11 +133,9 @@ docs/
 
 ---
 
-## Screenshots
+## Demo
 
-|                       Login                       |                         Dashboard                          |                       Contributions                        |                  PIX Payment                  |
-| :-----------------------------------------------: | :--------------------------------------------------------: | :--------------------------------------------------------: | :-------------------------------------------: |
-| ![Login](docs/screenshots/screenshot_1_login.png) | ![Dashboard](docs/screenshots/screenshot_2_dashboard.jpeg) | ![Contributions](docs/screenshots/screenshot_3_bills.jpeg) | ![PIX](docs/screenshots/screenshot_4_pix.png) |
+<video src="docs/screenshots/movie.mp4" controls width="320"></video>
 
 ---
 
