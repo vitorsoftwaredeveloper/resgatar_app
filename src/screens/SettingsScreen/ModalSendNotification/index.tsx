@@ -10,7 +10,6 @@ import { Formik } from "formik";
 import { Send } from "lucide-react-native";
 import React from "react";
 import { ScrollView, View } from "react-native";
-import { v4 as uuid } from "uuid";
 import * as Yup from "yup";
 import { useStyles } from "./styles";
 
@@ -27,8 +26,6 @@ const notificationSchema = Yup.object().shape({
   description: Yup.string()
     .required("Descrição é obrigatória")
     .min(5, "Descrição muito curta"),
-
-  type: Yup.string().oneOf(["info", "alert", "warning"]).required(),
 });
 
 export function ModalSendNotification({ visible, onClose }: Props) {
@@ -38,15 +35,11 @@ export function ModalSendNotification({ visible, onClose }: Props) {
   const initialValues = {
     title: "",
     description: "",
-    type: "info" as "info" | "alert" | "warning",
   };
 
   const handleSendNotification = async (values: typeof initialValues) => {
     const payload = {
       ...values,
-      _id: uuid(),
-      createdAt: new Date().toISOString(),
-      isNew: true,
     };
 
     try {

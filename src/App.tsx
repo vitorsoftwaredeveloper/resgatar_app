@@ -20,6 +20,8 @@ Notifications.setNotificationHandler({
   }),
 });
 
+Notifications.cancelAllScheduledNotificationsAsync();
+
 const AppContent = () => {
   const { isLoggedIn } = useContext(AuthContext);
 
