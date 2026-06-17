@@ -5,7 +5,7 @@ import { IMember } from "@/types/Member";
 import { COLORS } from "@/theme";
 import { ModalBase } from "@/components/ModalBase";
 import { ModalUpdatePassword } from "@/screens/ProfileScreen/ModalUpdatePassword";
-import { MemberListWithSkeleton } from "@/components/MemberListWithSkeleton";
+import { MemberListWithSkeleton } from "@/components/Skeleton/MemberListWithSkeleton";
 
 type Props = {
   visible: boolean;

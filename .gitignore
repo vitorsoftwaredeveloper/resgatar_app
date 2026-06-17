@@ -48,3 +48,9 @@ app-example
 
 google-services.hml.json
 google-services.prod.json
+
+coverage
+
+.vscode
+.claude
+.github

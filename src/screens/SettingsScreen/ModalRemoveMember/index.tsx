@@ -1,5 +1,5 @@
 import { Dialog } from "@/components/Dialog";
-import { MemberListWithSkeleton } from "@/components/MemberListWithSkeleton";
+import { MemberListWithSkeleton } from "@/components/Skeleton/MemberListWithSkeleton";
 import { ModalBase } from "@/components/ModalBase";
 import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";

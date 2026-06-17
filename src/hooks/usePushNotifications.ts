@@ -1,31 +1,16 @@
 import { NotificationServices } from "@/services/NotificationService";
 import messaging from "@react-native-firebase/messaging";
 import * as Notifications from "expo-notifications";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Platform } from "react-native";
 
 const FCM_TOPIC = "todos_usuarios";
 
 export function usePushNotifications(isLoggedIn: boolean) {
-  const notificationListener = useRef<Notifications.EventSubscription | null>(
-    null,
-  );
-  const responseListener = useRef<Notifications.EventSubscription | null>(null);
-
   useEffect(() => {
     if (!isLoggedIn) return;
 
     registerForPushNotifications();
-
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        console.log("Notificação recebida em foreground:", notification);
-      });
-
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log("Usuário interagiu com a notificação:", response);
-      });
 
     const unsubscribeMessage = messaging().onMessage(async (remoteMessage) => {
       await Notifications.scheduleNotificationAsync({
@@ -40,8 +25,6 @@ export function usePushNotifications(isLoggedIn: boolean) {
 
     return () => {
       unsubscribeMessage();
-      notificationListener.current?.remove();
-      responseListener.current?.remove();
       messaging().unsubscribeFromTopic(FCM_TOPIC);
     };
   }, [isLoggedIn]);

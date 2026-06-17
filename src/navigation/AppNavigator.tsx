@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AuthContext } from "@/context/AuthContext";
 import { LoginScreen } from "@/screens/LoginScreen";
-import { BottomTabs } from "@/components/ButtonTabs";
+import { BottomTabs } from "@/components/BottonTabs";
 import { RootStackParamList } from "@/navigation/types";
 import { LoadingScreen } from "@/screens/LoadingScreen";
 

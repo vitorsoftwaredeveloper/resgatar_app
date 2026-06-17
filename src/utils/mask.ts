@@ -1,6 +1,6 @@
-const onlyNumbers = (value = "") => value.replace(/\D/g, "");
+const onlyNumbers = (value: string) => value.replace(/\D/g, "");
 
-const maskPhoneBR = (value = "") => {
+const maskPhoneBR = (value: string) => {
   const digits = onlyNumbers(value).slice(0, 11);
 
   if (digits.length <= 10) {
@@ -14,19 +14,19 @@ const maskPhoneBR = (value = "") => {
     .replace(/(\d{5})(\d)/, "$1-$2");
 };
 
-const maskCEP = (value = "") =>
+const maskCEP = (value: string) =>
   onlyNumbers(value)
     .slice(0, 8)
     .replace(/(\d{5})(\d)/, "$1-$2");
 
-const maskCPF = (value = "") =>
+const maskCPF = (value: string) =>
   onlyNumbers(value)
     .slice(0, 11)
     .replace(/(\d{3})(\d)/, "$1.$2")
     .replace(/(\d{3})(\d)/, "$1.$2")
     .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
 
-const maskCNPJ = (value = "") =>
+const maskCNPJ = (value: string) =>
   onlyNumbers(value)
     .slice(0, 14)
     .replace(/^(\d{2})(\d)/, "$1.$2")
@@ -34,10 +34,10 @@ const maskCNPJ = (value = "") =>
     .replace(/\.(\d{3})(\d)/, ".$1/$2")
     .replace(/(\d{4})(\d)/, "$1-$2");
 
-const maskCPFOrCNPJ = (value = "", type: "CPF" | "CNPJ") =>
+const maskCPFOrCNPJ = (value: string, type: "CPF" | "CNPJ") =>
   type === "CPF" ? maskCPF(value) : maskCNPJ(value);
 
-const maskCurrencyBRL = (value = "") => {
+const maskCurrencyBRL = (value: string) => {
   const digits = onlyNumbers(value);
   const number = Number(digits) / 100;
 
@@ -60,7 +60,7 @@ function maskDateBR(value: string) {
   return `${day}/${month}/${year}`;
 }
 
-function validateCPF(value = ""): boolean {
+function validateCPF(value: string): boolean {
   const digits = onlyNumbers(value);
   if (digits.length !== 11) return false;
   if (/^(\d)\1{10}$/.test(digits)) return false;
@@ -77,7 +77,7 @@ function validateCPF(value = ""): boolean {
   return calc(10) === parseInt(digits[9]) && calc(11) === parseInt(digits[10]);
 }
 
-function validateCNPJ(value = ""): boolean {
+function validateCNPJ(value: string): boolean {
   const digits = onlyNumbers(value);
   if (digits.length !== 14) return false;
   if (/^(\d)\1{13}$/.test(digits)) return false;
