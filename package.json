@@ -9,7 +9,18 @@
     "android": "expo run:android",
     "ios": "npx expo run:ios",
     "lint": "expo lint",
-    "eas-build": "eas build:version:set --platform android && eas build --platform android --profile production"
+    "eas-build": "eas build:version:set --platform android && eas build --platform android --profile production",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage --coverageReporters=text",
+    "build:e2e:android": "./e2e/build-hml.sh android",
+    "build:e2e:ios": "./e2e/build-hml.sh ios",
+    "e2e:login": "set -a && . ./e2e/.env && set +a && maestro test -e APP_ID=com.vitorsoftwaredeveloper.resgatar_app -e EMAIL=\"$EMAIL\" -e PASSWORD=\"$PASSWORD\" e2e/flows/login.yaml",
+    "e2e:dashboard": "set -a && . ./e2e/.env && set +a && maestro test -e APP_ID=com.vitorsoftwaredeveloper.resgatar_app -e EMAIL=\"$EMAIL\" -e PASSWORD=\"$PASSWORD\" e2e/flows/dashboard.yaml",
+    "e2e:profile": "set -a && . ./e2e/.env && set +a && maestro test -e APP_ID=com.vitorsoftwaredeveloper.resgatar_app -e EMAIL=\"$EMAIL\" -e PASSWORD=\"$PASSWORD\" e2e/flows/profile.yaml",
+    "e2e:all": "set -a && . ./e2e/.env && set +a && maestro test -e APP_ID=com.vitorsoftwaredeveloper.resgatar_app -e EMAIL=\"$EMAIL\" -e PASSWORD=\"$PASSWORD\" e2e/flows/",
+    "e2e:ios:login": "set -a && . ./e2e/.env && set +a && maestro test -e APP_ID=com.vitorsoftwaredeveloper.resgatar.app -e EMAIL=\"$EMAIL\" -e PASSWORD=\"$PASSWORD\" e2e/flows/login.yaml",
+    "e2e:ios:all": "set -a && . ./e2e/.env && set +a && maestro test -e APP_ID=com.vitorsoftwaredeveloper.resgatar.app -e EMAIL=\"$EMAIL\" -e PASSWORD=\"$PASSWORD\" e2e/flows/"
   },
   "dependencies": {
     "@aws-amplify/react-native": "^1.3.1",

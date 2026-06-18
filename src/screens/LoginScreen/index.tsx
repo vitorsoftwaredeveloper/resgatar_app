@@ -98,7 +98,11 @@ export const LoginScreen = () => {
               passwordRef.current = v;
             }}
             rightIcon={
-              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              <TouchableOpacity
+                testID="toggle-password"
+                accessibilityLabel="toggle-password"
+                onPress={() => setShowPassword(!showPassword)}
+              >
                 {showPassword ? (
                   <Eye size={24} color={colors.muted} />
                 ) : (
