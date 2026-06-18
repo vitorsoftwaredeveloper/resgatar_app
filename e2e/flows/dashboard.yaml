@@ -1,0 +1,218 @@
+appId: ${APP_ID}
+---
+# Assume que o usuário já está logado (session persistida pelo login.yaml)
+- launchApp
+
+# ===========================
+# Tela de Início carregada
+# ===========================
+- extendedWaitUntil:
+    visible: "Início"
+    timeout: 30000
+
+- extendedWaitUntil:
+    visible: "LITURGIA DO DIA"
+    timeout: 20000
+
+- assertVisible: "LITURGIA DO DIA"
+
+# ===========================
+# 1. Expandir cards (todos exceto o primeiro - PRIMEIRA LEITURA)
+# ===========================
+
+# SALMO RESPONSORIAL
+- scrollUntilVisible:
+    element:
+      id: "card-salmo"
+    direction: DOWN
+    timeout: 5000
+- tapOn:
+    id: "card-salmo"
+- assertVisible: "Ocultar"
+
+# EVANGELHO (sempre presente)
+- scrollUntilVisible:
+    element:
+      id: "card-evangelho"
+    direction: DOWN
+    timeout: 5000
+- tapOn:
+    id: "card-evangelho"
+- assertVisible: "Ocultar"
+
+# SEGUNDA LEITURA (opcional - presente apenas em domingos e solenidades)
+# - scrollUntilVisible:
+#     element:
+#       id: "card-segunda-leitura"
+#     direction: DOWN
+#     timeout: 5000
+# - tapOn:
+#     id: "card-segunda-leitura"
+
+# ORAÇÃO DO DIA (opcional)
+# - scrollUntilVisible:
+#     element:
+#       id: "card-oracao"
+#     direction: DOWN
+#     timeout: 5000
+# - tapOn:
+#     id: "card-oracao"
+
+# ===========================
+# 2. Navegação de datas com as setas (próximo dia e dia anterior)
+# ===========================
+
+# Volta ao topo para ver o DateNavigator
+- scrollUntilVisible:
+    element:
+      id: "date-label"
+    direction: UP
+    timeout: 5000
+
+# Avançar para o próximo dia (seta direita)
+- tapOn:
+    id: "next-day"
+- extendedWaitUntil:
+    visible: "LITURGIA DO DIA"
+    timeout: 20000
+- assertVisible: "Voltar para hoje"
+
+# Voltar para hoje (seta esquerda)
+- tapOn:
+    id: "prev-day"
+- extendedWaitUntil:
+    visible: "LITURGIA DO DIA"
+    timeout: 20000
+- assertNotVisible: "Voltar para hoje"
+
+# Ir para o dia anterior (seta esquerda)
+- tapOn:
+    id: "prev-day"
+- extendedWaitUntil:
+    visible: "LITURGIA DO DIA"
+    timeout: 20000
+- assertVisible: "Voltar para hoje"
+
+# Voltar para hoje (seta direita)
+- tapOn:
+    id: "next-day"
+- extendedWaitUntil:
+    visible: "LITURGIA DO DIA"
+    timeout: 20000
+- assertNotVisible: "Voltar para hoje"
+
+# ===========================
+# 3. Selecionar um dia específico clicando na data centralizada
+# ===========================
+
+# Abrir o modal de calendário pelo botão de data
+- tapOn:
+    id: "date-label"
+- assertVisible: "Fechar"
+
+# Ir para o mês anterior (garante que qualquer dia selecionado não é hoje)
+- tapOn:
+    id: "prev-month"
+
+# Selecionar o dia 15 do mês anterior
+- tapOn: "15"
+
+# Modal fecha automaticamente após seleção
+- extendedWaitUntil:
+    notVisible: "Fechar"
+    timeout: 5000
+
+# Liturgia do dia 15 carregada; "Voltar para hoje" deve aparecer
+- extendedWaitUntil:
+    visible: "LITURGIA DO DIA"
+    timeout: 20000
+- assertVisible: "Voltar para hoje"
+
+# ===========================
+# 4. Fechar o modal de calendário com o botão "Fechar"
+# ===========================
+- tapOn:
+    id: "date-label"
+- assertVisible: "Fechar"
+- tapOn:
+    id: "close-btn"
+- extendedWaitUntil:
+    notVisible: "Fechar"
+    timeout: 5000
+
+# ===========================
+# 5. Botão "Hoje" no modal retorna para a liturgia de hoje
+# ===========================
+- tapOn:
+    id: "date-label"
+- assertVisible: "Fechar"
+- tapOn:
+    id: "today-btn"
+- extendedWaitUntil:
+    notVisible: "Fechar"
+    timeout: 5000
+- extendedWaitUntil:
+    visible: "LITURGIA DO DIA"
+    timeout: 20000
+# "Voltar para hoje" desaparece pois voltamos para hoje
+- assertNotVisible: "Voltar para hoje"
+
+# ===========================
+# 6. Navegar entre meses no modal de calendário
+# ===========================
+- tapOn:
+    id: "date-label"
+- assertVisible: "Fechar"
+
+# Avançar para o próximo mês
+- tapOn:
+    id: "next-month"
+- assertVisible: "Fechar"
+
+# Voltar para o mês anterior
+- tapOn:
+    id: "prev-month"
+- assertVisible: "Fechar"
+
+# Voltar mais um mês
+- tapOn:
+    id: "prev-month"
+- assertVisible: "Fechar"
+
+# Fechar o modal
+- tapOn:
+    id: "close-btn"
+- extendedWaitUntil:
+    notVisible: "Fechar"
+    timeout: 5000
+
+# ===========================
+# 7. Fechar o modal clicando fora (backdrop)
+# ===========================
+- tapOn:
+    id: "date-label"
+- assertVisible: "Fechar"
+- tapOn:
+    id: "calendar-backdrop"
+- extendedWaitUntil:
+    notVisible: "Fechar"
+    timeout: 5000
+
+# ===========================
+# 8. Dark mode na tela de Início
+# ===========================
+
+# Confirma que estamos em modo claro
+- assertVisible: "Ativar modo escuro"
+
+# Ativar modo escuro
+- tapOn:
+    id: "theme-toggle"
+- assertVisible: "Desativar modo escuro"
+- assertVisible: "Início"
+- assertVisible: "LITURGIA DO DIA"
+
+# Voltar para modo claro
+- tapOn:
+    id: "theme-toggle"
+- assertVisible: "Ativar modo escuro"

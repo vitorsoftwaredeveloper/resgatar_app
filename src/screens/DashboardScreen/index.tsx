@@ -143,6 +143,7 @@ export function DashboardScreen() {
               />
 
               <ReadingCard
+                testID="card-primeira-leitura"
                 label="PRIMEIRA LEITURA"
                 referencia={liturgy.leituras.primeiraLeitura.referencia}
                 titulo={liturgy.leituras.primeiraLeitura.titulo}
@@ -151,6 +152,7 @@ export function DashboardScreen() {
               />
 
               <PsalmCard
+                testID="card-salmo"
                 referencia={liturgy.leituras.salmo.referencia}
                 refrao={liturgy.leituras.salmo.refrao}
                 texto={liturgy.leituras.salmo.texto}
@@ -158,6 +160,7 @@ export function DashboardScreen() {
 
               {!!liturgy.leituras.segundaLeitura && (
                 <ReadingCard
+                  testID="card-segunda-leitura"
                   label="SEGUNDA LEITURA"
                   referencia={liturgy.leituras.segundaLeitura.referencia}
                   titulo={liturgy.leituras.segundaLeitura.titulo}
@@ -167,6 +170,7 @@ export function DashboardScreen() {
               )}
 
               <ReadingCard
+                testID="card-evangelho"
                 label="✝  EVANGELHO"
                 referencia={liturgy.leituras.evangelho.referencia}
                 titulo={liturgy.leituras.evangelho.titulo}
@@ -176,6 +180,7 @@ export function DashboardScreen() {
 
               {!!liturgy.oracoes?.coleta && (
                 <ReadingCard
+                  testID="card-oracao"
                   label="ORAÇÃO DO DIA"
                   referencia=""
                   texto={liturgy.oracoes.coleta}

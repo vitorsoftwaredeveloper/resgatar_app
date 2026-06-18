@@ -14,9 +14,10 @@ interface Props {
   referencia: string;
   refrao?: string;
   texto: string;
+  testID?: string;
 }
 
-export function PsalmCard({ referencia, refrao, texto }: Props) {
+export function PsalmCard({ referencia, refrao, texto, testID }: Props) {
   const styles = useStyles();
   const [expanded, setExpanded] = useState(false);
   const [contentHeight, setContentHeight] = useState(0);
@@ -52,6 +53,7 @@ export function PsalmCard({ referencia, refrao, texto }: Props) {
 
   return (
     <Pressable
+      testID={testID}
       style={[styles.card]}
       onPress={() => setExpanded((v) => !v)}
       accessibilityRole="button"
