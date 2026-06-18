@@ -17,6 +17,7 @@ interface Props {
   texto: string;
   formulaFinal?: string;
   defaultExpanded?: boolean;
+  testID?: string;
 }
 
 function formatVerseText(text: string, textStyle: any, verseStyle: any) {
@@ -41,6 +42,7 @@ export function ReadingCard({
   texto,
   formulaFinal,
   defaultExpanded = false,
+  testID,
 }: Props) {
   const styles = useStyles();
   const [expanded, setExpanded] = useState(defaultExpanded);
@@ -78,6 +80,7 @@ export function ReadingCard({
 
   return (
     <Pressable
+      testID={testID}
       style={[styles.card]}
       onPress={() => setExpanded((v) => !v)}
       accessibilityRole="button"

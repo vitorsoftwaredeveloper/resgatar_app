@@ -1,0 +1,28 @@
+appId: ${APP_ID}
+---
+- launchApp
+
+# Navegar para aba Perfil
+- tapOn:
+    text: "Perfil"
+
+# Header com nome do membro visível
+- assertVisible: "Meus dados"
+- assertVisible: "Atualizar senha"
+- assertVisible: "Sair"
+
+# Abrir modal de edição de perfil
+- tapOn: "Meus dados"
+- assertVisible: "Salvar"
+- tapOn:
+    id: "close-modal"
+
+# Abrir modal de atualizar senha
+- tapOn: "Atualizar senha"
+- assertVisible: "Salvar"
+- tapOn:
+    id: "close-modal"
+
+# Fluxo de logout — confirmar via Dialog
+- tapOn: "Sair"
+- assertVisible: "Comunidade Resgatar"

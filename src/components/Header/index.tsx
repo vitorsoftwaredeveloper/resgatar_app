@@ -25,7 +25,12 @@ export function Header({ name }: Props) {
             {name}
           </Text>
         </View>
-        <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
+        <TouchableOpacity
+          testID="theme-toggle"
+          accessibilityLabel={mode === "dark" ? "Desativar modo escuro" : "Ativar modo escuro"}
+          onPress={toggleTheme}
+          style={styles.themeToggle}
+        >
           {mode === "dark" ? (
             <Sun size={18} color={colors.primary} />
           ) : (

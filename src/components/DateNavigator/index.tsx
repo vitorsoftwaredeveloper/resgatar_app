@@ -60,17 +60,17 @@ export function DateNavigator({
     <View style={styles.wrapper}>
       {/* Navigation row */}
       <View style={styles.navRow}>
-        <Pressable style={styles.arrowBtn} onPress={onPrev} hitSlop={8}>
+        <Pressable testID="prev-day" style={styles.arrowBtn} onPress={onPrev} hitSlop={8}>
           <ChevronLeft size={20} color={styles.arrowIcon.color} />
         </Pressable>
 
-        <Pressable style={styles.centerBtn} onPress={onOpenCalendar}>
+        <Pressable testID="date-label" style={styles.centerBtn} onPress={onOpenCalendar}>
           <Text style={styles.centerText}>
             {formatCenterLabel(selectedDate)}
           </Text>
         </Pressable>
 
-        <Pressable style={styles.arrowBtn} onPress={onNext} hitSlop={8}>
+        <Pressable testID="next-day" style={styles.arrowBtn} onPress={onNext} hitSlop={8}>
           <ChevronRight size={20} color={styles.arrowIcon.color} />
         </Pressable>
       </View>
@@ -114,7 +114,7 @@ export function DateNavigator({
 
       {/* Back to today */}
       {!isToday && (
-        <Pressable style={styles.backToToday} onPress={onBackToToday}>
+        <Pressable testID="back-to-today" style={styles.backToToday} onPress={onBackToToday}>
           <Clock size={13} color={styles.backToTodayText.color} />
           <Text style={styles.backToTodayText}>Voltar para hoje</Text>
         </Pressable>

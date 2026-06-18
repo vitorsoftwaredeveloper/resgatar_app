@@ -127,7 +127,7 @@ export function CalendarModal({
       animationType="none"
       onRequestClose={onClose}
     >
-      <Pressable style={styles.backdrop} onPress={onClose} />
+      <Pressable testID="calendar-backdrop" style={styles.backdrop} onPress={onClose} />
       <Animated.View
         style={[styles.sheet, { transform: [{ translateY: slideAnim }] }]}
       >
@@ -136,13 +136,13 @@ export function CalendarModal({
 
         {/* Month header */}
         <View style={styles.monthHeader}>
-          <Pressable style={styles.monthArrow} onPress={prevMonth} hitSlop={8}>
+          <Pressable testID="prev-month" style={styles.monthArrow} onPress={prevMonth} hitSlop={8}>
             <ChevronLeft size={18} color={styles.monthArrowIcon.color} />
           </Pressable>
-          <Text style={styles.monthTitle}>
+          <Text testID="month-title" style={styles.monthTitle}>
             {MONTH_NAMES[viewMonth]} {viewYear}
           </Text>
-          <Pressable style={styles.monthArrow} onPress={nextMonth} hitSlop={8}>
+          <Pressable testID="next-month" style={styles.monthArrow} onPress={nextMonth} hitSlop={8}>
             <ChevronRight size={18} color={styles.monthArrowIcon.color} />
           </Pressable>
         </View>
@@ -196,13 +196,14 @@ export function CalendarModal({
         {/* Footer */}
         <View style={styles.footer}>
           <Pressable
+            testID="today-btn"
             style={styles.todayBtn}
             onPress={() => handleSelectDay(today)}
           >
             <Clock size={14} color={styles.todayBtnText.color} />
             <Text style={styles.todayBtnText}>Hoje</Text>
           </Pressable>
-          <Pressable style={styles.closeBtn} onPress={onClose}>
+          <Pressable testID="close-btn" style={styles.closeBtn} onPress={onClose}>
             <Text style={styles.closeBtnText}>Fechar</Text>
           </Pressable>
         </View>

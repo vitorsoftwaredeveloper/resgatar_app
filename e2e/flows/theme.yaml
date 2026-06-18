@@ -1,0 +1,20 @@
+appId: ${APP_ID}
+---
+- launchApp
+
+- extendedWaitUntil:
+    visible: "Início"
+    timeout: 30000
+
+# Confirma modo claro ativo
+- assertVisible: "Ativar modo escuro"
+
+# Ativar dark mode
+- tapOn:
+    id: "theme-toggle"
+- assertVisible: "Desativar modo escuro"
+
+# Voltar para light mode
+- tapOn:
+    id: "theme-toggle"
+- assertVisible: "Ativar modo escuro"

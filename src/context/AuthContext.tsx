@@ -57,17 +57,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   async function login(email: string, password: string) {
     setLoading(true);
     try {
-      await signIn({
+      try {
+        await signOut();
+      } catch {}
+
+      const { isSignedIn, nextStep } = await signIn({
         username: email,
         password,
         options: {
           authFlowType: "USER_PASSWORD_AUTH",
         },
-      }).then(async () => {
-        const memberData = await MemberServices.getMember();
-        setMember(memberData);
-        await saveMember(memberData);
       });
+      if (!isSignedIn) {
+        throw new Error(`Login incompleto: ${nextStep.signInStep}`);
+      }
+      const memberData = await MemberServices.getMember();
+      setMember(memberData);
+      await saveMember(memberData);
     } catch (error) {
       setMember(null);
       throw error;

@@ -1,0 +1,51 @@
+appId: ${APP_ID}
+---
+- stopApp
+# Limpa a sessão Cognito persistida pra garantir que o teste comece deslogado
+- launchApp:
+    clearState: true
+
+# Aguarda app carregar (splash + verificação de sessão Cognito)
+- extendedWaitUntil:
+    visible: "Comunidade Resgatar"
+    timeout: 30000
+
+# Tela de login visível
+- assertVisible: "Comunidade Resgatar"
+- assertVisible: "Entrar"
+
+# Submissão com campos vazios
+- tapOn: "Entrar"
+- assertVisible: "Preencha todos os campos."
+
+# Email inválido
+- tapOn:
+    text: "Email"
+- inputText: "emailinvalido"
+- tapOn:
+    text: "Senha"
+- inputText: "dsdsdsd"
+# Tira o foco/teclado sem disparar o botão BACK (evita fechar o app no Android API 36)
+- tapOn: "Comunidade Resgatar"
+- tapOn: "Entrar"
+- assertVisible: "Informe um e-mail válido."
+
+# Credenciais corretas
+- tapOn:
+    text: "Email"
+- eraseText: 20
+- inputText: ${EMAIL}
+- tapOn:
+    text: "Senha"
+- eraseText: 20
+- inputText: ${PASSWORD}
+- tapOn: "Comunidade Resgatar"
+# Mostra a senha digitada (debug: confere no screenshot o valor inserido)
+- tapOn:
+    id: "toggle-password"
+- tapOn: "Entrar"
+
+# Dashboard carregado após login
+- assertVisible:
+    text: "Início"
+    enabled: true
