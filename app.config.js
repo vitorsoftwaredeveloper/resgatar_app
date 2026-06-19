@@ -32,8 +32,9 @@ module.exports = {
       [
         "expo-splash-screen",
         {
-          image: "./assets/images/splash2.png",
-          imageWidth: 400,
+          backgroundColor: "#F5F0E8",
+          image: "./assets/images/icon-transparent-1024.png",
+          imageWidth: 250,
           resizeMode: "contain",
         },
       ],
@@ -43,7 +44,7 @@ module.exports = {
       [
         "expo-notifications",
         {
-          icon: "./assets/images/icon.png",
+          icon: "./assets/images/notification-icon.png",
           color: "#6B3F1E",
           defaultChannel: "default",
         },
