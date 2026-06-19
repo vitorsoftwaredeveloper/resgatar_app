@@ -38,6 +38,10 @@ module.exports = {
           resizeMode: "contain",
         },
       ],
+      [
+        "./plugins/withTransparentSplashLogo",
+        { source: "./assets/images/icon-transparent-1024.png" },
+      ],
       "expo-font",
       "expo-secure-store",
       "@react-native-firebase/app",
