@@ -4,6 +4,16 @@ import { IMemberState, IMemberWithContribution } from "@/types/Member";
 import { getCurrentUser, signIn, signOut } from "aws-amplify/auth";
 import React, { createContext, useEffect, useState } from "react";
 
+interface RegisterPayload {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  type: "CPF" | "CNPJ";
+  numberType: string;
+  password: string;
+}
+
 interface AuthContextData {
   isLoggedIn: boolean;
   member: IMemberWithContribution | null;
@@ -13,7 +23,7 @@ interface AuthContextData {
   changePassword: (memberId: string, newPassword: string) => Promise<void>;
   updateMember: (member: IMemberState) => Promise<void>;
   reloadMemberData: () => Promise<void>;
-  createMember: (member: IMemberState & { password: string }) => Promise<void>;
+  register: (payload: RegisterPayload) => Promise<void>;
   listMembers: () => Promise<void>;
   removeMember: (memberId: string) => Promise<void>;
 }
@@ -131,40 +141,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }
 
-  async function createMember(newMember: IMemberState & { password: string }) {
-    try {
-      const formatMember = {
-        firstName: newMember.firstName.trim(),
-        lastName: newMember.lastName.trim(),
-        email: newMember.email.trim(),
-        phoneNumber: newMember.phoneNumber,
-        paymentInfo: {
-          datePayment: parseInt(newMember.datePayment),
-          amount: newMember.amount.replace("R$", "").replace(".", "").trim(),
-        },
-        identification: {
-          type: newMember.type as "CPF" | "CNPJ",
-          numberType: newMember.numberType,
-        },
-        bio: newMember.bio,
-        dateOfBirth: newMember.dateOfBirth,
-        address: {
-          street: newMember.street.trim(),
-          number: newMember.number.trim(),
-          city: newMember.city.trim(),
-          state: newMember.state.trim(),
-          zip: newMember.zip,
-          complement: newMember.complement.trim(),
-        },
-        password: newMember.password,
-      };
-
-      await MemberServices.createMember(formatMember);
-    } catch (error) {
-      throw error;
-    }
-  }
-
   async function listMembers() {
     try {
       return await MemberServices.listMembers();
@@ -194,6 +170,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }
 
+  async function register(payload: RegisterPayload) {
+    try {
+      await MemberServices.register({
+        firstName: payload.firstName,
+        lastName: payload.lastName,
+        email: payload.email,
+        phoneNumber: payload.phoneNumber,
+        identification: {
+          type: payload.type,
+          numberType: payload.numberType,
+        },
+        paymentInfo: { datePayment: 1, amount: "10,00" },
+        dateOfBirth: new Date().getTime(),
+        password: payload.password,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -205,7 +201,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         changePassword,
         updateMember,
         reloadMemberData,
-        createMember,
+        register,
         listMembers,
         removeMember,
       }}

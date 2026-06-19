@@ -97,6 +97,77 @@ function validateCNPJ(value: string): boolean {
   return calc(w1) === parseInt(digits[12]) && calc(w2) === parseInt(digits[13]);
 }
 
+const DISPOSABLE_DOMAINS = new Set([
+  "mail.com",
+  "mailinator.com",
+  "guerrillamail.com",
+  "guerrillamail.net",
+  "guerrillamail.org",
+  "guerrillamail.biz",
+  "guerrillamail.de",
+  "guerrillamail.info",
+  "grr.la",
+  "sharklasers.com",
+  "spam4.me",
+  "yopmail.com",
+  "yopmail.fr",
+  "cool.fr.nf",
+  "jetable.fr.nf",
+  "nospam.ze.tc",
+  "nomail.xl.cx",
+  "mega.zik.dj",
+  "speed.1s.fr",
+  "courriel.fr.nf",
+  "moncourrier.fr.nf",
+  "monemail.fr.nf",
+  "monmail.fr.nf",
+  "tempmail.com",
+  "tempmail.net",
+  "tempmail.org",
+  "temp-mail.org",
+  "temp-mail.io",
+  "throwam.com",
+  "throwam.net",
+  "trashmail.com",
+  "trashmail.net",
+  "trashmail.me",
+  "trashmail.at",
+  "trashmail.io",
+  "trashmail.xyz",
+  "10minutemail.com",
+  "10minutemail.net",
+  "10minutemail.org",
+  "fakeinbox.com",
+  "mailnull.com",
+  "maildrop.cc",
+  "spamgourmet.com",
+  "spamgourmet.net",
+  "spamgourmet.org",
+  "dispostable.com",
+  "mailnesia.com",
+  "mailnull.com",
+  "spamhereplease.com",
+  "spamthisplease.com",
+  "example.com",
+  "example.net",
+  "example.org",
+  "test.com",
+  "test.net",
+  "test.org",
+  "teste.com",
+  "teste.net",
+  "localhost.com",
+]);
+
+function validateEmailDomain(email: string): boolean {
+  const parts = email.toLowerCase().trim().split("@");
+  if (parts.length !== 2) return false;
+  const domain = parts[1];
+  if (DISPOSABLE_DOMAINS.has(domain)) return false;
+  if (!/^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z]{2,})+$/.test(domain)) return false;
+  return true;
+}
+
 export {
   onlyNumbers,
   maskPhoneBR,
@@ -106,4 +177,5 @@ export {
   maskDateBR,
   validateCPF,
   validateCNPJ,
+  validateEmailDomain,
 };

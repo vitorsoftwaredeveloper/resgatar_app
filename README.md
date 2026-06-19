@@ -95,7 +95,6 @@ src/
       ModalEditProfile/
       ModalUpdatePassword/
     SettingsScreen/    # Admin only
-      ModalCreateMember/
       ModalRemoveMember/
       ModalChangePasswordMember/
       ModalSendNotification/

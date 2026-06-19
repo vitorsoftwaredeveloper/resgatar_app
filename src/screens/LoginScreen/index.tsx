@@ -4,6 +4,8 @@ import { LogoResgatar } from "@/components/Svg/Logo";
 import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";
 import { useAppTheme } from "@/context/ThemeContext";
+import { RootStackParamList } from "@/navigation/types";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Eye, EyeOff, LogIn, Mail } from "lucide-react-native";
 import React, { useContext, useRef, useState } from "react";
 import {
@@ -16,7 +18,13 @@ import {
 } from "react-native";
 import { useStyles } from "../../../src/screens/LoginScreen/styles";
 
-export const LoginScreen = () => {
+type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
+
+interface Props {
+  navigation: LoginScreenNavigationProp;
+}
+
+export const LoginScreen = ({ navigation }: Props) => {
   const { login } = useContext(AuthContext);
   const styles = useStyles();
   const { colors } = useAppTheme();
@@ -120,6 +128,13 @@ export const LoginScreen = () => {
           leftIcon={<LogIn size={20} color={colors.background} />}
           loading={loading}
         />
+
+        <View style={{ marginTop: 16, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+          <Text style={{ color: colors.textMuted, fontSize: 14 }}>Não tem uma conta? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+            <Text style={{ color: colors.primary, fontSize: 14, fontWeight: "600" }}>Registre-se</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
       </ScrollView>

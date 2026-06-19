@@ -16,3 +16,7 @@ api.interceptors.request.use(async (config) => {
 
   return config;
 });
+
+export const publicApi = axios.create({
+  baseURL: ENV.API_BASE_URL,
+});

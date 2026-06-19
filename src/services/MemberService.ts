@@ -1,4 +1,4 @@
-import { api } from "./api";
+import { api, publicApi } from "./api";
 import { IMember, IMemberWithContribution } from "@/types/Member";
 
 export const MemberServices = {
@@ -24,17 +24,7 @@ export const MemberServices = {
       throw error;
     }
   },
-  createMember: async (member: Omit<IMember, "_id"> & { password: string }) => {
-    try {
-      const response = await api.post("/members", member);
-      const { data } = response.data;
 
-      return data;
-    } catch (error) {
-      console.error("Erro ao criar membro", error);
-      throw error;
-    }
-  },
   listMembers: async () => {
     try {
       const response = await api.get("/members/list");
@@ -54,6 +44,16 @@ export const MemberServices = {
       return data;
     } catch (error) {
       console.error("Erro ao remover membro", error);
+      throw error;
+    }
+  },
+  register: async (member: Omit<IMember, "_id"> & { password: string }) => {
+    try {
+      const response = await publicApi.post("/members", member);
+      const { data } = response.data;
+      return data;
+    } catch (error) {
+      console.error("Erro ao registrar membro", error);
       throw error;
     }
   },

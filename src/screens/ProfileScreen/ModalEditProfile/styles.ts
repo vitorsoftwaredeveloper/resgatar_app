@@ -103,31 +103,6 @@ export function useStyles() {
           color: colors.white,
         },
 
-        toggle: {
-          flexDirection: "row",
-          borderRadius: 24,
-          borderWidth: 1,
-          borderColor: colors.border,
-          overflow: "hidden",
-          marginBottom: 12,
-        },
-        toggleItem: {
-          flex: 1,
-          paddingVertical: 14,
-          alignItems: "center",
-        },
-        toggleActive: {
-          backgroundColor: colors.primary,
-        },
-        toggleText: {
-          color: colors.text,
-          fontWeight: "600",
-        },
-        toggleTextActive: {
-          color: colors.white,
-          fontWeight: "700",
-        },
-
         footer: {
           padding: 16,
           backgroundColor: colors.background,

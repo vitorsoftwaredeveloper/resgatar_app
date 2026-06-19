@@ -1,5 +1,6 @@
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
+import { DocTypeToggle } from "@/components/DocTypeToggle";
 import { Input } from "@/components/Input";
 import { ModalBase } from "@/components/ModalBase";
 import { Row } from "@/components/Row";
@@ -22,6 +23,7 @@ import {
   onlyNumbers,
   validateCNPJ,
   validateCPF,
+  validateEmailDomain,
 } from "@/utils/mask";
 import { Formik } from "formik";
 import { Loader } from "lucide-react-native";
@@ -43,7 +45,12 @@ interface IModalEditProfile {
 }
 
 const profileValidationSchema = Yup.object().shape({
-  email: Yup.string().email("Email inválido").required("Email obrigatório"),
+  email: Yup.string()
+    .email("Email inválido")
+    .test("email-domain", "Domínio de email não permitido", (v) =>
+      validateEmailDomain(v || ""),
+    )
+    .required("Email obrigatório"),
 
   firstName: Yup.string()
     .max(50, "Nome muito longo (máx. 50 caracteres)")
@@ -419,36 +426,18 @@ export const ModalEditProfile = ({
                       title="Identificação"
                       description="Documento utilizado para emissão do comprovante PIX."
                     >
-                      <View style={styles.toggle}>
-                        {["CPF", "CNPJ"].map((type) => (
-                          <TouchableOpacity
-                            key={type}
-                            onPress={() => {
-                              savedDocValues.current[values.type] =
-                                values.numberType as string;
-                              handleChange("type")(type);
-                              setFieldValue(
-                                "numberType",
-                                savedDocValues.current[type] ?? "",
-                              );
-                            }}
-                            style={[
-                              styles.toggleItem,
-                              values.type === type && styles.toggleActive,
-                            ]}
-                          >
-                            <Text
-                              style={
-                                values.type === type
-                                  ? styles.toggleTextActive
-                                  : styles.toggleText
-                              }
-                            >
-                              {type}
-                            </Text>
-                          </TouchableOpacity>
-                        ))}
-                      </View>
+                      <DocTypeToggle
+                        value={values.type as "CPF" | "CNPJ"}
+                        onChange={(type) => {
+                          savedDocValues.current[values.type] =
+                            values.numberType as string;
+                          handleChange("type")(type);
+                          setFieldValue(
+                            "numberType",
+                            savedDocValues.current[type] ?? "",
+                          );
+                        }}
+                      />
 
                       <Input
                         label={values.type}
