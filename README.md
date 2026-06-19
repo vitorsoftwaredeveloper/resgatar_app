@@ -10,7 +10,6 @@ Mobile application for the Resgatar Community, providing daily Catholic liturgic
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
-- [Screenshots](#screenshots)
 - [Getting Started](#getting-started)
 - [Environment Variables](#environment-variables)
 - [Development Build](#development-build)
@@ -35,6 +34,7 @@ Resgatar is a React Native application built with Expo that serves the members o
 - PIX payment via QR Code with automatic payment confirmation polling
 - Profile management with personal data editing and password update
 - Push notification support for contribution reminders
+- **Self-registration** — new members can create their own account directly from the login screen via a public API endpoint (no authentication token required)
 
 **For administrators**
 
@@ -72,6 +72,7 @@ src/
   components/          # Reusable UI components
     Button/
     Input/
+    DocTypeToggle/     # CPF / CNPJ segmented toggle (shared across forms)
     Header/
     LiturgySeasonBanner/
     ReadingCard/
@@ -80,14 +81,15 @@ src/
     ProfileHeaderCard/
     ModalBase/
     Dialog/
-    Skeleton/          # Loading skeletons (Reanimated withRepeat)
+    Skeleton/
       LiturgySkeleton/
       RemoveMemberSkeleton/
     TabBar/
     Svg/
       Logo/
-  screens/             # Application screens
-    LoginScreen/
+  screens/
+    LoginScreen/       # Email + password login; link to RegisterScreen
+    RegisterScreen/    # Public self-registration (Formik + Yup)
     DashboardScreen/
     BillsScreen/
       PixPaymentModal/
@@ -99,24 +101,28 @@ src/
       ModalChangePasswordMember/
       ModalSendNotification/
     LoadingScreen/
-  services/            # API service layer
-    api.ts             # Axios instance with auth interceptor
+  services/
+    api.ts             # Authenticated Axios instance (Bearer token interceptor)
+                       # + publicApi instance (no auth — used for registration)
     MemberService.ts
     ChargeService.ts
     LiturgyService.ts
     NotificationService.ts
-  context/             # React Context providers
-    AuthContext.tsx
+  context/
+    AuthContext.tsx    # login, logout, register, createMember, updateMember, …
     ChargeContext.tsx
   navigation/
-    AppNavigator.tsx
+    AppNavigator.tsx   # Login + Register (unauthenticated) / Home (authenticated)
+    types.ts           # RootStackParamList
   config/
-    amplify.ts         # AWS Amplify configuration
-    env.ts             # Environment variable exports
+    amplify.ts
+    env.ts
   hooks/
+    useMaskedField.ts  # useMaskedFieldFromFormik helper
+    useCepLookup.ts
   storage/
   theme/
-    index.ts           # COLORS, SPACING, RADIUS, TYPOGRAPHY, SHADOW
+    index.ts
   types/
     Member/
     Charge/
@@ -124,6 +130,14 @@ src/
     Notification/
   utils/
     helper.ts
+    mask.ts            # Masks + validators: CPF, CNPJ, phone, CEP, currency,
+                       # date, validateEmailDomain (disposable domain blocklist)
+assets/
+  images/
+    icon.png                    # App icon (1024×1024, RGBA)
+    icon-transparent-1024.png   # Logo on transparent bg — used for splash
+    notification-icon.png       # White-on-transparent monochrome — Android notifications
+    android-icon-foreground.png # Adaptive icon foreground
 scripts/
   generate-env.js      # EAS build hook — generates .env from EAS secrets
 docs/
@@ -151,13 +165,11 @@ docs/
 
 ```bash
 git clone https://github.com/vitorsoftwaredeveloper/resgatar_app.git
-cd resgatar_app/resgatar_app
+cd resgatar_app
 npm install
 ```
 
 ### Configure environment variables
-
-Copy the example file and fill in your values:
 
 ```bash
 cp .env.example .env
@@ -176,7 +188,7 @@ cp .env.example .env
 | `API_BASE_URL_AUTH`           | Base URL for authentication endpoints               |
 | `NODE_ENV`                    | Runtime environment (`development` or `production`) |
 
-For EAS builds, these variables must be registered as EAS environment variables. `NODE_ENV` is declared directly in `eas.json`. All others must be registered via the EAS CLI:
+For EAS builds, register variables via the EAS CLI:
 
 ```bash
 eas env:create --environment production --name COGNITO_USER_POOL_ID --value "<value>" --visibility sensitive
@@ -203,27 +215,26 @@ npx expo run:android
 npx expo run:ios
 ```
 
+> **After changing `app.config.js` plugins** (splash, notifications, icons), run a clean prebuild before running the app:
+>
+> ```bash
+> npx expo prebuild --clean --platform android
+> npx expo run:android
+> ```
+
 ---
 
 ## Production Build
 
-Build for Android (generates `.aab` for Google Play):
-
 ```bash
+# Android (.aab for Google Play)
 eas build --platform android --profile production
-```
 
-Build for iOS:
-
-```bash
+# iOS
 eas build --platform ios --profile production
 ```
 
-After the build completes, download the artifact from the Expo dashboard and upload it to the Google Play Console or Apple App Store Connect.
-
 ### Incrementing the version code
-
-The version code is managed remotely by EAS (`appVersionSource: "remote"`). Increment it before a new release:
 
 ```bash
 eas build:version:set --platform android
@@ -233,37 +244,71 @@ eas build:version:set --platform android
 
 ## Architecture
 
-### Authentication flow
+### Authentication & Registration flow
 
-1. The user submits credentials on the Login screen.
-2. `AuthContext.login` calls AWS Amplify `signIn` with the `USER_PASSWORD_AUTH` flow.
-3. On success, `MemberService.getMember` fetches the member record from the backend API using the Cognito JWT access token.
-4. The member data is stored in React Context and persisted to AsyncStorage for session restoration on app relaunch.
+```
+Unauthenticated
+  LoginScreen
+    └─ "Registre-se" → RegisterScreen
+         └─ publicApi POST /members        (no token — open endpoint)
+         └─ on success → back to LoginScreen
+
+  LoginScreen → Amplify signIn (USER_PASSWORD_AUTH)
+    └─ on success → MemberService.getMember (authenticated api)
+         └─ member stored in Context + AsyncStorage
+```
+
+- `api` — authenticated Axios instance; attaches Cognito `idToken` via request interceptor.
+- `publicApi` — plain Axios instance with no interceptor; used exclusively for self-registration so unauthenticated users can call the backend without a token.
 
 ### Navigation
 
 ```
 AppNavigator (Stack)
-  LoginScreen           (unauthenticated)
-  BottomTabs            (authenticated)
-    DashboardScreen
-    BillsScreen
-    SettingsScreen      (admin role only)
-    ProfileScreen
+  ├─ LoginScreen       (unauthenticated)
+  ├─ RegisterScreen    (unauthenticated)
+  └─ Home → BottomTabs (authenticated)
+       ├─ DashboardScreen
+       ├─ BillsScreen
+       ├─ SettingsScreen   (admin role only)
+       └─ ProfileScreen
 ```
+
+### Forms
+
+All forms use **Formik + Yup**. Masked fields (phone, CPF/CNPJ, currency, CEP, date) are wired via the `useMaskedFieldFromFormik` hook so that both the displayed value and the Formik state stay in sync.
+
+The `DocTypeToggle` component provides a consistent CPF / CNPJ segmented control used in:
+
+- `RegisterScreen`
+- `ModalCreateMember`
+- `ModalEditProfile`
+
+### Email validation
+
+All email fields validate both format and domain. `validateEmailDomain` in `src/utils/mask.ts` maintains a blocklist of 50+ known disposable and fake domains (`mailinator.com`, `tempmail.com`, `yopmail.com`, `test.com`, `mail.com`, etc.). Emails from these domains are rejected with the message _"Domínio de email não permitido"_.
 
 ### Theme system
 
-All visual tokens are centralized in `src/theme/index.ts`. Components must consume `COLORS`, `SPACING`, `RADIUS`, `TYPOGRAPHY`, and `SHADOW` from this module. Hardcoded values are not permitted.
+All visual tokens are centralized in `src/theme/index.ts`. Components consume `COLORS`, `SPACING`, `RADIUS`, `TYPOGRAPHY`, and `SHADOW` from this module.
+
+### Android assets
+
+| Asset                    | File                          | Requirement                                                                                     |
+| ------------------------ | ----------------------------- | ----------------------------------------------------------------------------------------------- |
+| App icon                 | `icon.png`                    | 1024×1024, RGBA                                                                                 |
+| Adaptive icon foreground | `android-icon-foreground.png` | 1024×1024, RGBA, safe zone 66%                                                                  |
+| **Notification icon**    | `notification-icon.png`       | White (#FFF) on transparent — Android ignores color and uses only the alpha channel             |
+| **Splash logo**          | `icon-transparent-1024.png`   | Brown logo on transparent; `expo-splash-screen` composites it over `backgroundColor: "#F5F0E8"` |
+
+> After updating any asset referenced by an `app.config.js` plugin, run `npx expo prebuild --clean` to regenerate native resource files before building.
 
 ### Liturgical colors
 
-The dashboard dynamically adapts its accent color based on the liturgical season returned by the API:
-
-| Season                       | Accent color |
-| ---------------------------- | ------------ |
-| Verde (Ordinary Time)        | #2E7D32      |
-| Roxo (Advent / Lent)         | #7B1FA2      |
-| Branco (Feasts)              | #B8860B      |
-| Vermelho (Passion / Martyrs) | #C62828      |
-| Rosa (Laetare / Gaudete)     | #AD1457      |
+| Season                       | Accent  |
+| ---------------------------- | ------- |
+| Verde (Ordinary Time)        | #2E7D32 |
+| Roxo (Advent / Lent)         | #7B1FA2 |
+| Branco (Feasts)              | #B8860B |
+| Vermelho (Passion / Martyrs) | #C62828 |
+| Rosa (Laetare / Gaudete)     | #AD1457 |
