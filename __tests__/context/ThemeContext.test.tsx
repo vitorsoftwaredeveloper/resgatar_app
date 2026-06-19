@@ -5,7 +5,7 @@ jest.mock("@react-native-async-storage/async-storage", () => ({
 }));
 
 import React from "react";
-import { renderHook, act } from "@testing-library/react-hooks";
+import { renderHook, act } from "@testing-library/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ThemeProvider, useAppTheme } from "@/context/ThemeContext";
 

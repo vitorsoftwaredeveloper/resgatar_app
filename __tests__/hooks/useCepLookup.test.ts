@@ -2,7 +2,7 @@ jest.mock("@/components/Toast", () => ({
   ToastMessage: { error: jest.fn() },
 }));
 
-import { renderHook, act } from "@testing-library/react-hooks";
+import { renderHook, act } from "@testing-library/react-native";
 import { useCepLookup } from "@/hooks/useCepLookup";
 import { ToastMessage } from "@/components/Toast";
 

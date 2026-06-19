@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { View, FlatList, StyleSheet } from "react-native";
 import { RemoveMemberSkeleton } from "@/components/Skeleton/RemoveMemberSkeleton";
 import { SettingsMemberCard } from "@/components/SettingsMemberCard";
 import { IMember } from "@/types/Member";
 import { SPACING } from "@/theme";
 import { useAppTheme } from "@/context/ThemeContext";
-import { useMemo } from "react";
 
 interface Props {
   members: IMember[];

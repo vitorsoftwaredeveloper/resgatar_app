@@ -32,7 +32,7 @@ jest.mock("react-native/Libraries/Utilities/Platform", () => ({
   select: jest.fn(),
 }));
 
-import { renderHook, act } from "@testing-library/react-hooks";
+import { renderHook, act } from "@testing-library/react-native";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { NotificationServices } from "@/services/NotificationService";
 
@@ -54,9 +54,7 @@ describe("usePushNotifications", () => {
 
   describe("quando não está logado", () => {
     it("não registra permissões nem mensagens", async () => {
-      await act(async () => {
-        renderHook(() => usePushNotifications(false));
-      });
+      renderHook(() => usePushNotifications(false));
 
       expect(mockGetPermissionsAsync).not.toHaveBeenCalled();
       expect(mockOnMessage).not.toHaveBeenCalled();
@@ -67,9 +65,7 @@ describe("usePushNotifications", () => {
     it("registra o listener de mensagens FCM", async () => {
       grantedPermission();
 
-      await act(async () => {
-        renderHook(() => usePushNotifications(true));
-      });
+      renderHook(() => usePushNotifications(true));
 
       expect(mockOnMessage).toHaveBeenCalledTimes(1);
     });
@@ -77,9 +73,7 @@ describe("usePushNotifications", () => {
     it("registra o FCM token no backend", async () => {
       grantedPermission();
 
-      await act(async () => {
-        renderHook(() => usePushNotifications(true));
-      });
+      renderHook(() => usePushNotifications(true));
 
       await act(async () => {});
 
@@ -89,9 +83,7 @@ describe("usePushNotifications", () => {
     it("subscreve ao tópico FCM", async () => {
       grantedPermission();
 
-      await act(async () => {
-        renderHook(() => usePushNotifications(true));
-      });
+      renderHook(() => usePushNotifications(true));
 
       await act(async () => {});
 
@@ -101,9 +93,7 @@ describe("usePushNotifications", () => {
     it("registra canal de notificação no Android", async () => {
       grantedPermission();
 
-      await act(async () => {
-        renderHook(() => usePushNotifications(true));
-      });
+      renderHook(() => usePushNotifications(true));
 
       await act(async () => {});
 
@@ -118,9 +108,7 @@ describe("usePushNotifications", () => {
     it("não registra o FCM token", async () => {
       deniedPermission();
 
-      await act(async () => {
-        renderHook(() => usePushNotifications(true));
-      });
+      renderHook(() => usePushNotifications(true));
 
       await act(async () => {});
 
@@ -131,9 +119,7 @@ describe("usePushNotifications", () => {
       mockGetPermissionsAsync.mockResolvedValue({ status: "undetermined" });
       mockRequestPermissionsAsync.mockResolvedValue({ status: "denied" });
 
-      await act(async () => {
-        renderHook(() => usePushNotifications(true));
-      });
+      renderHook(() => usePushNotifications(true));
 
       await act(async () => {});
 
@@ -145,9 +131,7 @@ describe("usePushNotifications", () => {
     it("não propaga o erro e não registra o token", async () => {
       mockGetPermissionsAsync.mockRejectedValue(new Error("falha inesperada"));
 
-      await act(async () => {
-        renderHook(() => usePushNotifications(true));
-      });
+      renderHook(() => usePushNotifications(true));
 
       await act(async () => {});
 
@@ -165,9 +149,7 @@ describe("usePushNotifications", () => {
         return jest.fn();
       });
 
-      await act(async () => {
-        renderHook(() => usePushNotifications(true));
-      });
+      renderHook(() => usePushNotifications(true));
 
       await act(async () => {
         await capturedCallback!({
@@ -194,9 +176,7 @@ describe("usePushNotifications", () => {
         return jest.fn();
       });
 
-      await act(async () => {
-        renderHook(() => usePushNotifications(true));
-      });
+      renderHook(() => usePushNotifications(true));
 
       await act(async () => {
         await capturedCallback!({ notification: {} });

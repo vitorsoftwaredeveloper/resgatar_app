@@ -3,7 +3,6 @@ import { MemberListWithSkeleton } from "@/components/Skeleton/MemberListWithSkel
 import { ModalBase } from "@/components/ModalBase";
 import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";
-import { useAppTheme } from "@/context/ThemeContext";
 import { COLORS } from "@/theme";
 import { IMember } from "@/types/Member";
 import { Trash2 } from "lucide-react-native";
@@ -20,7 +19,6 @@ export function ModalRemoveMember({ visible, onClose }: Props) {
   const [selectedMember, setSelectedMember] = useState<IMember | null>(null);
   const { listMembers, removeMember } = useContext(AuthContext);
   const [openDialog, setOpenDialog] = useState(false);
-  const { mode } = useAppTheme();
 
   async function loadMembers() {
     setLoading(true);

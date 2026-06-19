@@ -1,6 +1,6 @@
 import { useAppTheme } from "@/context/ThemeContext";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./styles";
 
 interface Props {
