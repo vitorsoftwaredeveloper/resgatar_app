@@ -34,4 +34,8 @@ const TRANSACTION_STATUS = {
   CHARGED_BACK: "charged_back",
 };
 
-export { ICharge, TRANSACTION_STATUS };
+// Valor enviado pelo backend no campo `data.type` do push (FCM) quando o
+// webhook do Mercado Pago confirma a atualização de uma cobrança.
+const PAYMENT_NOTIFICATION_TYPE = "PAYMENT_UPDATE";
+
+export { ICharge, TRANSACTION_STATUS, PAYMENT_NOTIFICATION_TYPE };

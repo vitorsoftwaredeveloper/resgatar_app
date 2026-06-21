@@ -1,5 +1,4 @@
 import { ModalBase } from "@/components/ModalBase";
-import { AuthContext } from "@/context/AuthContext";
 import { ChargeContext } from "@/context/ChargeContext";
 import { TRANSACTION_STATUS } from "@/types/Charge";
 import Clipboard from "@react-native-clipboard/clipboard";
@@ -15,8 +14,7 @@ interface PixPaymentModalProps {
 }
 
 export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
-  const { charge, consultCharge } = useContext(ChargeContext);
-  const { reloadMemberData } = useContext(AuthContext);
+  const { charge } = useContext(ChargeContext);
   const styles = useStyles();
   const scaleAnim = useRef(new Animated.Value(0.95)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
@@ -26,12 +24,6 @@ export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
   const copyToClipboard = (value: string) => {
     Clipboard.setString(value);
     setTimeout(() => setIsCopied(false), 2000);
-  };
-
-  const handleApprove = async () => {
-    await reloadMemberData().then(() => {
-      onClose();
-    });
   };
 
   useEffect(() => {
@@ -69,32 +61,15 @@ export function PixPaymentModal({ visible, onClose }: PixPaymentModalProps) {
     }
   }, [visible]);
 
+  // A confirmação chega de forma assíncrona via push (FCM), tratada no
+  // ChargeContext, que também recarrega os dados do membro. Aqui mantemos o
+  // "Pago" visível por um instante antes de fechar o modal automaticamente.
   useEffect(() => {
-    let active = false;
+    if (charge.status !== TRANSACTION_STATUS.APPROVED) return;
 
-    active = true;
+    const timeout = setTimeout(onClose, 1800);
 
-    const poll = async () => {
-      if (!active) return;
-
-      await consultCharge();
-
-      if (charge.status === TRANSACTION_STATUS.PENDING) {
-        setTimeout(poll, 5000);
-      }
-    };
-
-    poll();
-
-    return () => {
-      active = false;
-    };
-  }, [charge.status]);
-
-  useEffect(() => {
-    if (charge.status === TRANSACTION_STATUS.APPROVED) {
-      handleApprove();
-    }
+    return () => clearTimeout(timeout);
   }, [charge.status]);
 
   return (
