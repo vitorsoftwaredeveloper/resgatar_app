@@ -17,13 +17,7 @@ export function useStyles() {
           marginBottom: SPACING.lg,
           ...SHADOW.card,
         },
-        avatar: {
-          width: 56,
-          height: 56,
-          borderRadius: 28,
-          backgroundColor: colors.background,
-          justifyContent: "center",
-          alignItems: "center",
+        avatarWrapper: {
           marginRight: SPACING.md,
           flexShrink: 0,
         },

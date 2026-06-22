@@ -4,6 +4,7 @@ import { Modal, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { IconButton } from "../IconButton";
+import { toastConfig } from "../Toast/toastConfig";
 import { useStyles } from "./styles";
 
 interface IModalBase {
@@ -39,7 +40,7 @@ export const ModalBase: React.FC<IModalBase> = ({
           </View>
         )}
         {children}
-        <Toast />
+        <Toast config={toastConfig} />
       </SafeAreaView>
     </Modal>
   );

@@ -80,7 +80,10 @@ export const BillsScreen = () => {
   return (
     <SwipeableTab>
       <View style={styles.container}>
-        <Header name={member?.firstName + " " + member?.lastName} />
+        <Header
+          name={member?.firstName + " " + member?.lastName}
+          photo={member?.profileImage}
+        />
 
         <FlatList
           contentContainerStyle={[

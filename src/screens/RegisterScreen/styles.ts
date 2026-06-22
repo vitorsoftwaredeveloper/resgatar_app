@@ -34,6 +34,16 @@ export function useStyles() {
           marginTop: 16,
           marginBottom: 24,
         },
+        photoPicker: {
+          alignItems: "center",
+          marginBottom: 24,
+          gap: 8,
+        },
+        photoHint: {
+          color: colors.textMuted,
+          fontSize: 13,
+          textAlign: "center",
+        },
         form: {
           width: "100%",
           gap: 0,

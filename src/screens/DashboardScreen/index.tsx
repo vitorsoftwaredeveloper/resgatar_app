@@ -91,7 +91,10 @@ export function DashboardScreen() {
   return (
     <SwipeableTab>
       <View style={styles.container}>
-        <Header name={`${member?.firstName} ${member?.lastName}`} />
+        <Header
+          name={`${member?.firstName} ${member?.lastName}`}
+          photo={member?.profileImage}
+        />
 
         <ScrollView
           style={styles.scroll}

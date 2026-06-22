@@ -1,23 +1,27 @@
-import { useAppTheme } from "@/context/ThemeContext";
+import { Avatar } from "@/components/Avatar";
 import { IMember } from "@/types/Member";
 import { maskCPFOrCNPJ } from "@/utils/mask";
-import { UserRound } from "lucide-react-native";
 import React from "react";
 import { Text, View } from "react-native";
 import { useStyles } from "./styles";
 
 interface Props {
   member: IMember;
+  onPressAvatar?: () => void;
 }
 
-export function ProfileHeaderCard({ member }: Props) {
-  const { colors } = useAppTheme();
+export function ProfileHeaderCard({ member, onPressAvatar }: Props) {
   const styles = useStyles();
 
   return (
     <View style={styles.card}>
-      <View style={styles.avatar}>
-        <UserRound size={25} color={colors.primary} />
+      <View style={styles.avatarWrapper}>
+        <Avatar
+          photo={member.profileImage}
+          size={56}
+          onPress={onPressAvatar}
+          editable={!!onPressAvatar}
+        />
       </View>
 
       <View style={styles.info}>

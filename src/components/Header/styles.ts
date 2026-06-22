@@ -32,6 +32,12 @@ export function useStyles() {
           justifyContent: "center",
           alignItems: "center",
         },
+        photo: {
+          width: 50,
+          height: 50,
+          borderRadius: 25,
+          resizeMode: "cover",
+        },
         hello: {
           color: colors.primary,
           fontSize: 14,

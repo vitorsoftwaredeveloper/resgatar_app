@@ -12,6 +12,7 @@ interface RegisterPayload {
   type: "CPF" | "CNPJ";
   numberType: string;
   password: string;
+  profileImage?: string;
 }
 
 interface AuthContextData {
@@ -22,6 +23,7 @@ interface AuthContextData {
   logout: () => Promise<void>;
   changePassword: (memberId: string, newPassword: string) => Promise<void>;
   updateMember: (member: IMemberState) => Promise<void>;
+  updateMemberPhoto: (profileImage: string) => Promise<void>;
   reloadMemberData: () => Promise<void>;
   register: (payload: RegisterPayload) => Promise<void>;
   listMembers: () => Promise<void>;
@@ -141,6 +143,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }
 
+  async function updateMemberPhoto(profileImage: string) {
+    try {
+      await MemberServices.updatePhoto(member?._id as string, profileImage);
+      await reloadMemberData();
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async function listMembers() {
     try {
       return await MemberServices.listMembers();
@@ -177,6 +188,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         lastName: payload.lastName,
         email: payload.email,
         phoneNumber: payload.phoneNumber,
+        profileImage: payload.profileImage,
         identification: {
           type: payload.type,
           numberType: payload.numberType,
@@ -200,6 +212,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         logout,
         changePassword,
         updateMember,
+        updateMemberPhoto,
         reloadMemberData,
         register,
         listMembers,

@@ -25,7 +25,10 @@ export const SettingsScreen = () => {
   return (
     <SwipeableTab>
       <View style={styles.container}>
-        <Header name={member?.firstName + " " + member?.lastName} />
+        <Header
+          name={member?.firstName + " " + member?.lastName}
+          photo={member?.profileImage}
+        />
 
         <View style={[styles.content, { paddingBottom: tabBarHeight }]}>
           <View style={styles.menuCard}>

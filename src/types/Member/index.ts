@@ -23,6 +23,7 @@ interface IMember {
   phoneNumber: string;
   firstName: string;
   lastName: string;
+  profileImage?: string;
   bio?: string;
   dateOfBirth: number;
   address?: {

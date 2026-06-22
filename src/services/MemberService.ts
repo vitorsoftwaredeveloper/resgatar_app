@@ -57,6 +57,19 @@ export const MemberServices = {
       throw error;
     }
   },
+  updatePhoto: async (memberId: string, profileImage: string) => {
+    try {
+      const response = await api.put(`/members/${memberId}`, {
+        profileImage,
+      });
+      const { data } = response.data;
+
+      return data;
+    } catch (error) {
+      console.error("Erro ao atualizar foto", error);
+      throw error;
+    }
+  },
   updatePassword: async (memberId: string, password: string) => {
     try {
       const response = await api.put(`/members/${memberId}/password`, {

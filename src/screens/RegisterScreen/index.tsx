@@ -1,12 +1,15 @@
+import { Avatar } from "@/components/Avatar";
 import { Button } from "@/components/Button";
 import { DocTypeToggle } from "@/components/DocTypeToggle";
 import { Input } from "@/components/Input";
+import { ModalPhotoPicker } from "@/components/ModalPhotoPicker";
 import { LogoResgatar } from "@/components/Svg/Logo";
 import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";
 import { useAppTheme } from "@/context/ThemeContext";
 import { useMaskedFieldFromFormik } from "@/hooks/useMaskedField";
 import { RootStackParamList } from "@/navigation/types";
+import { getApiErrorMessage } from "@/utils/apiError";
 import {
   maskCPFOrCNPJ,
   maskPhoneBR,
@@ -93,6 +96,7 @@ const initialValues = {
   numberType: "",
   password: "",
   confirmPassword: "",
+  profileImage: "",
 };
 
 export const RegisterScreen = ({ navigation }: Props) => {
@@ -101,6 +105,7 @@ export const RegisterScreen = ({ navigation }: Props) => {
   const { colors } = useAppTheme();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [photoModalVisible, setPhotoModalVisible] = useState(false);
 
   const handleRegister = async (values: typeof initialValues) => {
     await register({
@@ -111,15 +116,19 @@ export const RegisterScreen = ({ navigation }: Props) => {
       password: values.password,
       type: values.type,
       numberType: onlyNumbers(values.numberType),
+      profileImage: values.profileImage || undefined,
     })
       .then(() => {
         ToastMessage.success("Sucesso", "Cadastro realizado!");
         navigation.goBack();
       })
-      .catch(() => {
+      .catch((error) => {
         ToastMessage.error(
           "Erro",
-          "Não foi possível criar a conta. Tente novamente.",
+          getApiErrorMessage(
+            error,
+            "Não foi possível criar a conta. Tente novamente.",
+          ),
         );
       });
   };
@@ -172,6 +181,30 @@ export const RegisterScreen = ({ navigation }: Props) => {
                   </View>
 
                   <Text style={styles.title}>Criar conta</Text>
+
+                  <View style={styles.photoPicker}>
+                    <Avatar
+                      photo={values.profileImage}
+                      size={96}
+                      editable
+                      onPress={() => setPhotoModalVisible(true)}
+                    />
+                    <Text style={styles.photoHint}>
+                      Toque para adicionar uma foto (opcional)
+                    </Text>
+                  </View>
+
+                  {photoModalVisible && (
+                    <ModalPhotoPicker
+                      visible={photoModalVisible}
+                      onClose={() => setPhotoModalVisible(false)}
+                      currentPhoto={values.profileImage}
+                      onConfirm={(photo) => {
+                        setFieldValue("profileImage", photo);
+                        setPhotoModalVisible(false);
+                      }}
+                    />
+                  )}
 
                   <View style={styles.form}>
                     <View style={styles.row}>

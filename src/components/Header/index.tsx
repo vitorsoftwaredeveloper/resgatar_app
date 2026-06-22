@@ -1,23 +1,31 @@
 import { useAppTheme } from "@/context/ThemeContext";
+import { resolveAvatarUri } from "@/utils/image";
 import { Moon, Sun } from "lucide-react-native";
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import { LogoResgatar } from "../Svg/Logo";
 import { useStyles } from "./styles";
 
 interface Props {
   name: string;
+  photo?: string;
 }
 
-export function Header({ name }: Props) {
+export function Header({ name, photo }: Props) {
   const { mode, toggleTheme, colors } = useAppTheme();
   const styles = useStyles();
+
+  const avatarUri = resolveAvatarUri(photo);
 
   return (
     <View style={styles.container}>
       <View style={styles.left}>
         <View style={styles.logo}>
-          <LogoResgatar size={100} color={colors.primary} />
+          {avatarUri ? (
+            <Image source={{ uri: avatarUri }} style={styles.photo} />
+          ) : (
+            <LogoResgatar size={100} color={colors.primary} />
+          )}
         </View>
         <View style={styles.textContainer}>
           <Text style={styles.hello}>Olá,</Text>

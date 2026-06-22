@@ -56,4 +56,23 @@ describe("Header", () => {
     expect(getByText("João")).toBeTruthy();
     expect(getByText("Olá,")).toBeTruthy();
   });
+
+  it("exibe a foto do usuário quando informada", () => {
+    const { UNSAFE_getByType } = render(
+      <Header name="João" photo="data:image/png;base64,iVBORw0KGgo=" />,
+    );
+    expect(UNSAFE_getByType("Image" as any).props.source.uri).toBe(
+      "data:image/png;base64,iVBORw0KGgo=",
+    );
+  });
+
+  it("não exibe imagem (usa a logo) quando não há foto", () => {
+    const { UNSAFE_queryByType } = render(<Header name="João" />);
+    expect(UNSAFE_queryByType("Image" as any)).toBeNull();
+  });
+
+  it("usa a logo quando a foto é inválida", () => {
+    const { UNSAFE_queryByType } = render(<Header name="João" photo="   " />);
+    expect(UNSAFE_queryByType("Image" as any)).toBeNull();
+  });
 });

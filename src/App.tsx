@@ -4,6 +4,7 @@ import React, { useContext } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-get-random-values";
 import Toast from "react-native-toast-message";
+import { toastConfig } from "./components/Toast/toastConfig";
 import "./config/amplify";
 import { AuthContext, AuthProvider } from "./context/AuthContext";
 import { ChargeProvider } from "./context/ChargeContext";
@@ -43,7 +44,7 @@ export const App = () => {
         <AuthProvider>
           <AppContent />
         </AuthProvider>
-        <Toast />
+        <Toast config={toastConfig} />
       </GestureHandlerRootView>
     </ThemeProvider>
   );

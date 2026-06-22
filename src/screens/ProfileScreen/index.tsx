@@ -10,6 +10,7 @@ import { Lock, LogOut, Pencil } from "lucide-react-native";
 import React, { useContext, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { AuthContext } from "../../context/AuthContext";
+import { ModalEditPhoto } from "./ModalEditPhoto";
 import { ModalEditProfile } from "./ModalEditProfile";
 import { ModalUpdatePassword } from "./ModalUpdatePassword";
 import { useStyles } from "./styles";
@@ -21,6 +22,7 @@ export const ProfileScreen = () => {
   const styles = useStyles();
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
+  const [photoModalVisible, setPhotoModalVisible] = useState(false);
   const [dialogLogoutVisible, setDialogLogoutVisible] = useState(false);
 
   const handleLgout = async () => {
@@ -31,10 +33,16 @@ export const ProfileScreen = () => {
   return (
     <SwipeableTab>
       <View style={styles.container}>
-        <Header name={member?.firstName + " " + member?.lastName} />
+        <Header
+          name={member?.firstName + " " + member?.lastName}
+          photo={member?.profileImage}
+        />
 
         <View style={[styles.content, { paddingBottom: tabBarHeight }]}>
-          <ProfileHeaderCard member={member as IMember} />
+          <ProfileHeaderCard
+            member={member as IMember}
+            onPressAvatar={() => setPhotoModalVisible(true)}
+          />
 
           <View style={styles.menuCard}>
             <ItemActionList
@@ -72,6 +80,13 @@ export const ProfileScreen = () => {
             <ModalUpdatePassword
               passwordModalVisible={passwordModalVisible}
               onClose={() => setPasswordModalVisible(false)}
+            />
+          )}
+
+          {photoModalVisible && (
+            <ModalEditPhoto
+              visible={photoModalVisible}
+              onClose={() => setPhotoModalVisible(false)}
             />
           )}
 

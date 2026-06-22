@@ -44,6 +44,15 @@ module.exports = {
       ],
       "expo-font",
       "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          photosPermission:
+            "O aplicativo precisa acessar suas fotos para definir sua foto de perfil.",
+          cameraPermission:
+            "O aplicativo precisa acessar a câmera para tirar sua foto de perfil.",
+        },
+      ],
       "@react-native-firebase/app",
       [
         "expo-notifications",
