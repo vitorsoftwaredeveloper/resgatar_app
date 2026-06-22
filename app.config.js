@@ -20,7 +20,6 @@ module.exports = {
     },
     android: {
       package: "com.vitorsoftwaredeveloper.resgatar_app",
-      versionCode: 5,
       adaptiveIcon: {
         foregroundImage: "./assets/images/android-icon-foreground.png",
         backgroundColor: "#F5F0E8",
@@ -51,8 +50,10 @@ module.exports = {
             "O aplicativo precisa acessar suas fotos para definir sua foto de perfil.",
           cameraPermission:
             "O aplicativo precisa acessar a câmera para tirar sua foto de perfil.",
+          microphonePermission: false,
         },
       ],
+      "./plugins/withOptionalHardwareFeatures",
       "@react-native-firebase/app",
       [
         "expo-notifications",

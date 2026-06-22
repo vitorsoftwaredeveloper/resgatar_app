@@ -6,6 +6,7 @@ import { RegisterScreen } from "@/screens/RegisterScreen";
 import { BottomTabs } from "@/components/BottonTabs";
 import { RootStackParamList } from "@/navigation/types";
 import { LoadingScreen } from "@/screens/LoadingScreen";
+import { VideosScreen } from "@/screens/VideosScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -24,9 +25,12 @@ const AppNavigator = () => {
           <Stack.Screen name="Register" component={RegisterScreen} />
         </>
       ) : (
-        <Stack.Screen name="Home">
-          {() => <BottomTabs isAdmin={member?.role === "admin"} />}
-        </Stack.Screen>
+        <>
+          <Stack.Screen name="Home">
+            {() => <BottomTabs isAdmin={member?.role === "admin"} />}
+          </Stack.Screen>
+          <Stack.Screen name="Videos" component={VideosScreen} />
+        </>
       )}
     </Stack.Navigator>
   );

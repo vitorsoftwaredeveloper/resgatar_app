@@ -5,8 +5,11 @@ import { ProfileHeaderCard } from "@/components/ProfileHeaderCard";
 import { SwipeableTab } from "@/components/SwipeableTab";
 import { useAppTheme } from "@/context/ThemeContext";
 import { IMember } from "@/types/Member";
+import { RootStackParamList } from "@/navigation/types";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { Lock, LogOut, Pencil } from "lucide-react-native";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Lock, LogOut, Pencil, Video } from "lucide-react-native";
 import React, { useContext, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { AuthContext } from "../../context/AuthContext";
@@ -20,6 +23,8 @@ export const ProfileScreen = () => {
   const { colors } = useAppTheme();
   const tabBarHeight = useBottomTabBarHeight();
   const styles = useStyles();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
   const [photoModalVisible, setPhotoModalVisible] = useState(false);
@@ -50,6 +55,13 @@ export const ProfileScreen = () => {
               description="Visualize ou edite seus dados pessoais"
               onPress={() => setEditModalVisible(true)}
               icon={<Pencil color={colors.primary} />}
+            />
+
+            <ItemActionList
+              title="Vídeos"
+              description="Veja os vídeos publicados pelos membros"
+              onPress={() => navigation.navigate("Videos")}
+              icon={<Video color={colors.primary} />}
             />
 
             <ItemActionList

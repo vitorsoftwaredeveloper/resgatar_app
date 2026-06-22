@@ -21,6 +21,7 @@ const makeMember = (): IMemberWithContribution => ({
   _id: "abc123",
   firstName: "João",
   lastName: "Silva",
+  profileImage: "data:image/png;base64,AAAA",
   bio: "Bio do João",
   role: "user",
   email: "joao@email.com",
@@ -86,6 +87,23 @@ describe("asyncStorage", () => {
         bio: "Bio do João",
         role: "user",
       });
+    });
+
+    it("persiste a profileImage nos dados públicos (não no SecureStore)", async () => {
+      mockedAsync.setItem.mockResolvedValue(undefined);
+      mockedSecure.setItemAsync.mockResolvedValue(undefined);
+
+      await saveMember(makeMember());
+
+      const publicArg = JSON.parse(
+        (mockedAsync.setItem as jest.Mock).mock.calls[0][1],
+      );
+      const sensitiveArg = JSON.parse(
+        (mockedSecure.setItemAsync as jest.Mock).mock.calls[0][1],
+      );
+
+      expect(publicArg.profileImage).toBe("data:image/png;base64,AAAA");
+      expect(sensitiveArg.profileImage).toBeUndefined();
     });
 
     it("não inclui campos sensíveis nos dados públicos", async () => {

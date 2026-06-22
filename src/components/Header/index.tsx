@@ -1,6 +1,6 @@
 import { useAppTheme } from "@/context/ThemeContext";
 import { resolveAvatarUri } from "@/utils/image";
-import { Moon, Sun } from "lucide-react-native";
+import { ChevronLeft, Moon, Sun } from "lucide-react-native";
 import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { LogoResgatar } from "../Svg/Logo";
@@ -9,9 +9,10 @@ import { useStyles } from "./styles";
 interface Props {
   name: string;
   photo?: string;
+  onBack?: () => void;
 }
 
-export function Header({ name, photo }: Props) {
+export function Header({ name, photo, onBack }: Props) {
   const { mode, toggleTheme, colors } = useAppTheme();
   const styles = useStyles();
 
@@ -20,6 +21,17 @@ export function Header({ name, photo }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.left}>
+        {onBack && (
+          <TouchableOpacity
+            onPress={onBack}
+            style={styles.backButton}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            accessibilityLabel="Voltar"
+          >
+            <ChevronLeft size={22} color={colors.primary} />
+          </TouchableOpacity>
+        )}
+
         <View style={styles.logo}>
           {avatarUri ? (
             <Image source={{ uri: avatarUri }} style={styles.photo} />

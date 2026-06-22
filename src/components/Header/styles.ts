@@ -25,6 +25,15 @@ export function useStyles() {
         textContainer: {
           flex: 1,
         },
+        backButton: {
+          width: 36,
+          height: 36,
+          borderRadius: 18,
+          backgroundColor: colors.softBrown,
+          alignItems: "center",
+          justifyContent: "center",
+          marginRight: 12,
+        },
         logo: {
           width: 50,
           height: 50,

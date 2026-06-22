@@ -1,0 +1,77 @@
+import { StyleSheet } from "react-native";
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#000",
+  },
+  topBar: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 12,
+    backgroundColor: "rgba(0,0,0,0.45)",
+  },
+  backButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "rgba(255,255,255,0.15)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  topTitle: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "700",
+    flex: 1,
+  },
+  videoItem: {
+    backgroundColor: "#000",
+  },
+  playerWrapper: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "#000",
+  },
+  videoOverlay: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  memberName: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "700",
+  },
+  pageIndicator: {
+    color: "rgba(255,255,255,0.65)",
+    fontSize: 12,
+    marginTop: 2,
+  },
+  centered: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 12,
+  },
+  emptyText: {
+    color: "rgba(255,255,255,0.7)",
+    fontSize: 16,
+    textAlign: "center",
+    paddingHorizontal: 32,
+  },
+});

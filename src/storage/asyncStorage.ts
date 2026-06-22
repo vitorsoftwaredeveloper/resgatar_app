@@ -26,6 +26,7 @@ async function saveMember(member: IMemberWithContribution) {
     _id: member._id,
     firstName: member.firstName,
     lastName: member.lastName,
+    profileImage: member.profileImage,
     bio: member.bio,
     role: member.role,
     contributions: member.contributions,
