@@ -104,7 +104,6 @@ export const RegisterScreen = ({ navigation }: Props) => {
   const styles = useStyles();
   const { colors } = useAppTheme();
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [photoModalVisible, setPhotoModalVisible] = useState(false);
 
   const handleRegister = async (values: typeof initialValues) => {
@@ -294,16 +293,14 @@ export const RegisterScreen = ({ navigation }: Props) => {
                     <Input
                       placeholder="Confirmar senha"
                       value={values.confirmPassword}
-                      secureTextEntry={!showConfirmPassword}
+                      secureTextEntry={!showPassword}
                       onChangeText={handleChange("confirmPassword")}
                       error={touched.confirmPassword && errors.confirmPassword}
                       rightIcon={
                         <TouchableOpacity
-                          onPress={() =>
-                            setShowConfirmPassword(!showConfirmPassword)
-                          }
+                          onPress={() => setShowPassword(!showPassword)}
                         >
-                          {showConfirmPassword ? (
+                          {showPassword ? (
                             <Eye size={20} color={colors.muted} />
                           ) : (
                             <EyeOff size={20} color={colors.muted} />

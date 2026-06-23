@@ -78,6 +78,12 @@ export const COACH_STEPS: CoachStep[] = [
     text: "Toque aqui para assistir e compartilhar vídeos com os membros.",
     tab: "Profile",
   },
+  {
+    id: "header-darkmode",
+    title: "Modo escuro",
+    text: "Toque neste ícone para alternar entre o tema claro e o escuro.",
+    tab: "Profile",
+  },
 ];
 
 interface CoachContextData {

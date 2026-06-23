@@ -14,6 +14,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   BookOpen,
   HandCoins,
+  Moon,
   PlayCircle,
   UserCircle,
 } from "lucide-react-native";
@@ -64,6 +65,13 @@ const SLIDES: Slide[] = [
       "Assista e compartilhe vídeos dos membros. Use os filtros para ver os vídeos de cada pessoa.",
     // image: require("../../../assets/onboarding/videos.png"),
     icon: (color) => <PlayCircle size={96} color={color} strokeWidth={1.5} />,
+  },
+  {
+    key: "darkmode",
+    title: "Modo escuro",
+    description:
+      "Prefere um visual mais suave? Vá em Mais → Configurações e ative o modo escuro a qualquer momento.",
+    icon: (color) => <Moon size={96} color={color} strokeWidth={1.5} />,
   },
   {
     key: "profile",

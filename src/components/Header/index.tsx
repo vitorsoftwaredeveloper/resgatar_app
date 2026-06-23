@@ -3,6 +3,7 @@ import { resolveAvatarUri } from "@/utils/image";
 import { ChevronLeft, Moon, Sun } from "lucide-react-native";
 import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
+import { CoachTarget } from "../CoachTarget";
 import { LogoResgatar } from "../Svg/Logo";
 import { useStyles } from "./styles";
 
@@ -45,18 +46,20 @@ export function Header({ name, photo, onBack }: Props) {
             {name}
           </Text>
         </View>
-        <TouchableOpacity
-          testID="theme-toggle"
-          accessibilityLabel={mode === "dark" ? "Desativar modo escuro" : "Ativar modo escuro"}
-          onPress={toggleTheme}
-          style={styles.themeToggle}
-        >
-          {mode === "dark" ? (
-            <Sun size={18} color={colors.primary} />
-          ) : (
-            <Moon size={18} color={colors.primary} />
-          )}
-        </TouchableOpacity>
+        <CoachTarget id="header-darkmode">
+          <TouchableOpacity
+            testID="theme-toggle"
+            accessibilityLabel={mode === "dark" ? "Desativar modo escuro" : "Ativar modo escuro"}
+            onPress={toggleTheme}
+            style={styles.themeToggle}
+          >
+            {mode === "dark" ? (
+              <Sun size={18} color={colors.primary} />
+            ) : (
+              <Moon size={18} color={colors.primary} />
+            )}
+          </TouchableOpacity>
+        </CoachTarget>
       </View>
     </View>
   );
