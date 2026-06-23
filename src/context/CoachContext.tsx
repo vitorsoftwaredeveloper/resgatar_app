@@ -43,6 +43,13 @@ export const COACH_STEPS: CoachStep[] = [
     tab: "Dashboard",
   },
   {
+    id: "birthday-fab",
+    title: "Aniversariantes",
+    text: "Toque aqui para ver os membros que fazem aniversário neste mês.",
+    tab: "Dashboard",
+    optional: true,
+  },
+  {
     id: "tab-bills",
     title: "Contribuições",
     text: "Veja seu histórico mensal e pague a contribuição via PIX.",
