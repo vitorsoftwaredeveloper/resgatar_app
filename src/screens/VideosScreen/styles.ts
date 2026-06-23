@@ -1,5 +1,5 @@
 import { useAppTheme } from "@/context/ThemeContext";
-import { RADIUS, SHADOW, SPACING, TYPOGRAPHY } from "@/theme";
+import { RADIUS, SPACING, TYPOGRAPHY } from "@/theme";
 import { useMemo } from "react";
 import { StyleSheet } from "react-native";
 
@@ -19,38 +19,57 @@ export function useStyles() {
           borderTopRightRadius: RADIUS.xl,
           overflow: "hidden",
         },
+        searchBar: {
+          paddingHorizontal: SPACING.md,
+          paddingVertical: SPACING.md,
+        },
         body: {
           flex: 1,
         },
         list: {
           padding: SPACING.md,
-          gap: SPACING.sm,
+          gap: SPACING.md,
         },
-        skeletonList: {
-          paddingVertical: SPACING.md,
-          gap: SPACING.sm,
-        },
-        memberCard: {
+        videoCard: {
           backgroundColor: colors.card,
           borderRadius: RADIUS.md,
-          padding: SPACING.md,
+          borderWidth: 1,
+          borderColor: colors.border,
+          overflow: "hidden",
+        },
+        playIcon: {
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          marginTop: -20,
+          marginLeft: -20,
+          width: 40,
+          height: 40,
+          borderRadius: 20,
+          backgroundColor: "rgba(0,0,0,0.55)",
+          alignItems: "center",
+          justifyContent: "center",
+        },
+        videoCardInfo: {
           flexDirection: "row",
           alignItems: "center",
-          gap: SPACING.md,
-          ...SHADOW.card,
+          gap: SPACING.sm,
+          padding: SPACING.sm,
         },
-        memberInfo: {
+        videoCardText: {
           flex: 1,
+          gap: 2,
         },
-        memberName: {
-          fontSize: TYPOGRAPHY.subtitle,
-          fontWeight: "600",
-          color: colors.text,
-        },
-        videoCount: {
+        videoTitle: {
           fontSize: TYPOGRAPHY.body,
+          color: colors.text,
+          fontWeight: "600",
+          lineHeight: 20,
+        },
+        videoAuthor: {
+          fontSize: TYPOGRAPHY.small,
           color: colors.textMuted,
-          marginTop: 2,
+          fontWeight: "400",
         },
         centered: {
           flex: 1,

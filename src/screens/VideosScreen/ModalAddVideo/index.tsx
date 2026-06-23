@@ -108,7 +108,7 @@ export function ModalAddVideo({ visible, onClose, onSuccess }: IModalAddVideo) {
     setUrlError(false);
 
     try {
-      await VideoService.createVideo(trimmed);
+      await VideoService.createVideo(trimmed, videoInfo?.title);
       ToastMessage.success("Vídeo cadastrado!", "Seu vídeo foi publicado.");
       setUrl("");
       setTimeout(onSuccess, 1000);

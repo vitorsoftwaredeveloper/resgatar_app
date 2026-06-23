@@ -1,15 +1,23 @@
-import { Avatar } from "@/components/Avatar";
 import { Header } from "@/components/Header";
-import { RemoveMemberSkeleton } from "@/components/Skeleton/RemoveMemberSkeleton";
+import { Input } from "@/components/Input";
+import { VideoCardSkeleton } from "@/components/Skeleton/VideoCardSkeleton";
 import { AuthContext } from "@/context/AuthContext";
 import { useAppTheme } from "@/context/ThemeContext";
 import { VideoService } from "@/services/VideoService";
-import { IVideoMember } from "@/types/Video";
+import { IVideoFeedItem } from "@/types/Video";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { ChevronRight, Plus } from "lucide-react-native";
-import React, { useCallback, useContext, useState } from "react";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { Play, Plus, Search } from "lucide-react-native";
+import React, { useCallback, useContext, useMemo, useState } from "react";
+import {
+  FlatList,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Avatar } from "@/components/Avatar";
 import { ModalAddVideo } from "./ModalAddVideo";
 import { ModalVideoFeed } from "./ModalVideoFeed";
 import { useStyles } from "./styles";
@@ -20,19 +28,21 @@ export function VideosScreen() {
   const { colors } = useAppTheme();
   const insets = useSafeAreaInsets();
   const { member } = useContext(AuthContext);
+  const { width } = useWindowDimensions();
 
-  const [members, setMembers] = useState<IVideoMember[]>([]);
+  const [videos, setVideos] = useState<IVideoFeedItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
   const [addVideoVisible, setAddVideoVisible] = useState(false);
-  const [feedMember, setFeedMember] = useState<IVideoMember | null>(null);
+  const [playerStartIndex, setPlayerStartIndex] = useState<number | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await VideoService.listMembersWithVideos();
-      setMembers(data);
+      const data = await VideoService.listAllVideos();
+      setVideos(data);
     } catch {
-      setMembers([]);
+      setVideos([]);
     } finally {
       setLoading(false);
     }
@@ -44,22 +54,50 @@ export function VideosScreen() {
     }, [load]),
   );
 
-  const renderItem = ({ item }: { item: IVideoMember }) => (
+  const handleVideoRemoved = useCallback((videoId: string) => {
+    setVideos((prev) => prev.filter((v) => v._id !== videoId));
+  }, []);
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return videos;
+    return videos.filter(
+      (v) =>
+        v.title?.toLowerCase().includes(q) ||
+        `${v.firstName} ${v.lastName}`.toLowerCase().includes(q),
+    );
+  }, [search, videos]);
+
+  const cardWidth = width - 32;
+  const thumbnailHeight = Math.round((cardWidth * 9) / 16);
+
+  const renderItem = ({ item, index }: { item: IVideoFeedItem; index: number }) => (
     <TouchableOpacity
-      style={styles.memberCard}
-      onPress={() => setFeedMember(item)}
-      activeOpacity={0.75}
+      style={styles.videoCard}
+      onPress={() => setPlayerStartIndex(index)}
+      activeOpacity={0.85}
     >
-      <Avatar photo={item.profileImage} size={48} />
-      <View style={styles.memberInfo}>
-        <Text style={styles.memberName}>
-          {item.firstName} {item.lastName}
-        </Text>
-        <Text style={styles.videoCount}>
-          {item.videoCount} {item.videoCount === 1 ? "vídeo" : "vídeos"}
-        </Text>
+      <View>
+        <Image
+          source={{ uri: item.thumbnail }}
+          style={{ width: cardWidth, height: thumbnailHeight }}
+          resizeMode="cover"
+        />
+        <View style={styles.playIcon}>
+          <Play size={22} color="#fff" fill="#fff" />
+        </View>
       </View>
-      <ChevronRight size={18} color={colors.textMuted} />
+      <View style={styles.videoCardInfo}>
+        <Avatar photo={item.profileImage} size={36} />
+        <View style={styles.videoCardText}>
+          {item.title ? (
+            <Text style={styles.videoTitle}>{item.title}</Text>
+          ) : null}
+          <Text style={styles.videoAuthor} numberOfLines={1}>
+            {item.firstName} {item.lastName}
+          </Text>
+        </View>
+      </View>
     </TouchableOpacity>
   );
 
@@ -72,40 +110,52 @@ export function VideosScreen() {
       />
 
       <View style={styles.content}>
+        <View style={styles.searchBar}>
+          <Input
+            placeholder="Buscar vídeos..."
+            value={search}
+            onChangeText={setSearch}
+            leftIcon={<Search size={16} color={colors.textMuted} />}
+            autoCorrect={false}
+            autoCapitalize="none"
+            returnKeyType="search"
+            flex={0}
+          />
+        </View>
+
         <View style={styles.body}>
           {loading ? (
-            <View style={styles.skeletonList}>
-              {Array.from({ length: 5 }).map((_, index) => (
-                <RemoveMemberSkeleton key={index} />
+            <View style={styles.list}>
+              {Array.from({ length: 4 }).map((_, i) => (
+                <VideoCardSkeleton key={i} />
               ))}
             </View>
-          ) : members.length === 0 ? (
+          ) : filtered.length === 0 ? (
             <View style={styles.centered}>
               <Text style={styles.emptyText}>
-                Nenhum membro publicou vídeos ainda.
+                {search.trim() ? "Nenhum vídeo encontrado." : "Nenhum vídeo publicado ainda."}
               </Text>
             </View>
           ) : (
             <FlatList
-              data={members}
-              keyExtractor={(item) => item.memberId}
+              data={filtered}
+              keyExtractor={(item) => item._id}
               renderItem={renderItem}
               contentContainerStyle={styles.list}
               showsVerticalScrollIndicator={false}
             />
           )}
         </View>
-
       </View>
 
-        <TouchableOpacity
-          style={[styles.fab, { bottom: insets.bottom + 20 }]}
-          onPress={() => setAddVideoVisible(true)}
-          activeOpacity={0.85}
-          accessibilityLabel="Cadastrar vídeo"
-        >
-          <Plus size={28} color={colors.white} strokeWidth={2.5} />
-        </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.fab, { bottom: insets.bottom + 20 }]}
+        onPress={() => setAddVideoVisible(true)}
+        activeOpacity={0.85}
+        accessibilityLabel="Cadastrar vídeo"
+      >
+        <Plus size={28} color={colors.white} strokeWidth={2.5} />
+      </TouchableOpacity>
 
       {addVideoVisible && (
         <ModalAddVideo
@@ -118,13 +168,14 @@ export function VideosScreen() {
         />
       )}
 
-      {feedMember && (
+      {playerStartIndex !== null && (
         <ModalVideoFeed
-          visible={!!feedMember}
-          member={feedMember}
-          isOwner={member?._id === feedMember.memberId}
-          onClose={() => setFeedMember(null)}
-          onVideoRemoved={load}
+          visible={playerStartIndex !== null}
+          videos={filtered}
+          startIndex={playerStartIndex}
+          currentMemberId={member?._id}
+          onClose={() => setPlayerStartIndex(null)}
+          onVideoRemoved={handleVideoRemoved}
         />
       )}
     </View>

@@ -1,34 +1,23 @@
 import { api } from "./api";
-import { IVideoMember, IVideoResponse } from "@/types/Video";
+import { IVideoFeedItem } from "@/types/Video";
 
 export const VideoService = {
-  listMembersWithVideos: async (): Promise<IVideoMember[]> => {
+  listAllVideos: async (): Promise<IVideoFeedItem[]> => {
     try {
-      const response = await api.get("/videos/members");
+      const response = await api.get("/videos");
       const { data } = response.data;
       return data;
     } catch (error) {
-      console.error("Erro ao listar membros com vídeos", error);
+      console.error("Erro ao listar feed de vídeos", error);
       throw error;
     }
   },
 
-  createVideo: async (url: string): Promise<void> => {
+  createVideo: async (url: string, title?: string): Promise<void> => {
     try {
-      await api.post("/videos", { url });
+      await api.post("/videos", { url, title });
     } catch (error) {
       console.error("Erro ao cadastrar vídeo", error);
-      throw error;
-    }
-  },
-
-  listVideosByMember: async (memberId: string): Promise<IVideoResponse[]> => {
-    try {
-      const response = await api.get(`/videos/${memberId}`);
-      const { data } = response.data;
-      return data;
-    } catch (error) {
-      console.error("Erro ao listar vídeos do membro", error);
       throw error;
     }
   },

@@ -10,10 +10,9 @@ export function useStyles() {
       StyleSheet.create({
         overlay: {
           flex: 1,
-          backgroundColor: "#00000055",
+          backgroundColor: colors.background,
         },
         container: {
-          flex: 1,
           backgroundColor: colors.background,
         },
         card: {

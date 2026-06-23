@@ -1,6 +1,6 @@
 import { Avatar } from "@/components/Avatar";
 import { VideoService } from "@/services/VideoService";
-import { IVideoMember, IVideoResponse } from "@/types/Video";
+import { IVideoFeedItem } from "@/types/Video";
 import { ChevronLeft, Trash2 } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -42,27 +42,34 @@ function ThumbnailImage({ uri, width, height }: { uri: string; width: number; he
 
 interface IModalVideoFeed {
   visible: boolean;
-  member: IVideoMember;
-  isOwner?: boolean;
+  videos: IVideoFeedItem[];
+  startIndex?: number;
+  currentMemberId?: string;
   onClose: () => void;
-  onVideoRemoved?: () => void;
+  onVideoRemoved?: (videoId: string) => void;
 }
 
-export function ModalVideoFeed({ visible, member, isOwner, onClose, onVideoRemoved }: IModalVideoFeed) {
+export function ModalVideoFeed({
+  visible,
+  videos,
+  startIndex = 0,
+  currentMemberId,
+  onClose,
+  onVideoRemoved,
+}: IModalVideoFeed) {
   const { width, height } = useWindowDimensions();
-  const [videos, setVideos] = useState<IVideoResponse[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(startIndex);
+  const listRef = useRef<FlatList>(null);
 
   useEffect(() => {
     if (!visible) return;
-    setLoading(true);
-    setCurrentIndex(0);
-    VideoService.listVideosByMember(member.memberId)
-      .then(setVideos)
-      .catch(() => setVideos([]))
-      .finally(() => setLoading(false));
-  }, [visible, member.memberId]);
+    setCurrentIndex(startIndex);
+    if (startIndex > 0) {
+      setTimeout(() => {
+        listRef.current?.scrollToIndex({ index: startIndex, animated: false });
+      }, 100);
+    }
+  }, [visible, startIndex]);
 
   const handleDelete = (videoId: string) => {
     Alert.alert("Remover vídeo", "Tem certeza que deseja remover este vídeo?", [
@@ -73,16 +80,12 @@ export function ModalVideoFeed({ visible, member, isOwner, onClose, onVideoRemov
         onPress: async () => {
           try {
             await VideoService.removeVideo(videoId);
-            setVideos((prev) => {
-              const updated = prev.filter((v) => v._id !== videoId);
-              if (updated.length === 0) {
-                onClose();
-              } else {
-                setCurrentIndex((idx) => Math.min(idx, updated.length - 1));
-              }
-              return updated;
-            });
-            onVideoRemoved?.();
+            onVideoRemoved?.(videoId);
+            if (videos.length <= 1) {
+              onClose();
+            } else {
+              setCurrentIndex((idx) => Math.max(0, Math.min(idx, videos.length - 2)));
+            }
           } catch {
             Alert.alert("Erro", "Não foi possível remover o vídeo.");
           }
@@ -103,14 +106,9 @@ export function ModalVideoFeed({ visible, member, isOwner, onClose, onVideoRemov
 
   const playerHeight = Math.round((width * 9) / 16);
 
-  const renderItem = ({
-    item,
-    index,
-  }: {
-    item: IVideoResponse;
-    index: number;
-  }) => {
+  const renderItem = ({ item, index }: { item: IVideoFeedItem; index: number }) => {
     const isActive = index === currentIndex;
+    const isOwner = currentMemberId === item.memberId;
 
     return (
       <View style={[styles.videoItem, { width, height }]}>
@@ -136,10 +134,10 @@ export function ModalVideoFeed({ visible, member, isOwner, onClose, onVideoRemov
         </View>
 
         <View style={styles.videoOverlay}>
-          <Avatar photo={member.profileImage} size={40} />
+          <Avatar photo={item.profileImage} size={40} />
           <View style={{ flex: 1 }}>
             <Text style={styles.memberName}>
-              {member.firstName} {member.lastName}
+              {item.firstName} {item.lastName}
             </Text>
             <Text style={styles.pageIndicator}>
               {index + 1} de {videos.length}
@@ -169,18 +167,13 @@ export function ModalVideoFeed({ visible, member, isOwner, onClose, onVideoRemov
     >
       <StatusBar barStyle="light-content" backgroundColor="#000" />
       <View style={styles.container}>
-        {loading ? (
+        {videos.length === 0 ? (
           <View style={styles.centered}>
-            <ActivityIndicator color="#fff" size="large" />
-          </View>
-        ) : videos.length === 0 ? (
-          <View style={styles.centered}>
-            <Text style={styles.emptyText}>
-              Nenhum vídeo encontrado para este membro.
-            </Text>
+            <Text style={styles.emptyText}>Nenhum vídeo encontrado.</Text>
           </View>
         ) : (
           <FlatList
+            ref={listRef}
             data={videos}
             keyExtractor={(item) => item._id}
             renderItem={renderItem}
@@ -206,7 +199,7 @@ export function ModalVideoFeed({ visible, member, isOwner, onClose, onVideoRemov
             <ChevronLeft color="#fff" size={20} />
           </TouchableOpacity>
           <Text style={styles.topTitle} numberOfLines={1}>
-            Vídeos de {member.firstName}
+            Feed de Vídeos
           </Text>
         </SafeAreaView>
       </View>

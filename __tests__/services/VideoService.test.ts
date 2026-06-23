@@ -5,94 +5,37 @@ jest.mock("@/services/api", () => ({
 import { api } from "@/services/api";
 import { VideoService } from "@/services/VideoService";
 
-const mockMembers = [
+const mockFeed = [
   {
+    _id: "v1",
     memberId: "m1",
+    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    videoId: "dQw4w9WgXcQ",
+    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
+    title: "Never Gonna Give You Up",
     firstName: "Ana",
     lastName: "Silva",
-    profileImage: "base64string",
-    videoCount: 2,
-  },
-  {
-    memberId: "m2",
-    firstName: "Bruno",
-    lastName: "Souza",
     profileImage: null,
-    videoCount: 1,
   },
 ];
 
 describe("VideoService", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  describe("listMembersWithVideos", () => {
-    it("faz GET /videos/members e retorna lista de membros", async () => {
-      (api.get as jest.Mock).mockResolvedValue({
-        data: { data: mockMembers },
-      });
+  describe("listAllVideos", () => {
+    it("faz GET /videos e retorna feed de vídeos", async () => {
+      (api.get as jest.Mock).mockResolvedValue({ data: { data: mockFeed } });
 
-      const result = await VideoService.listMembersWithVideos();
+      const result = await VideoService.listAllVideos();
 
-      expect(api.get).toHaveBeenCalledWith("/videos/members");
-      expect(result).toEqual(mockMembers);
+      expect(api.get).toHaveBeenCalledWith("/videos");
+      expect(result).toEqual(mockFeed);
     });
 
-    it("retorna lista vazia quando não há membros com vídeos", async () => {
-      (api.get as jest.Mock).mockResolvedValue({
-        data: { data: [] },
-      });
-
-      const result = await VideoService.listMembersWithVideos();
-
-      expect(result).toEqual([]);
-    });
-
-    it("propaga erro quando a requisição falha", async () => {
-      (api.get as jest.Mock).mockRejectedValue(new Error("network error"));
-
-      await expect(VideoService.listMembersWithVideos()).rejects.toThrow(
-        "network error",
-      );
-    });
-
-    it("extrai corretamente o campo data do envelope da resposta", async () => {
-      const single = [mockMembers[0]];
-      (api.get as jest.Mock).mockResolvedValue({
-        data: { message: "ok", data: single },
-      });
-
-      const result = await VideoService.listMembersWithVideos();
-
-      expect(result).toHaveLength(1);
-      expect(result[0].memberId).toBe("m1");
-      expect(result[0].videoCount).toBe(2);
-    });
-  });
-
-  describe("listVideosByMember", () => {
-    const mockVideos = [
-      {
-        _id: "v1",
-        memberId: "m1",
-        url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        videoId: "dQw4w9WgXcQ",
-        thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
-      },
-    ];
-
-    it("faz GET /videos/{memberId} e retorna lista de vídeos", async () => {
-      (api.get as jest.Mock).mockResolvedValue({ data: { data: mockVideos } });
-
-      const result = await VideoService.listVideosByMember("m1");
-
-      expect(api.get).toHaveBeenCalledWith("/videos/m1");
-      expect(result).toEqual(mockVideos);
-    });
-
-    it("retorna lista vazia quando membro não tem vídeos", async () => {
+    it("retorna lista vazia quando não há vídeos", async () => {
       (api.get as jest.Mock).mockResolvedValue({ data: { data: [] } });
 
-      const result = await VideoService.listVideosByMember("m1");
+      const result = await VideoService.listAllVideos();
 
       expect(result).toEqual([]);
     });
@@ -100,29 +43,53 @@ describe("VideoService", () => {
     it("propaga erro quando a requisição falha", async () => {
       (api.get as jest.Mock).mockRejectedValue(new Error("network error"));
 
-      await expect(VideoService.listVideosByMember("m1")).rejects.toThrow(
-        "network error",
-      );
+      await expect(VideoService.listAllVideos()).rejects.toThrow("network error");
     });
   });
 
   describe("createVideo", () => {
-    it("faz POST /videos com a URL informada", async () => {
-      (api.post as jest.Mock).mockResolvedValue({ data: { data: { _id: "v1", thumbnail: "thumb.jpg" } } });
+    it("faz POST /videos com url e title", async () => {
+      (api.post as jest.Mock).mockResolvedValue({});
+
+      await VideoService.createVideo("https://www.youtube.com/watch?v=dQw4w9WgXcQ", "Título do vídeo");
+
+      expect(api.post).toHaveBeenCalledWith("/videos", {
+        url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        title: "Título do vídeo",
+      });
+    });
+
+    it("faz POST /videos sem title quando não informado", async () => {
+      (api.post as jest.Mock).mockResolvedValue({});
 
       await VideoService.createVideo("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
 
       expect(api.post).toHaveBeenCalledWith("/videos", {
         url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        title: undefined,
       });
     });
 
     it("propaga erro quando a requisição falha", async () => {
       (api.post as jest.Mock).mockRejectedValue(new Error("url inválida"));
 
-      await expect(
-        VideoService.createVideo("https://invalid.url"),
-      ).rejects.toThrow("url inválida");
+      await expect(VideoService.createVideo("https://invalid.url")).rejects.toThrow("url inválida");
+    });
+  });
+
+  describe("removeVideo", () => {
+    it("faz DELETE /videos/{videoId}", async () => {
+      (api.delete as jest.Mock).mockResolvedValue({});
+
+      await VideoService.removeVideo("v1");
+
+      expect(api.delete).toHaveBeenCalledWith("/videos/v1");
+    });
+
+    it("propaga erro quando a requisição falha", async () => {
+      (api.delete as jest.Mock).mockRejectedValue(new Error("not found"));
+
+      await expect(VideoService.removeVideo("v1")).rejects.toThrow("not found");
     });
   });
 });
