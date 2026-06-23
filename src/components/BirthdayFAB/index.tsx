@@ -30,16 +30,6 @@ const MONTHS_PT = [
   "julho", "agosto", "setembro", "outubro", "novembro", "dezembro",
 ];
 
-const DEV_MOCK_MEMBERS: IMember[] = __DEV__
-  ? [
-      { _id: "m1", firstName: "Ana",     lastName: "Silva",   dateOfBirth: new Date(1990, 5,  3).getTime(), email: "", phoneNumber: "", paymentInfo: { datePayment: 1, amount: "0" }, identification: { type: "CPF", numberType: "" } },
-      { _id: "m2", firstName: "Carlos",  lastName: "Souza",   dateOfBirth: new Date(1985, 5, 10).getTime(), email: "", phoneNumber: "", paymentInfo: { datePayment: 1, amount: "0" }, identification: { type: "CPF", numberType: "" } },
-      { _id: "m3", firstName: "Fernanda",lastName: "Lima",    dateOfBirth: new Date(1993, 5, 15).getTime(), email: "", phoneNumber: "", paymentInfo: { datePayment: 1, amount: "0" }, identification: { type: "CPF", numberType: "" } },
-      { _id: "m4", firstName: "Vitor",   lastName: "Silva",   dateOfBirth: new Date(1997, 5, 23).getTime(), email: "", phoneNumber: "", paymentInfo: { datePayment: 1, amount: "0" }, identification: { type: "CPF", numberType: "" } },
-      { _id: "m5", firstName: "Roberto", lastName: "Costa",   dateOfBirth: new Date(1978, 5, 20).getTime(), email: "", phoneNumber: "", paymentInfo: { datePayment: 1, amount: "0" }, identification: { type: "CPF", numberType: "" } },
-      { _id: "m6", firstName: "Juliana", lastName: "Ferreira",dateOfBirth: new Date(2000, 5, 28).getTime(), email: "", phoneNumber: "", paymentInfo: { datePayment: 1, amount: "0" }, identification: { type: "CPF", numberType: "" } },
-    ]
-  : [];
 
 function getBirthdaysThisMonth(members: IMember[]): BirthdayMember[] {
   const now = new Date();
@@ -75,17 +65,13 @@ export function BirthdayFAB() {
 
   useEffect(() => {
     MemberServices.listMembers()
-      .then((data: IMember[]) => {
-        const result = getBirthdaysThisMonth(data);
-        setMembers(result.length > 0 ? result : getBirthdaysThisMonth(DEV_MOCK_MEMBERS));
-      })
-      .catch(() => {
-        setMembers(getBirthdaysThisMonth(DEV_MOCK_MEMBERS));
-      });
+      .then((data: IMember[]) => setMembers(getBirthdaysThisMonth(data)))
+      .catch(() => {});
   }, []);
 
   if (members.length === 0) return null;
 
+  const todayCount = members.filter((m) => m.isToday).length;
   const fabBottom = tabBarHeight + 32;
 
   return (
@@ -97,6 +83,11 @@ export function BirthdayFAB() {
           activeOpacity={0.85}
         >
           <Cake size={22} color="#fff" />
+          {todayCount > 0 && (
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>{todayCount}</Text>
+            </View>
+          )}
         </TouchableOpacity>
       </CoachTarget>
 

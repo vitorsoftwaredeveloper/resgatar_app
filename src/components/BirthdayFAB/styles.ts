@@ -32,7 +32,7 @@ export function useStyles() {
           position: "absolute",
           top: -4,
           right: -4,
-          backgroundColor: colors.error,
+          backgroundColor: colors.waiting,
           borderRadius: 999,
           minWidth: 18,
           height: 18,
