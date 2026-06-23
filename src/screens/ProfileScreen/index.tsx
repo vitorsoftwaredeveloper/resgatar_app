@@ -58,17 +58,17 @@ export const ProfileScreen = () => {
             />
 
             <ItemActionList
-              title="Vídeos"
-              description="Veja os vídeos publicados pelos membros"
-              onPress={() => navigation.navigate("Videos")}
-              icon={<Video color={colors.primary} />}
-            />
-
-            <ItemActionList
               title="Atualizar senha"
               description="Atualize sua senha de login do aplicativo"
               onPress={() => setPasswordModalVisible(true)}
               icon={<Lock color={colors.primary} />}
+            />
+
+            <ItemActionList
+              title="Vídeos"
+              description="Veja os vídeos publicados pelos membros"
+              onPress={() => navigation.navigate("Videos")}
+              icon={<Video color={colors.primary} />}
               isLast
             />
           </View>

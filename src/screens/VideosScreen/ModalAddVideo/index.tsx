@@ -34,6 +34,8 @@ function extractVideoId(url: string): string | null {
   if (watch) return watch[1];
   const short = url.match(/youtu\.be\/([\w-]{11})/);
   if (short) return short[1];
+  const shorts = url.match(/youtube\.com\/shorts\/([\w-]{11})/);
+  if (shorts) return shorts[1];
   return null;
 }
 

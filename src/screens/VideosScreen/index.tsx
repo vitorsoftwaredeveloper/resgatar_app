@@ -122,7 +122,9 @@ export function VideosScreen() {
         <ModalVideoFeed
           visible={!!feedMember}
           member={feedMember}
+          isOwner={member?._id === feedMember.memberId}
           onClose={() => setFeedMember(null)}
+          onVideoRemoved={load}
         />
       )}
     </View>

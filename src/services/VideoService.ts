@@ -32,4 +32,13 @@ export const VideoService = {
       throw error;
     }
   },
+
+  removeVideo: async (videoId: string): Promise<void> => {
+    try {
+      await api.delete(`/videos/${videoId}`);
+    } catch (error) {
+      console.error("Erro ao remover vídeo", error);
+      throw error;
+    }
+  },
 };

@@ -1,9 +1,10 @@
 import { Avatar } from "@/components/Avatar";
 import { VideoService } from "@/services/VideoService";
 import { IVideoMember, IVideoResponse } from "@/types/Video";
-import { ChevronLeft } from "lucide-react-native";
+import { ChevronLeft, Trash2 } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import {
+  Alert,
   ActivityIndicator,
   FlatList,
   Image,
@@ -42,10 +43,12 @@ function ThumbnailImage({ uri, width, height }: { uri: string; width: number; he
 interface IModalVideoFeed {
   visible: boolean;
   member: IVideoMember;
+  isOwner?: boolean;
   onClose: () => void;
+  onVideoRemoved?: () => void;
 }
 
-export function ModalVideoFeed({ visible, member, onClose }: IModalVideoFeed) {
+export function ModalVideoFeed({ visible, member, isOwner, onClose, onVideoRemoved }: IModalVideoFeed) {
   const { width, height } = useWindowDimensions();
   const [videos, setVideos] = useState<IVideoResponse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -60,6 +63,33 @@ export function ModalVideoFeed({ visible, member, onClose }: IModalVideoFeed) {
       .catch(() => setVideos([]))
       .finally(() => setLoading(false));
   }, [visible, member.memberId]);
+
+  const handleDelete = (videoId: string) => {
+    Alert.alert("Remover vídeo", "Tem certeza que deseja remover este vídeo?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Remover",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await VideoService.removeVideo(videoId);
+            setVideos((prev) => {
+              const updated = prev.filter((v) => v._id !== videoId);
+              if (updated.length === 0) {
+                onClose();
+              } else {
+                setCurrentIndex((idx) => Math.min(idx, updated.length - 1));
+              }
+              return updated;
+            });
+            onVideoRemoved?.();
+          } catch {
+            Alert.alert("Erro", "Não foi possível remover o vídeo.");
+          }
+        },
+      },
+    ]);
+  };
 
   const viewabilityCallbacks = useRef([
     {
@@ -115,6 +145,16 @@ export function ModalVideoFeed({ visible, member, onClose }: IModalVideoFeed) {
               {index + 1} de {videos.length}
             </Text>
           </View>
+          {isOwner && isActive && (
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={() => handleDelete(item._id)}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              accessibilityLabel="Remover vídeo"
+            >
+              <Trash2 size={20} color="#fff" />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     );
