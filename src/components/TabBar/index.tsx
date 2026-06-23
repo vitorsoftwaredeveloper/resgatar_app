@@ -10,6 +10,7 @@ import {
   Settings,
   TextAlignJustify,
 } from "lucide-react-native";
+import { CoachTarget } from "@/components/CoachTarget";
 import { useStyles, TAB_WIDTH, TAB_WIDTH_ADMIN } from "./styles";
 
 export function TabBar({ state, navigation, isAdmin }: any) {
@@ -60,17 +61,22 @@ export function TabBar({ state, navigation, isAdmin }: any) {
               onPress={() => navigation.navigate(route.name)}
               style={isAdmin ? styles.tabAdmin : styles.tab}
             >
-              <View>{icons[route.name]}</View>
+              <CoachTarget
+                id={`tab-${route.name.toLowerCase()}`}
+                style={styles.tabInner}
+              >
+                <View>{icons[route.name]}</View>
 
-              <Text style={[styles.label, { color: iconColor }]}>
-                {route.name === "Dashboard"
-                  ? "Início"
-                  : route.name === "Bills"
-                    ? "Contribuições"
-                    : route.name === "Profile"
-                      ? "Mais"
-                      : "Ações"}
-              </Text>
+                <Text style={[styles.label, { color: iconColor }]}>
+                  {route.name === "Dashboard"
+                    ? "Início"
+                    : route.name === "Bills"
+                      ? "Contribuições"
+                      : route.name === "Profile"
+                        ? "Mais"
+                        : "Ações"}
+                </Text>
+              </CoachTarget>
             </Pressable>
           );
         })}

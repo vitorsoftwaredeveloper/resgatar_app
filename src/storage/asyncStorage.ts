@@ -69,10 +69,15 @@ async function setOnboardingSeen(memberId: string) {
   await AsyncStorage.setItem(`${ONBOARDING_KEY_PREFIX}${memberId}`, "true");
 }
 
+async function clearOnboardingSeen(memberId: string) {
+  await AsyncStorage.removeItem(`${ONBOARDING_KEY_PREFIX}${memberId}`);
+}
+
 export {
   saveMember,
   getStoredMember,
   removeMember,
   getOnboardingSeen,
   setOnboardingSeen,
+  clearOnboardingSeen,
 };

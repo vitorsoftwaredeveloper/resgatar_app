@@ -1,4 +1,5 @@
 import { Avatar } from "@/components/Avatar";
+import { CoachTarget } from "@/components/CoachTarget";
 import { IMember } from "@/types/Member";
 import { maskCPFOrCNPJ } from "@/utils/mask";
 import React from "react";
@@ -15,14 +16,14 @@ export function ProfileHeaderCard({ member, onPressAvatar }: Props) {
 
   return (
     <View style={styles.card}>
-      <View style={styles.avatarWrapper}>
+      <CoachTarget id="profile-photo" style={styles.avatarWrapper}>
         <Avatar
           photo={member.profileImage}
           size={56}
           onPress={onPressAvatar}
           editable={!!onPressAvatar}
         />
-      </View>
+      </CoachTarget>
 
       <View style={styles.info}>
         <Text style={styles.name} numberOfLines={1} ellipsizeMode="tail">

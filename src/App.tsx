@@ -8,9 +8,12 @@ import { toastConfig } from "./components/Toast/toastConfig";
 import "./config/amplify";
 import { AuthContext, AuthProvider } from "./context/AuthContext";
 import { ChargeProvider } from "./context/ChargeContext";
+import { CoachProvider } from "./context/CoachContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { usePushNotifications } from "./hooks/usePushNotifications";
 import AppNavigator from "./navigation/AppNavigator";
+import { navigationRef } from "./navigation/navigationRef";
+import { CoachOverlay } from "./components/CoachOverlay";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -30,8 +33,11 @@ const AppContent = () => {
 
   return (
     <ChargeProvider>
-      <NavigationContainer>
-        <AppNavigator />
+      <NavigationContainer ref={navigationRef}>
+        <CoachProvider>
+          <AppNavigator />
+          <CoachOverlay />
+        </CoachProvider>
       </NavigationContainer>
     </ChargeProvider>
   );

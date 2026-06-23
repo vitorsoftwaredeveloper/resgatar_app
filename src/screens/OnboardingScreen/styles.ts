@@ -1,5 +1,5 @@
 import { useAppTheme } from "@/context/ThemeContext";
-import { RADIUS, SPACING, TYPOGRAPHY } from "@/theme";
+import { RADIUS, SHADOW, SPACING, TYPOGRAPHY } from "@/theme";
 import { useMemo } from "react";
 import { StyleSheet } from "react-native";
 
@@ -37,6 +37,21 @@ export function useStyles() {
           alignItems: "center",
           justifyContent: "center",
           marginBottom: SPACING.xxl,
+        },
+        phoneFrame: {
+          width: 200,
+          height: 380,
+          borderRadius: RADIUS.xl,
+          borderWidth: 8,
+          borderColor: colors.primary,
+          backgroundColor: colors.card,
+          overflow: "hidden",
+          marginBottom: SPACING.xxl,
+          ...SHADOW.card,
+        },
+        phoneImage: {
+          width: "100%",
+          height: "100%",
         },
         title: {
           fontSize: TYPOGRAPHY.hero,

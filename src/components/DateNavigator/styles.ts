@@ -32,6 +32,9 @@ export function useStyles() {
         arrowIcon: {
           color: colors.text,
         },
+        centerTarget: {
+          flex: 1,
+        },
         centerBtn: {
           flex: 1,
           flexDirection: "row",

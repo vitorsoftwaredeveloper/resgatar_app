@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight, Clock } from "lucide-react-native";
 import React from "react";
 import { Pressable, Text, View } from "react-native";
+import { CoachTarget } from "@/components/CoachTarget";
 import { useStyles } from "./styles";
 
 const WEEK_ABBR = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SÁB"];
@@ -64,11 +65,13 @@ export function DateNavigator({
           <ChevronLeft size={20} color={styles.arrowIcon.color} />
         </Pressable>
 
-        <Pressable testID="date-label" style={styles.centerBtn} onPress={onOpenCalendar}>
-          <Text style={styles.centerText}>
-            {formatCenterLabel(selectedDate)}
-          </Text>
-        </Pressable>
+        <CoachTarget id="dashboard-date" style={styles.centerTarget}>
+          <Pressable testID="date-label" style={styles.centerBtn} onPress={onOpenCalendar}>
+            <Text style={styles.centerText}>
+              {formatCenterLabel(selectedDate)}
+            </Text>
+          </Pressable>
+        </CoachTarget>
 
         <Pressable testID="next-day" style={styles.arrowBtn} onPress={onNext} hitSlop={8}>
           <ChevronRight size={20} color={styles.arrowIcon.color} />

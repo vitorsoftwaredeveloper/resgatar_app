@@ -1,5 +1,6 @@
 import { Dialog } from "@/components/Dialog";
 import { Header } from "@/components/Header";
+import { CoachTarget } from "@/components/CoachTarget";
 import { ItemActionList } from "@/components/ItemActionList";
 import { ProfileHeaderCard } from "@/components/ProfileHeaderCard";
 import { SwipeableTab } from "@/components/SwipeableTab";
@@ -9,7 +10,7 @@ import { RootStackParamList } from "@/navigation/types";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { Lock, LogOut, Pencil, Video } from "lucide-react-native";
+import { HelpCircle, Lock, LogOut, Pencil, Video } from "lucide-react-native";
 import React, { useContext, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { AuthContext } from "../../context/AuthContext";
@@ -19,7 +20,7 @@ import { ModalUpdatePassword } from "./ModalUpdatePassword";
 import { useStyles } from "./styles";
 
 export const ProfileScreen = () => {
-  const { logout, member } = useContext(AuthContext);
+  const { logout, member, restartOnboarding } = useContext(AuthContext);
   const { colors } = useAppTheme();
   const tabBarHeight = useBottomTabBarHeight();
   const styles = useStyles();
@@ -50,25 +51,38 @@ export const ProfileScreen = () => {
           />
 
           <View style={styles.menuCard}>
-            <ItemActionList
-              title="Meus dados"
-              description="Visualize ou edite seus dados pessoais"
-              onPress={() => setEditModalVisible(true)}
-              icon={<Pencil color={colors.primary} />}
-            />
+            <CoachTarget id="profile-edit">
+              <ItemActionList
+                title="Meus dados"
+                description="Visualize ou edite seus dados pessoais"
+                onPress={() => setEditModalVisible(true)}
+                icon={<Pencil color={colors.primary} />}
+              />
+            </CoachTarget>
+
+            <CoachTarget id="profile-password">
+              <ItemActionList
+                title="Atualizar senha"
+                description="Atualize sua senha de login do aplicativo"
+                onPress={() => setPasswordModalVisible(true)}
+                icon={<Lock color={colors.primary} />}
+              />
+            </CoachTarget>
+
+            <CoachTarget id="profile-videos">
+              <ItemActionList
+                title="Vídeos"
+                description="Veja os vídeos publicados pelos membros"
+                onPress={() => navigation.navigate("Videos")}
+                icon={<Video color={colors.primary} />}
+              />
+            </CoachTarget>
 
             <ItemActionList
-              title="Atualizar senha"
-              description="Atualize sua senha de login do aplicativo"
-              onPress={() => setPasswordModalVisible(true)}
-              icon={<Lock color={colors.primary} />}
-            />
-
-            <ItemActionList
-              title="Vídeos"
-              description="Veja os vídeos publicados pelos membros"
-              onPress={() => navigation.navigate("Videos")}
-              icon={<Video color={colors.primary} />}
+              title="Rever tutorial"
+              description="Veja novamente a apresentação do aplicativo"
+              onPress={restartOnboarding}
+              icon={<HelpCircle color={colors.primary} />}
               isLast
             />
           </View>

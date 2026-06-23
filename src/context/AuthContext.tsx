@@ -1,5 +1,11 @@
 import { MemberServices } from "@/services/MemberService";
-import { getStoredMember, saveMember } from "@/storage/asyncStorage";
+import {
+  clearOnboardingSeen,
+  getOnboardingSeen,
+  getStoredMember,
+  saveMember,
+  setOnboardingSeen,
+} from "@/storage/asyncStorage";
 import { IMemberState, IMemberWithContribution } from "@/types/Member";
 import { getCurrentUser, signIn, signOut } from "aws-amplify/auth";
 import React, { createContext, useEffect, useState } from "react";
@@ -19,6 +25,10 @@ interface AuthContextData {
   isLoggedIn: boolean;
   member: IMemberWithContribution | null;
   loading: boolean;
+  needsOnboarding: boolean;
+  onboardingChecked: boolean;
+  completeOnboarding: () => Promise<void>;
+  restartOnboarding: () => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   changePassword: (memberId: string, newPassword: string) => Promise<void>;
@@ -39,11 +49,51 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [member, setMember] = useState<IMemberWithContribution | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [needsOnboarding, setNeedsOnboarding] = useState(false);
+  const [onboardingChecked, setOnboardingChecked] = useState(false);
   const isLoggedIn = !!member;
 
   useEffect(() => {
     checkSession();
   }, []);
+
+  const memberId = member?._id;
+
+  useEffect(() => {
+    let active = true;
+
+    if (!memberId) {
+      setOnboardingChecked(false);
+      setNeedsOnboarding(false);
+      return;
+    }
+
+    (async () => {
+      const seen = await getOnboardingSeen(memberId);
+      if (active) {
+        setNeedsOnboarding(!seen);
+        setOnboardingChecked(true);
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [memberId]);
+
+  async function completeOnboarding() {
+    if (memberId) {
+      await setOnboardingSeen(memberId);
+    }
+    setNeedsOnboarding(false);
+  }
+
+  async function restartOnboarding() {
+    if (memberId) {
+      await clearOnboardingSeen(memberId);
+    }
+    setNeedsOnboarding(true);
+  }
 
   async function checkSession() {
     try {
@@ -208,6 +258,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         isLoggedIn,
         member,
         loading,
+        needsOnboarding,
+        onboardingChecked,
+        completeOnboarding,
+        restartOnboarding,
         login,
         logout,
         changePassword,

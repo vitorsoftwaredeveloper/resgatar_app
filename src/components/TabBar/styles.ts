@@ -47,6 +47,11 @@ export function useStyles() {
           alignItems: "center",
           justifyContent: "center",
         },
+        tabInner: {
+          alignItems: "center",
+          justifyContent: "center",
+          paddingVertical: 6,
+        },
         label: {
           marginTop: 4,
           fontSize: 12,
