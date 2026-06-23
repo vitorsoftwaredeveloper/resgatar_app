@@ -20,7 +20,7 @@ Mobile application for the Resgatar Community, providing daily Catholic liturgic
 
 ## Overview
 
-Resgatar is a React Native application built with Expo that serves the members of the Resgatar Catholic community. The app provides access to daily liturgical readings fetched from an external API, contribution tracking with PIX payment integration, push notifications, and administrative tools for community managers.
+Resgatar is a React Native application built with Expo that serves the members of the Resgatar Catholic community. The app provides access to daily liturgical readings fetched from an external API, contribution tracking with PIX payment integration, push notifications, a community video feed powered by YouTube, and administrative tools for community managers.
 
 ---
 
@@ -33,8 +33,11 @@ Resgatar is a React Native application built with Expo that serves the members o
 - Monthly contribution history with paid and pending status
 - PIX payment via QR Code with automatic payment confirmation polling
 - Profile management with personal data editing and password update
+- Profile photo — upload and update a personal avatar via camera or gallery; displayed across the entire app
+- Community video feed — browse YouTube videos shared by members; full-screen player via `react-native-youtube-iframe`
+- Share videos — members can add videos by pasting a YouTube URL with an optional title
 - Push notification support for contribution reminders
-- **Self-registration** — new members can create their own account directly from the login screen via a public API endpoint (no authentication token required)
+- Self-registration — new members can create their own account directly from the login screen via a public API endpoint (no authentication token required)
 
 **For administrators**
 
@@ -42,6 +45,7 @@ Resgatar is a React Native application built with Expo that serves the members o
 - Remove existing members
 - Reset member passwords
 - Send push notifications to all members
+- Remove videos — administrators can delete any video from the community feed
 
 ---
 
@@ -59,6 +63,8 @@ Resgatar is a React Native application built with Expo that serves the members o
 | Navigation       | React Navigation v7 (Bottom Tabs + Native Stack) |
 | Icons            | Lucide React Native                              |
 | QR Code          | react-native-qrcode-svg                          |
+| Video player     | react-native-youtube-iframe                      |
+| Image picker     | expo-image-picker                                |
 | Notifications    | expo-notifications                               |
 | Build service    | EAS Build (Expo Application Services)            |
 | Liturgy API      | liturgia.up.railway.app                          |
@@ -93,13 +99,18 @@ src/
     DashboardScreen/
     BillsScreen/
       PixPaymentModal/
+      ModalComprovante/
     ProfileScreen/
       ModalEditProfile/
       ModalUpdatePassword/
+      ModalEditPhoto/    # Avatar picker (camera / gallery) → base64 upload
     SettingsScreen/    # Admin only
       ModalRemoveMember/
       ModalChangePasswordMember/
       ModalSendNotification/
+    VideosScreen/      # Community YouTube feed
+      ModalAddVideo/   # Add video by URL + optional title
+      ModalVideoFeed/  # Full-screen player (react-native-youtube-iframe)
     LoadingScreen/
   services/
     api.ts             # Authenticated Axios instance (Bearer token interceptor)
@@ -108,6 +119,7 @@ src/
     ChargeService.ts
     LiturgyService.ts
     NotificationService.ts
+    VideoService.ts    # listAllVideos, createVideo, removeVideo
   context/
     AuthContext.tsx    # login, logout, register, createMember, updateMember, …
     ChargeContext.tsx
@@ -128,6 +140,7 @@ src/
     Charge/
     Liturgy/
     Notification/
+    Video/
   utils/
     helper.ts
     mask.ts            # Masks + validators: CPF, CNPJ, phone, CEP, currency,
@@ -270,9 +283,26 @@ AppNavigator (Stack)
   └─ Home → BottomTabs (authenticated)
        ├─ DashboardScreen
        ├─ BillsScreen
+       ├─ VideosScreen
        ├─ SettingsScreen   (admin role only)
        └─ ProfileScreen
 ```
+
+### Profile photo
+
+Members can update their avatar from `ProfileScreen → ModalEditPhoto`. The photo is picked via `expo-image-picker` (camera or gallery), resized and converted to base64, then sent to the backend via `MemberService`. The resulting base64 string is stored in the `photo` field of the member object and rendered by the `Avatar` component throughout the app. A generic fallback icon is shown when no photo is set.
+
+> `expo-image-picker` requires the `CAMERA` and `MEDIA_LIBRARY` permissions. To avoid the `RECORD_AUDIO` permission (which reduces device support on Google Play), set `microphonePermission: false` and add a `uses-feature` element with `required="false"` in `app.config.js`.
+
+### Community video feed
+
+`VideosScreen` shows a paginated list of YouTube videos shared by members. Each card renders the video thumbnail, title, and author.
+
+- **Add video** — any member can open `ModalAddVideo`, paste a YouTube URL, and optionally provide a title. The URL is sent to `VideoService.createVideo`.
+- **Full-screen player** — tapping a card opens `ModalVideoFeed` with an embedded `react-native-youtube-iframe` player.
+- **Remove video** — admins see a delete button on each card that calls `VideoService.removeVideo`.
+
+`VideoService` wraps three REST endpoints: `GET /videos`, `POST /videos`, and `DELETE /videos/:id`.
 
 ### Forms
 
