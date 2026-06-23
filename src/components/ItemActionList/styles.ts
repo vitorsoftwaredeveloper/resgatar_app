@@ -10,12 +10,10 @@ export function useStyles() {
       StyleSheet.create({
         container: {
           paddingVertical: SPACING.md,
-          position: "relative",
         },
-        left: {
-          position: "absolute",
-          left: 0,
-          top: 18,
+        row: {
+          flexDirection: "row",
+          alignItems: "center",
         },
         icon: {
           justifyContent: "center",
@@ -26,8 +24,9 @@ export function useStyles() {
           borderRadius: SPACING.sm2,
         },
         center: {
-          marginLeft: 56,
-          marginRight: SPACING.xl,
+          flex: 1,
+          marginLeft: SPACING.md,
+          marginRight: SPACING.md,
         },
         title: {
           fontSize: 15,
@@ -40,9 +39,6 @@ export function useStyles() {
           marginTop: 2,
         },
         arrow: {
-          position: "absolute",
-          right: 0,
-          top: 22,
           fontSize: 22,
           color: colors.textMuted,
         },

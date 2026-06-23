@@ -21,16 +21,16 @@ export function ItemActionList({
 
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
-      <View style={styles.left}>
+      <View style={styles.row}>
         <View style={styles.icon}>{icon && icon}</View>
-      </View>
 
-      <View style={styles.center}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.description}>{description}</Text>
-      </View>
+        <View style={styles.center}>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.description}>{description}</Text>
+        </View>
 
-      <Text style={styles.arrow}>›</Text>
+        <Text style={styles.arrow}>›</Text>
+      </View>
 
       {!isLast && <View style={styles.divider} />}
     </TouchableOpacity>

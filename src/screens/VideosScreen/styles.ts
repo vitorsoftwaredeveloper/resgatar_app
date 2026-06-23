@@ -82,6 +82,41 @@ export function useStyles() {
           color: colors.textMuted,
           textAlign: "center",
         },
+        memberFilterWrapper: {
+          height: 52,
+          justifyContent: "center",
+        },
+        memberArrow: {
+          position: "absolute",
+          top: 0,
+          bottom: 0,
+          width: 36,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: colors.softBrown,
+        },
+        memberArrowLeft: {
+          left: 0,
+        },
+        memberArrowRight: {
+          right: 0,
+        },
+        memberFilterRow: {
+          paddingHorizontal: SPACING.md,
+          gap: SPACING.sm,
+          alignItems: "center",
+        },
+        memberChip: {
+          width: 40,
+          height: 40,
+          borderRadius: 20,
+          borderWidth: 2,
+          borderColor: "transparent",
+          overflow: "hidden",
+        },
+        memberChipActive: {
+          borderColor: colors.primary,
+        },
         fab: {
           position: "absolute",
           right: 20,
