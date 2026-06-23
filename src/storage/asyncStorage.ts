@@ -4,6 +4,7 @@ import { IMemberWithContribution } from "@/types/Member/index";
 
 const MEMBER_PUBLIC_KEY = "@auth:member_public";
 const MEMBER_SENSITIVE_KEY = "auth_member_sensitive";
+const ONBOARDING_KEY_PREFIX = "@onboarding:seen:";
 
 type SensitiveFields = Pick<
   IMemberWithContribution,
@@ -59,4 +60,19 @@ async function removeMember() {
   ]);
 }
 
-export { saveMember, getStoredMember, removeMember };
+async function getOnboardingSeen(memberId: string): Promise<boolean> {
+  const value = await AsyncStorage.getItem(`${ONBOARDING_KEY_PREFIX}${memberId}`);
+  return value === "true";
+}
+
+async function setOnboardingSeen(memberId: string) {
+  await AsyncStorage.setItem(`${ONBOARDING_KEY_PREFIX}${memberId}`, "true");
+}
+
+export {
+  saveMember,
+  getStoredMember,
+  removeMember,
+  getOnboardingSeen,
+  setOnboardingSeen,
+};
