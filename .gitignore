@@ -9,6 +9,10 @@ web-build/
 expo-env.d.ts
 .expo/
 
+# Local Expo modules — build artifacts (the source stays versioned)
+modules/*/android/build/
+modules/*/ios/build/
+
 # Native
 .kotlin/
 *.orig.*

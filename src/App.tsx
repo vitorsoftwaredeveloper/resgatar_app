@@ -14,6 +14,7 @@ import { usePushNotifications } from "./hooks/usePushNotifications";
 import AppNavigator from "./navigation/AppNavigator";
 import { navigationRef } from "./navigation/navigationRef";
 import { CoachOverlay } from "./components/CoachOverlay";
+import { DevModeGuard } from "./components/DevModeGuard";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -47,10 +48,12 @@ export const App = () => {
   return (
     <ThemeProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <AuthProvider>
-          <AppContent />
-        </AuthProvider>
-        <Toast config={toastConfig} />
+        <DevModeGuard>
+          <AuthProvider>
+            <AppContent />
+          </AuthProvider>
+          <Toast config={toastConfig} />
+        </DevModeGuard>
       </GestureHandlerRootView>
     </ThemeProvider>
   );

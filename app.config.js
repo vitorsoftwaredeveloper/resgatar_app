@@ -66,6 +66,7 @@ module.exports = {
       "./firebaseMessagingFix",
     ],
     extra: {
+      appEnv: ENV,
       eas: {
         projectId: "5fa8ea09-d47b-497b-992c-9f1704fb0613",
       },

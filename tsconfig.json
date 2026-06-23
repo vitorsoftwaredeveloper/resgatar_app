@@ -6,6 +6,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@dev-mode-detector": [
+        "./modules/dev-mode-detector"
       ]
     }
   },
