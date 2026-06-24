@@ -13,6 +13,9 @@ jest.mock("lucide-react-native", () => ({
 jest.mock("@/components/Svg/Logo", () => ({
   LogoResgatar: () => null,
 }));
+jest.mock("@react-navigation/native", () => ({
+  useIsFocused: () => true,
+}));
 jest.mock("@/context/CoachContext", () => ({
   useCoach: () => ({
     registerTarget: jest.fn(),

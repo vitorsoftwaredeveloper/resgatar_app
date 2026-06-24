@@ -93,6 +93,10 @@ export function ModalRegisterCashPayment({ visible, onClose }: Props) {
     setRegistering(confirm.index);
     try {
       await ChargeServices.registerCashPayment(detail._id, confirm.index);
+      ToastMessage.success(
+        "Pagamento registrado",
+        `${confirm.label} de ${detail.firstName} marcado como pago.`,
+      );
       setConfirm(null);
       await Promise.all([loadDetail(detail._id), reloadMemberData()]);
     } catch {

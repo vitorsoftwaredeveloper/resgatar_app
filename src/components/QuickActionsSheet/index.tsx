@@ -3,8 +3,8 @@ import { CoachTarget } from "@/components/CoachTarget";
 import { useCoach } from "@/context/CoachContext";
 import { useAppTheme } from "@/context/ThemeContext";
 import { Cake, Moon, Sun } from "lucide-react-native";
-import React, { useEffect, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import { Modal, Text, TouchableOpacity, View } from "react-native";
 import { useStyles } from "./styles";
 
 interface Props {
@@ -32,16 +32,20 @@ export function QuickActionsSheet({ visible, onClose, anchorPosition }: Props) {
 
   return (
     <>
-      {/* Overlay para fechar ao clicar fora — só quando tutorial não está ativo */}
-      {visible && !tutorialActive && (
+      <Modal
+        visible={visible}
+        transparent
+        animationType="none"
+        onRequestClose={onClose}
+        statusBarTranslucent
+      >
+        {/* Backdrop cobre a tela inteira — só intercepta toque quando tutorial não está ativo */}
         <TouchableOpacity
           style={styles.overlayBackdrop}
           activeOpacity={1}
-          onPress={onClose}
+          onPress={!tutorialActive ? onClose : undefined}
         />
-      )}
 
-      {visible && (
         <View style={[styles.dropdown, anchorPosition]}>
           <CoachTarget id="quick-darkmode">
             <TouchableOpacity style={styles.item} onPress={handleTheme} activeOpacity={0.7}>
@@ -67,7 +71,7 @@ export function QuickActionsSheet({ visible, onClose, anchorPosition }: Props) {
             </TouchableOpacity>
           </CoachTarget>
         </View>
-      )}
+      </Modal>
 
       <BirthdayModal
         visible={birthdayVisible}
