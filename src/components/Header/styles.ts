@@ -15,6 +15,8 @@ export function useStyles() {
           backgroundColor: colors.background,
           paddingBottom: 0,
           paddingTop: SPACING.xxl,
+          zIndex: 100,
+          overflow: "visible",
         },
         left: {
           flexDirection: "row",

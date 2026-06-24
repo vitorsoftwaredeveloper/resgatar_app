@@ -36,6 +36,17 @@ export const MemberServices = {
       throw error;
     }
   },
+  listBirthdayMembers: async (): Promise<IMember[]> => {
+    try {
+      const response = await api.get("/members/birthdays");
+      const { data } = response.data;
+
+      return data;
+    } catch (error) {
+      console.error("Erro ao listar aniversariantes", error);
+      throw error;
+    }
+  },
   removeMember: async (memberId: string) => {
     try {
       const response = await api.delete(`/members/${memberId}`);

@@ -5,13 +5,7 @@ import { IMember } from "@/types/Member";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { Cake } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
-import {
-  Modal,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useStyles } from "./styles";
 
@@ -26,28 +20,51 @@ interface BirthdayMember {
 }
 
 const MONTHS_PT = [
-  "janeiro", "fevereiro", "março", "abril", "maio", "junho",
-  "julho", "agosto", "setembro", "outubro", "novembro", "dezembro",
+  "janeiro",
+  "fevereiro",
+  "março",
+  "abril",
+  "maio",
+  "junho",
+  "julho",
+  "agosto",
+  "setembro",
+  "outubro",
+  "novembro",
+  "dezembro",
 ];
 
+function parseBirthDate(
+  dateOfBirth: string | number,
+): { day: number; month: number } | null {
+  if (!dateOfBirth) return null;
+  const numeric = Number(dateOfBirth);
+  const ts = !isNaN(numeric) ? numeric : Date.parse(dateOfBirth as string);
+  if (isNaN(ts)) return null;
+  // Use UTC values to avoid timezone shifting the month/day
+  const d = new Date(ts);
+  return { day: d.getUTCDate(), month: d.getUTCMonth() };
+}
 
 function getBirthdaysThisMonth(members: IMember[]): BirthdayMember[] {
   const now = new Date();
   const currentMonth = now.getMonth();
   const currentDay = now.getDate();
   return members
-    .filter((m) => m.dateOfBirth && new Date(m.dateOfBirth).getMonth() === currentMonth)
+    .filter((m) => {
+      const parsed = parseBirthDate(m.dateOfBirth);
+      return parsed !== null && parsed.month === currentMonth;
+    })
     .map((m) => {
-      const date = new Date(m.dateOfBirth);
-      const day = date.getDate();
+      const { day, month } = parseBirthDate(m.dateOfBirth)!;
       return {
         _id: m._id,
         firstName: m.firstName,
         lastName: m.lastName,
         profileImage: m.profileImage,
         day,
-        month: date.getMonth(),
-        isToday: day === currentDay,
+        month,
+        isToday: day === currentDay && month === currentMonth,
       };
     })
     .sort((a, b) => {
@@ -64,19 +81,20 @@ export function BirthdayFAB() {
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
-    MemberServices.listMembers()
+    MemberServices.listBirthdayMembers()
       .then((data: IMember[]) => setMembers(getBirthdaysThisMonth(data)))
       .catch(() => {});
   }, []);
-
-  if (members.length === 0) return null;
 
   const todayCount = members.filter((m) => m.isToday).length;
   const fabBottom = tabBarHeight + 32;
 
   return (
     <>
-      <CoachTarget id="birthday-fab" style={[styles.fab, { bottom: fabBottom }]}>
+      <CoachTarget
+        id="birthday-fab"
+        style={[styles.fab, { bottom: fabBottom }]}
+      >
         <TouchableOpacity
           style={styles.fabInner}
           onPress={() => setModalVisible(true)}
@@ -98,46 +116,75 @@ export function BirthdayFAB() {
         transparent
         presentationStyle="overFullScreen"
       >
-        <View style={styles.modalOverlay}>
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setModalVisible(false)}
+        >
           <View style={[styles.sheet, { paddingBottom: insets.bottom + 16 }]}>
-            <View style={styles.sheetHandle} />
+            <TouchableOpacity activeOpacity={1} onPress={() => {}}>
+              <View style={styles.sheetHandle} />
 
-            <View style={styles.sheetHeader}>
-              <Cake size={16} style={styles.sheetIcon} />
-              <Text style={styles.sheetTitle}>Aniversariantes do mês</Text>
-              <TouchableOpacity onPress={() => setModalVisible(false)} hitSlop={12}>
-                <Text style={styles.sheetClose}>✕</Text>
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView showsVerticalScrollIndicator={false}>
-              {members.map((item) => (
-                <View
-                  key={item._id}
-                  style={[styles.listItem, item.isToday && styles.listItemToday]}
+              <View style={styles.sheetHeader}>
+                <Cake size={16} color={styles.sheetIcon.color} />
+                <Text style={styles.sheetTitle}>Aniversariantes do mês</Text>
+                <TouchableOpacity
+                  onPress={() => setModalVisible(false)}
+                  hitSlop={12}
                 >
-                  <View style={item.isToday ? styles.avatarRing : undefined}>
-                    <Avatar photo={item.profileImage} size={48} />
-                    {item.isToday && (
-                      <View style={styles.todayBadge}>
-                        <Text style={styles.todayBadgeText}>🎂</Text>
-                      </View>
-                    )}
-                  </View>
+                  <Text style={styles.sheetClose}>✕</Text>
+                </TouchableOpacity>
+              </View>
 
-                  <View style={styles.listItemInfo}>
-                    <Text style={[styles.listItemName, item.isToday && styles.listItemNameToday]}>
-                      {item.firstName} {item.lastName}
-                    </Text>
-                    <Text style={[styles.listItemDate, item.isToday && styles.listItemDateToday]}>
-                      {item.isToday ? "🎉 Hoje!" : `${item.day} de ${MONTHS_PT[item.month]}`}
-                    </Text>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                {members.length === 0 && (
+                  <Text style={styles.emptyText}>
+                    Nenhum aniversariante neste mês
+                  </Text>
+                )}
+                {members.map((item) => (
+                  <View
+                    key={item._id}
+                    style={[
+                      styles.listItem,
+                      item.isToday && styles.listItemToday,
+                    ]}
+                  >
+                    <View style={item.isToday ? styles.avatarRing : undefined}>
+                      <Avatar photo={item.profileImage} size={48} />
+                      {item.isToday && (
+                        <View style={styles.todayBadge}>
+                          <Text style={styles.todayBadgeText}>🎂</Text>
+                        </View>
+                      )}
+                    </View>
+
+                    <View style={styles.listItemInfo}>
+                      <Text
+                        style={[
+                          styles.listItemName,
+                          item.isToday && styles.listItemNameToday,
+                        ]}
+                      >
+                        {item.firstName} {item.lastName}
+                      </Text>
+                      <Text
+                        style={[
+                          styles.listItemDate,
+                          item.isToday && styles.listItemDateToday,
+                        ]}
+                      >
+                        {item.isToday
+                          ? "🎉 Hoje!"
+                          : `${item.day} de ${MONTHS_PT[item.month]}`}
+                      </Text>
+                    </View>
                   </View>
-                </View>
-              ))}
-            </ScrollView>
+                ))}
+              </ScrollView>
+            </TouchableOpacity>
           </View>
-        </View>
+        </TouchableOpacity>
       </Modal>
     </>
   );

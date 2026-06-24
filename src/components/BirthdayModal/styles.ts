@@ -8,46 +8,7 @@ export function useStyles() {
   return useMemo(
     () =>
       StyleSheet.create({
-        fab: {
-          position: "absolute",
-          right: 16,
-          width: 52,
-          height: 52,
-          borderRadius: 26,
-          shadowColor: colors.primary,
-          shadowOpacity: 0.4,
-          shadowRadius: 8,
-          shadowOffset: { width: 0, height: 4 },
-          elevation: 6,
-        },
-        fabInner: {
-          width: 52,
-          height: 52,
-          borderRadius: 26,
-          backgroundColor: colors.primary,
-          alignItems: "center",
-          justifyContent: "center",
-        },
-        badge: {
-          position: "absolute",
-          top: -4,
-          right: -4,
-          backgroundColor: colors.waiting,
-          borderRadius: 999,
-          minWidth: 18,
-          height: 18,
-          paddingHorizontal: 4,
-          alignItems: "center",
-          justifyContent: "center",
-        },
-        badgeText: {
-          color: colors.white,
-          fontSize: TYPOGRAPHY.xsmall,
-          fontWeight: "700",
-        },
-
-        // Modal
-        modalOverlay: {
+        overlay: {
           flex: 1,
           justifyContent: "flex-end",
           backgroundColor: "rgba(0,0,0,0.45)",
@@ -60,7 +21,7 @@ export function useStyles() {
           paddingTop: SPACING.sm,
           maxHeight: "75%",
         },
-        sheetHandle: {
+        handle: {
           width: 36,
           height: 4,
           borderRadius: 2,
@@ -68,35 +29,32 @@ export function useStyles() {
           alignSelf: "center",
           marginBottom: SPACING.md,
         },
-        sheetHeader: {
+        header: {
           flexDirection: "row",
           alignItems: "center",
           gap: SPACING.xs,
           marginBottom: SPACING.md,
         },
-        sheetIcon: {
+        headerIcon: {
           color: colors.textMuted,
         },
-        sheetTitle: {
+        title: {
           flex: 1,
           fontSize: TYPOGRAPHY.subtitle,
           fontWeight: "700",
           color: colors.text,
         },
-        sheetClose: {
+        close: {
           fontSize: TYPOGRAPHY.body,
           color: colors.textMuted,
           paddingHorizontal: SPACING.xs,
         },
-
         emptyText: {
           textAlign: "center",
           color: colors.textMuted,
           fontSize: TYPOGRAPHY.body,
           paddingVertical: SPACING.xl,
         },
-
-        // List items
         listItem: {
           flexDirection: "row",
           alignItems: "center",
@@ -132,8 +90,6 @@ export function useStyles() {
           color: colors.primary,
           fontWeight: "600",
         },
-
-        // Avatar ring (today)
         avatarRing: {
           borderRadius: 999,
           borderWidth: 2,

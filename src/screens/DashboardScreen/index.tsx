@@ -1,4 +1,3 @@
-import { BirthdayFAB } from "@/components/BirthdayFAB";
 import { CalendarModal } from "@/components/CalendarModal";
 import { DateNavigator } from "@/components/DateNavigator";
 import { Header } from "@/components/Header";
@@ -193,8 +192,6 @@ export function DashboardScreen() {
             </>
           ) : null}
         </ScrollView>
-        <BirthdayFAB />
-
         <CalendarModal
           visible={calendarVisible}
           selectedDate={selectedDate}

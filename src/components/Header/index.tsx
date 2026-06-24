@@ -1,7 +1,9 @@
+import { QuickActionsSheet } from "@/components/QuickActionsSheet";
+import { useCoach } from "@/context/CoachContext";
 import { useAppTheme } from "@/context/ThemeContext";
 import { resolveAvatarUri } from "@/utils/image";
-import { ChevronLeft, Moon, Sun } from "lucide-react-native";
-import React from "react";
+import { ChevronLeft, EllipsisVertical } from "lucide-react-native";
+import React, { useEffect, useRef, useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { CoachTarget } from "../CoachTarget";
 import { LogoResgatar } from "../Svg/Logo";
@@ -14,10 +16,26 @@ interface Props {
 }
 
 export function Header({ name, photo, onBack }: Props) {
-  const { mode, toggleTheme, colors } = useAppTheme();
+  const { colors } = useAppTheme();
   const styles = useStyles();
+  const { registerAction, unregisterAction } = useCoach();
+  const [sheetVisible, setSheetVisible] = useState(false);
+  const [anchorPosition, setAnchorPosition] = useState<{ top: number; right: number } | undefined>();
+  const buttonRef = useRef<View>(null);
+
+  useEffect(() => {
+    registerAction("header-quickactions", handleOpenSheet);
+    return () => unregisterAction("header-quickactions");
+  }, []);
 
   const avatarUri = resolveAvatarUri(photo);
+
+  function handleOpenSheet() {
+    buttonRef.current?.measure((_x, _y, width, height, pageX, pageY) => {
+      setAnchorPosition({ top: pageY + height + 4, right: 16 });
+      setSheetVisible(true);
+    });
+  }
 
   return (
     <View style={styles.container}>
@@ -46,21 +64,24 @@ export function Header({ name, photo, onBack }: Props) {
             {name}
           </Text>
         </View>
-        <CoachTarget id="header-darkmode">
+        <CoachTarget id="header-quickactions">
           <TouchableOpacity
+            ref={buttonRef}
             testID="theme-toggle"
-            accessibilityLabel={mode === "dark" ? "Desativar modo escuro" : "Ativar modo escuro"}
-            onPress={toggleTheme}
+            accessibilityLabel="Ações rápidas"
+            onPress={handleOpenSheet}
             style={styles.themeToggle}
           >
-            {mode === "dark" ? (
-              <Sun size={18} color={colors.primary} />
-            ) : (
-              <Moon size={18} color={colors.primary} />
-            )}
+            <EllipsisVertical size={18} color={colors.primary} />
           </TouchableOpacity>
         </CoachTarget>
       </View>
+
+      <QuickActionsSheet
+        visible={sheetVisible}
+        onClose={() => setSheetVisible(false)}
+        anchorPosition={anchorPosition}
+      />
     </View>
   );
 }

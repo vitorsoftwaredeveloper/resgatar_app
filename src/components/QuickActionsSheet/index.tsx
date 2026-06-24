@@ -1,0 +1,78 @@
+import { BirthdayModal } from "@/components/BirthdayModal";
+import { CoachTarget } from "@/components/CoachTarget";
+import { useCoach } from "@/context/CoachContext";
+import { useAppTheme } from "@/context/ThemeContext";
+import { Cake, Moon, Sun } from "lucide-react-native";
+import React, { useEffect, useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import { useStyles } from "./styles";
+
+interface Props {
+  visible: boolean;
+  onClose: () => void;
+  anchorPosition?: { top: number; right: number };
+}
+
+export function QuickActionsSheet({ visible, onClose, anchorPosition }: Props) {
+  const styles = useStyles();
+  const { mode, toggleTheme, colors } = useAppTheme();
+  const { active: tutorialActive } = useCoach();
+  const [birthdayVisible, setBirthdayVisible] = useState(false);
+
+
+  function handleTheme() {
+    toggleTheme();
+    onClose();
+  }
+
+  function handleBirthdays() {
+    onClose();
+    setBirthdayVisible(true);
+  }
+
+  return (
+    <>
+      {/* Overlay para fechar ao clicar fora — só quando tutorial não está ativo */}
+      {visible && !tutorialActive && (
+        <TouchableOpacity
+          style={styles.overlayBackdrop}
+          activeOpacity={1}
+          onPress={onClose}
+        />
+      )}
+
+      {visible && (
+        <View style={[styles.dropdown, anchorPosition]}>
+          <CoachTarget id="quick-darkmode">
+            <TouchableOpacity style={styles.item} onPress={handleTheme} activeOpacity={0.7}>
+              <View style={styles.itemIcon}>
+                {mode === "dark"
+                  ? <Sun size={16} color={colors.primary} />
+                  : <Moon size={16} color={colors.primary} />}
+              </View>
+              <Text style={styles.itemLabel}>
+                {mode === "dark" ? "Modo claro" : "Modo escuro"}
+              </Text>
+            </TouchableOpacity>
+          </CoachTarget>
+
+          <View style={styles.divider} />
+
+          <CoachTarget id="quick-birthdays">
+            <TouchableOpacity style={styles.item} onPress={handleBirthdays} activeOpacity={0.7}>
+              <View style={styles.itemIcon}>
+                <Cake size={16} color={colors.primary} />
+              </View>
+              <Text style={styles.itemLabel}>Aniversariantes</Text>
+            </TouchableOpacity>
+          </CoachTarget>
+        </View>
+      )}
+
+      <BirthdayModal
+        visible={birthdayVisible}
+        onClose={() => setBirthdayVisible(false)}
+      />
+    </>
+  );
+}

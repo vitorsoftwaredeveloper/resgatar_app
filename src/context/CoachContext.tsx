@@ -26,6 +26,8 @@ export interface CoachStep {
   screen?: "Videos";
   /** Se o alvo não estiver na tela (ex.: botão condicional), o passo é pulado. */
   optional?: boolean;
+  /** Callback executado ao entrar no passo (ex.: abrir um dropdown). */
+  onEnter?: () => void;
 }
 
 // Ordem do tour guiado entre as telas.
@@ -41,13 +43,6 @@ export const COACH_STEPS: CoachStep[] = [
     title: "Escolha o dia",
     text: "Toque na data para abrir o calendário e ver a liturgia de qualquer dia.",
     tab: "Dashboard",
-  },
-  {
-    id: "birthday-fab",
-    title: "Aniversariantes",
-    text: "Toque aqui para ver os membros que fazem aniversário neste mês.",
-    tab: "Dashboard",
-    optional: true,
   },
   {
     id: "tab-bills",
@@ -86,10 +81,10 @@ export const COACH_STEPS: CoachStep[] = [
     tab: "Profile",
   },
   {
-    id: "header-darkmode",
-    title: "Modo escuro",
-    text: "Toque neste ícone para alternar entre o tema claro e o escuro.",
-    tab: "Profile",
+    id: "header-quickactions",
+    title: "Ações rápidas",
+    text: "Toque neste botão para acessar atalhos úteis do aplicativo.",
+    tab: "Dashboard",
   },
 ];
 
@@ -101,6 +96,8 @@ interface CoachContextData {
   totalSteps: number;
   register: (id: string, measure: MeasureCallback) => void;
   unregister: (id: string) => void;
+  registerAction: (id: string, fn: () => void) => void;
+  unregisterAction: (id: string) => void;
   start: () => void;
   next: () => void;
   prev: () => void;
@@ -113,6 +110,15 @@ const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export function CoachProvider({ children }: { children: React.ReactNode }) {
   const registry = useRef<Map<string, MeasureCallback>>(new Map());
+  const actionRegistry = useRef<Map<string, () => void>>(new Map());
+
+  const registerAction = useCallback((id: string, fn: () => void) => {
+    actionRegistry.current.set(id, fn);
+  }, []);
+
+  const unregisterAction = useCallback((id: string) => {
+    actionRegistry.current.delete(id);
+  }, []);
 
   const [active, setActive] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
@@ -165,6 +171,12 @@ export function CoachProvider({ children }: { children: React.ReactNode }) {
         await wait(300);
       }
 
+      const action = actionRegistry.current.get(step.id);
+      if (action) {
+        action();
+        await wait(250);
+      }
+
       const rect = await measureWithRetry(step.id, step.optional ? 5 : 10);
 
       // Passo opcional sem alvo na tela (ex.: botão Pagar sem pendência): pula.
@@ -209,6 +221,8 @@ export function CoachProvider({ children }: { children: React.ReactNode }) {
         totalSteps: COACH_STEPS.length,
         register,
         unregister,
+        registerAction,
+        unregisterAction,
         start,
         next,
         prev,
