@@ -8,13 +8,13 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { ICharge, PAYMENT_NOTIFICATION_TYPE } from "@/types/Charge";
+import { ICharge, PAYMENT_NOTIFICATION_TYPE, PAYMENT_CONFIRMED_NOTIFICATION_TYPE } from "@/types/Charge";
 import { ChargeServices } from "@/services/ChargeService";
 import { AuthContext } from "@/context/AuthContext";
 
 interface ChargeContextData {
   charge: ICharge;
-  createCharge: (value: number, month: number) => Promise<void>;
+  createCharge: (month: number) => Promise<void>;
 }
 
 export const ChargeContext = createContext<ChargeContextData>(
@@ -35,9 +35,9 @@ export const ChargeProvider: React.FC<{ children: React.ReactNode }> = ({
     chargeRef.current = charge;
   }, [charge]);
 
-  async function createCharge(value: number, month: number) {
+  async function createCharge(month: number) {
     try {
-      const charge = await ChargeServices.createCharge(value, month);
+      const charge = await ChargeServices.createCharge(month);
 
       setCharge(charge);
     } catch (error) {
@@ -69,6 +69,17 @@ export const ChargeProvider: React.FC<{ children: React.ReactNode }> = ({
     if (!remoteMessage) return;
 
     const data = remoteMessage.data;
+
+    // Push de pagamento confirmado (cash ou PIX via notifyPaymentConfirmed):
+    // recarrega os dados do membro. Para cash não há transactionId nem consulta.
+    if (data?.type === PAYMENT_CONFIRMED_NOTIFICATION_TYPE) {
+      try {
+        await reloadMemberData();
+      } catch (error) {
+        console.error("Error reloading member after confirmed payment", error);
+      }
+      return;
+    }
 
     // Se o push declara explicitamente um tipo diferente de pagamento, ignora.
     // Quando não há `type` (notificação genérica), seguimos adiante e deixamos

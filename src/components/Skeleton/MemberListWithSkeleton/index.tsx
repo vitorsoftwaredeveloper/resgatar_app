@@ -12,6 +12,7 @@ interface Props {
   onAction: (member: IMember) => void;
   iconAction: React.ReactElement;
   variant: "delete" | "edit";
+  loadingMemberId?: string;
 }
 
 const SKELETON_COUNT = 4;
@@ -46,6 +47,7 @@ export function MemberListWithSkeleton({
   onAction,
   iconAction,
   variant,
+  loadingMemberId,
 }: Props) {
   const styles = useStyles();
 
@@ -66,6 +68,7 @@ export function MemberListWithSkeleton({
                 onAction={onAction}
                 iconAction={iconAction}
                 variant={variant}
+                loading={loadingMemberId === item._id}
               />
             )
           }

@@ -2,6 +2,7 @@ import { QuickActionsSheet } from "@/components/QuickActionsSheet";
 import { useCoach } from "@/context/CoachContext";
 import { useAppTheme } from "@/context/ThemeContext";
 import { resolveAvatarUri } from "@/utils/image";
+import { useIsFocused } from "@react-navigation/native";
 import { ChevronLeft, EllipsisVertical } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
@@ -22,11 +23,16 @@ export function Header({ name, photo, onBack }: Props) {
   const [sheetVisible, setSheetVisible] = useState(false);
   const [anchorPosition, setAnchorPosition] = useState<{ top: number; right: number } | undefined>();
   const buttonRef = useRef<View>(null);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     registerAction("header-quickactions", handleOpenSheet);
     return () => unregisterAction("header-quickactions");
   }, []);
+
+  useEffect(() => {
+    if (!isFocused) setSheetVisible(false);
+  }, [isFocused]);
 
   const avatarUri = resolveAvatarUri(photo);
 

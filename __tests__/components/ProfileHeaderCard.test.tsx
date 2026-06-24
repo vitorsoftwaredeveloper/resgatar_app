@@ -5,6 +5,13 @@ jest.mock("@/context/ThemeContext", () => ({
   }),
 }));
 jest.mock("lucide-react-native", () => ({ UserRound: () => null }));
+jest.mock("@/context/CoachContext", () => ({
+  useCoach: () => ({ registerTarget: jest.fn(), unregisterTarget: jest.fn() }),
+}));
+jest.mock("@/components/CoachTarget", () => {
+  const React = require("react");
+  return { CoachTarget: ({ children }: any) => children };
+});
 
 import React from "react";
 import { render } from "@testing-library/react-native";

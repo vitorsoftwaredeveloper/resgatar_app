@@ -3,6 +3,13 @@ jest.mock("lucide-react-native", () => ({
   ChevronRight: () => null,
   Clock: () => null,
 }));
+jest.mock("@/context/CoachContext", () => ({
+  useCoach: () => ({ registerTarget: jest.fn(), unregisterTarget: jest.fn() }),
+}));
+jest.mock("@/components/CoachTarget", () => {
+  const React = require("react");
+  return { CoachTarget: ({ children }: any) => children };
+});
 jest.mock("@/context/ThemeContext", () => ({
   useAppTheme: () => ({
     colors: { primary: "#6B4F3A", text: "#000", textMuted: "#999", border: "#ccc" },

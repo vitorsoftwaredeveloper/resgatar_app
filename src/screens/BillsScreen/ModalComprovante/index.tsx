@@ -22,6 +22,7 @@ type ComprovanteData = {
   month: string;
   paidAt: string;
   value: string;
+  method?: string;
 };
 
 type Props = {
@@ -45,7 +46,7 @@ export function ModalComprovante({ visible, onClose, data }: Props) {
   };
 
   return (
-    <ModalBase visible={visible} onClose={onClose} title="Ver Comprovante">
+    <ModalBase visible={visible} onClose={onClose} title="Comprovante">
       <View style={styles.overlay}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
@@ -95,7 +96,7 @@ export function ModalComprovante({ visible, onClose, data }: Props) {
               </View>
               <View style={[styles.row, styles.rowLast]}>
                 <Text style={styles.rowLabel}>Método</Text>
-                <Text style={styles.rowValue}>PIX</Text>
+                <Text style={styles.rowValue}>{data.method ?? "PIX"}</Text>
               </View>
             </View>
 

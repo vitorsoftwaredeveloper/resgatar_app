@@ -82,3 +82,10 @@ export const Modal = ({ children, visible, ...props }: any) =>
   visible ? React.createElement("Modal", props, children) : null;
 
 export const Image = (props: any) => React.createElement("Image", props);
+
+export const Switch = ({ value, onValueChange }: any) =>
+  React.createElement("Switch", {
+    accessibilityRole: "switch",
+    value,
+    onValueChange,
+  });

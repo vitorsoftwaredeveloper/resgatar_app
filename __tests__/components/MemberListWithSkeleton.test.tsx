@@ -21,7 +21,16 @@ jest.mock("@/context/ThemeContext", () => ({
     mode: "light",
   }),
 }));
-jest.mock("lucide-react-native", () => ({ User: () => null }));
+jest.mock("lucide-react-native", () => {
+  const React = require("react");
+  return {
+    UserRound: (props: any) => React.createElement("UserRound", props),
+    Camera: (props: any) => React.createElement("Camera", props),
+  };
+});
+jest.mock("@/utils/image", () => ({
+  resolveAvatarUri: (photo: string | null | undefined) => photo ?? null,
+}));
 
 import React from "react";
 import { render } from "@testing-library/react-native";

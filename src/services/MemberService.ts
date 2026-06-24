@@ -25,6 +25,17 @@ export const MemberServices = {
     }
   },
 
+  getMemberById: async (memberId: string): Promise<IMemberWithContribution> => {
+    try {
+      const response = await api.get(`/members/${memberId}`);
+      const { data } = response.data;
+
+      return data;
+    } catch (error) {
+      console.error("Erro ao obter membro", error);
+      throw error;
+    }
+  },
   listMembers: async () => {
     try {
       const response = await api.get("/members/list");

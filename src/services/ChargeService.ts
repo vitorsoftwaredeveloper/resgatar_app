@@ -2,10 +2,9 @@ import { ICharge } from "@/types/Charge";
 import { api } from "./api";
 
 export const ChargeServices = {
-  createCharge: async (value: number, month: number): Promise<ICharge> => {
+  createCharge: async (month: number): Promise<ICharge> => {
     try {
       const response = await api.post("/charges", {
-        transactionAmount: value,
         referenceMonth: month,
       });
       const { data } = response.data;
@@ -13,6 +12,19 @@ export const ChargeServices = {
       return data;
     } catch (error) {
       console.error("Error creating charge", error);
+      throw error;
+    }
+  },
+  // Ação exclusiva de admin: registra um pagamento em dinheiro de outro membro.
+  // O backend valida que o caller é admin e grava paymentMethod "cash".
+  registerCashPayment: async (
+    memberId: string,
+    referenceMonth: number,
+  ): Promise<void> => {
+    try {
+      await api.post("/charges/cash", { memberId, referenceMonth });
+    } catch (error) {
+      console.error("Error registering cash payment", error);
       throw error;
     }
   },

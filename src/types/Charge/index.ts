@@ -38,4 +38,8 @@ const TRANSACTION_STATUS = {
 // webhook do Mercado Pago confirma a atualização de uma cobrança.
 const PAYMENT_NOTIFICATION_TYPE = "PAYMENT_UPDATE";
 
-export { ICharge, TRANSACTION_STATUS, PAYMENT_NOTIFICATION_TYPE };
+// Push enviado pelo backend quando um pagamento é confirmado (PIX ou dinheiro).
+// O campo `data.paymentMethod` distingue o método: "cash" ou ausente para PIX.
+const PAYMENT_CONFIRMED_NOTIFICATION_TYPE = "PAYMENT_CONFIRMED";
+
+export { ICharge, TRANSACTION_STATUS, PAYMENT_NOTIFICATION_TYPE, PAYMENT_CONFIRMED_NOTIFICATION_TYPE };

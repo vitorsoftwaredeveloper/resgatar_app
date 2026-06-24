@@ -1,8 +1,8 @@
 import React from "react";
-import { View, Text, Pressable } from "react-native";
-import { User as UserIcon } from "lucide-react-native";
-import { useStyles } from "./styles";
+import { ActivityIndicator, View, Text, Pressable } from "react-native";
+import { Avatar } from "@/components/Avatar";
 import { useAppTheme } from "@/context/ThemeContext";
+import { useStyles } from "./styles";
 import { IMember } from "@/types/Member";
 
 type Props = {
@@ -10,6 +10,7 @@ type Props = {
   onAction: (member: IMember) => void;
   iconAction: React.ReactNode;
   variant?: "delete" | "edit";
+  loading?: boolean;
 };
 
 export function SettingsMemberCard({
@@ -17,16 +18,15 @@ export function SettingsMemberCard({
   onAction,
   iconAction,
   variant = "edit",
+  loading = false,
 }: Props) {
-  const { colors } = useAppTheme();
   const styles = useStyles();
+  const { colors } = useAppTheme();
 
   return (
     <View style={styles.card}>
       <View style={styles.userInfo}>
-        <View style={styles.avatar}>
-          <UserIcon size={20} color={colors.primary} />
-        </View>
+        <Avatar photo={member.profileImage} size={40} />
 
         <View>
           <Text ellipsizeMode="tail" numberOfLines={1} style={styles.userName}>
@@ -39,10 +39,15 @@ export function SettingsMemberCard({
       </View>
       <Pressable
         style={styles[variant]}
-        onPress={() => onAction(member)}
+        onPress={() => !loading && onAction(member)}
         hitSlop={8}
+        disabled={loading}
       >
-        {iconAction}
+        {loading ? (
+          <ActivityIndicator size="small" color={colors.primary} />
+        ) : (
+          iconAction
+        )}
       </Pressable>
     </View>
   );

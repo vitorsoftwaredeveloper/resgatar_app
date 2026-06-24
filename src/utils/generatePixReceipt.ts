@@ -47,6 +47,7 @@ export const generateComprovanteHTML = ({
   month,
   value,
   paidDate,
+  method = "PIX",
   themeMode = "light",
 }: {
   userName: string;
@@ -56,6 +57,7 @@ export const generateComprovanteHTML = ({
   month: string;
   value: string;
   paidDate: string;
+  method?: string;
   themeMode?: ThemeMode;
 }) => {
   const C = THEME_COLORS[themeMode];
@@ -264,7 +266,7 @@ export const generateComprovanteHTML = ({
 
     <div class="value-row">
       <div class="label">Método</div>
-      <div class="value">PIX</div>
+      <div class="value">${method}</div>
     </div>
 
 
@@ -306,6 +308,7 @@ export const shareComprovantePDF = async (item: {
   value: string;
   cpf: string;
   docType?: string;
+  method?: string;
   themeMode?: ThemeMode;
 }) => {
   try {
@@ -317,6 +320,7 @@ export const shareComprovantePDF = async (item: {
       userCpf: item.cpf,
       userDocType: item.docType,
       value: item.value,
+      method: item.method,
       themeMode: item.themeMode,
     });
 

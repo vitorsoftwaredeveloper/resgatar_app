@@ -61,7 +61,12 @@ type IMemberWithContribution = IMember & {
       | "october"
       | "november"
       | "december",
-      { paid: boolean; value: number; paidAt: string }
+      {
+        paid: boolean;
+        value: number;
+        paidAt: string;
+        paymentMethod?: "pix" | "cash";
+      }
     >;
   };
 };

@@ -43,10 +43,11 @@ export const BillsScreen = () => {
     month: string;
     paidAt: string;
     value: string;
+    method?: string;
   }>(null);
 
   const handlePay = async (item: any) => {
-    await createCharge(item.rawValue, Object.values(MONTH).indexOf(item.month))
+    await createCharge(Object.values(MONTH).indexOf(item.month))
       .then(() => {
         setModalPayVisible(true);
       })
@@ -55,24 +56,30 @@ export const BillsScreen = () => {
       });
   };
 
+
   const contributions = useMemo(
     () =>
       Object.entries(member?.contributions.months || {}).map(
-        ([month, { paid, value, paidAt }], index) => ({
-          id: `${index}`,
-          month: MONTH[month],
-          paidAt: `${formatDateFromTimestamp(new Date(paidAt).getTime())}`,
-          rawValue: paid ? String(value) : String(member?.paymentInfo.amount),
-          value: paid
-            ? formatMoneyBRL(value)
-            : formatMoneyBRL(member?.paymentInfo.amount ?? 0),
-          description: paid
-            ? `Pago em ${formatDateFromTimestamp(new Date(paidAt).getTime())}`
-            : "Pagamento a ser realizado",
-          status: paid
-            ? TRANSACTION_STATUS.APPROVED
-            : TRANSACTION_STATUS.PENDING,
-        }),
+        ([month, { paid, value, paidAt, paymentMethod }], index) => {
+          const methodLabel = paymentMethod === "cash" ? "Dinheiro" : "PIX";
+          return {
+            id: `${index}`,
+            month: MONTH[month],
+            paidAt: `${formatDateFromTimestamp(new Date(paidAt).getTime())}`,
+            value: paid
+              ? formatMoneyBRL(value)
+              : formatMoneyBRL(member?.paymentInfo.amount ?? 0),
+            method: methodLabel,
+            description: paid
+              ? `Pago em ${formatDateFromTimestamp(
+                  new Date(paidAt).getTime(),
+                )} · ${methodLabel}`
+              : "Pagamento a ser realizado",
+            status: paid
+              ? TRANSACTION_STATUS.APPROVED
+              : TRANSACTION_STATUS.PENDING,
+          };
+        },
       ),
     [member],
   );
