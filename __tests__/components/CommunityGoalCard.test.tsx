@@ -40,6 +40,12 @@ jest.mock("lucide-react-native", () => ({
   UsersRound: () => null,
 }));
 
+// O skeleton usa react-native-reanimated (não transformado pelo jest); aqui
+// só interessa a lógica do card, então mockamos o placeholder.
+jest.mock("@/components/Skeleton/CommunityGoalCardSkeleton", () => ({
+  CommunityGoalCardSkeleton: () => null,
+}));
+
 import React from "react";
 import { render, waitFor } from "@testing-library/react-native";
 import { CommunityGoalCard } from "@/components/CommunityGoalCard";

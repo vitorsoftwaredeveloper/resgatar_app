@@ -10,6 +10,7 @@ import {
   CalendarRange,
   Mail,
   PiggyBank,
+  Receipt,
   UsersRound,
 } from "lucide-react-native";
 import React, { useContext, useState } from "react";
@@ -43,7 +44,7 @@ export const SettingsScreen = () => {
             <Text style={styles.sectionLabel}>Financeiro</Text>
             <View style={styles.menuCard}>
               <ItemActionList
-                title="Balanço mensal"
+                title="Entrada mensal"
                 description="Acompanhe os pagamentos do mês: quem pagou, inadimplentes, total arrecadado e o quanto falta para a meta."
                 onPress={() => navigation.navigate("Arrecadacao")}
                 icon={<PiggyBank color={colors.primary} />}
@@ -53,6 +54,12 @@ export const SettingsScreen = () => {
                 description="Fechamento do ano: total arrecadado, mês a mês e a situação de cada membro."
                 onPress={() => navigation.navigate("BalancoAnual")}
                 icon={<CalendarRange color={colors.primary} />}
+              />
+              <ItemActionList
+                title="Despesa mensal"
+                description="Registre e acompanhe as saídas de caixa do mês por categoria."
+                onPress={() => navigation.navigate("Expenses")}
+                icon={<Receipt color={colors.primary} />}
                 isLast
               />
             </View>

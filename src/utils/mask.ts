@@ -47,6 +47,16 @@ const maskCurrencyBRL = (value: string) => {
   });
 };
 
+// Converte o valor digitado (ou já mascarado) no formato aceito pelo backend
+// de despesas/charges: "0,00" (sem separador de milhar, sem "R$").
+// Ex.: "R$ 1.234,56" ou "123456" -> "1234,56". Casa com ^[0-9]+,[0-9]{2}$.
+const currencyToBackendBRL = (value: string) => {
+  const digits = onlyNumbers(value);
+  const number = Number(digits) / 100;
+
+  return number.toFixed(2).replace(".", ",");
+};
+
 function maskDateBR(value: string) {
   const numbers = value.replace(/\D/g, "").slice(0, 8);
 
@@ -174,6 +184,7 @@ export {
   maskCEP,
   maskCPFOrCNPJ,
   maskCurrencyBRL,
+  currencyToBackendBRL,
   maskDateBR,
   validateCPF,
   validateCNPJ,

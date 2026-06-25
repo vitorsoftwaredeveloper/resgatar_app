@@ -126,6 +126,101 @@ export function useStyles() {
           fontWeight: "600",
         },
 
+        // Card de balanço (entradas x saídas x saldo)
+        balanceTitle: {
+          fontSize: TYPOGRAPHY.body,
+          color: colors.textStrong,
+          fontWeight: "700",
+          marginBottom: SPACING.sm2,
+        },
+        balanceRow: {
+          flexDirection: "row",
+          alignItems: "stretch",
+        },
+        balanceItem: {
+          flex: 1,
+          gap: SPACING.xxs,
+        },
+        balanceItemHeader: {
+          flexDirection: "row",
+          alignItems: "center",
+          gap: SPACING.xxs,
+        },
+        balanceItemLabel: {
+          fontSize: TYPOGRAPHY.small,
+          color: colors.textMuted,
+        },
+        balanceValueIn: {
+          fontSize: TYPOGRAPHY.large,
+          color: colors.success,
+          fontWeight: "700",
+        },
+        balanceValueOut: {
+          fontSize: TYPOGRAPHY.large,
+          color: colors.error,
+          fontWeight: "700",
+        },
+        balanceValueNet: {
+          fontSize: TYPOGRAPHY.large,
+          fontWeight: "700",
+        },
+        balanceDivider: {
+          width: 1,
+          backgroundColor: colors.border,
+          marginHorizontal: SPACING.sm,
+        },
+        balanceHint: {
+          fontSize: TYPOGRAPHY.small,
+          color: colors.textMuted,
+          marginTop: SPACING.sm2,
+        },
+        exportButton: {
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: SPACING.xs,
+          marginTop: SPACING.md,
+          paddingVertical: SPACING.sm2,
+          borderRadius: RADIUS.sm,
+          borderWidth: 1,
+          borderColor: colors.primary,
+          backgroundColor: colors.softBrown,
+        },
+        exportButtonText: {
+          fontSize: TYPOGRAPHY.body,
+          color: colors.primary,
+          fontWeight: "600",
+        },
+
+        // Linha de saídas/resultado dentro do card de mês
+        monthBalanceRow: {
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginTop: SPACING.sm,
+          paddingTop: SPACING.sm,
+          borderTopWidth: 1,
+          borderTopColor: colors.border,
+        },
+        monthBalanceItem: {
+          flexDirection: "row",
+          alignItems: "center",
+          gap: SPACING.xxs,
+        },
+        monthBalanceLabel: {
+          fontSize: TYPOGRAPHY.small,
+          color: colors.textMuted,
+        },
+        monthOut: {
+          fontSize: TYPOGRAPHY.small,
+          color: colors.error,
+          fontWeight: "600",
+        },
+        monthNet: {
+          fontSize: TYPOGRAPHY.small,
+          fontWeight: "700",
+        },
+
         // Grid de métricas
         metricGrid: {
           flexDirection: "row",

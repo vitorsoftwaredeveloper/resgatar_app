@@ -2,19 +2,26 @@ import { Avatar } from "@/components/Avatar";
 import { Header } from "@/components/Header";
 import { AuthContext } from "@/context/AuthContext";
 import { useAppTheme } from "@/context/ThemeContext";
+import { BalanceServices } from "@/services/BalanceService";
 import { ChargeServices } from "@/services/ChargeService";
+import { IAnnualBalance, IAnnualBalanceMonth } from "@/types/Balance";
 import { IAnnualByMember, IAnnualByMonth, IAnnualSummary } from "@/types/Charge";
 import { formatMoneyBRL } from "@/utils/helper";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import {
+  ArrowDownCircle,
+  ArrowUpCircle,
   Banknote,
   ChevronLeft,
   ChevronRight,
   CircleAlert,
   CircleCheck,
+  FileDown,
   QrCode,
   Target,
+  Wallet,
 } from "lucide-react-native";
+import { shareBalanceReportPDF } from "@/utils/generateBalanceReport";
 import React, { useCallback, useContext, useMemo, useState } from "react";
 import {
   ActivityIndicator,
@@ -46,13 +53,15 @@ type Tab = "months" | "members";
 export function BalancoAnualScreen() {
   const navigation = useNavigation();
   const styles = useStyles();
-  const { colors } = useAppTheme();
+  const { colors, mode } = useAppTheme();
   const { member } = useContext(AuthContext);
+  const [exporting, setExporting] = useState(false);
 
   const currentYear = new Date().getFullYear();
   const [year, setYear] = useState(currentYear);
   const [tab, setTab] = useState<Tab>("months");
   const [summary, setSummary] = useState<IAnnualSummary | null>(null);
+  const [balance, setBalance] = useState<IAnnualBalance | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Não há balanço a mostrar para anos futuros.
@@ -61,10 +70,16 @@ export function BalancoAnualScreen() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await ChargeServices.getAnnualSummary(year);
-      setSummary(data);
+      // Arrecadação detalhada (meta/membros) + balanço (entradas x saídas).
+      const [summaryData, balanceData] = await Promise.all([
+        ChargeServices.getAnnualSummary(year),
+        BalanceServices.getAnnual(year),
+      ]);
+      setSummary(summaryData);
+      setBalance(balanceData);
     } catch {
       setSummary(null);
+      setBalance(null);
       ToastMessage.error("Erro", "Não foi possível carregar o balanço anual.");
     } finally {
       setLoading(false);
@@ -81,6 +96,27 @@ export function BalancoAnualScreen() {
     if (!summary || summary.totals.goal <= 0) return 0;
     return Math.min(summary.totals.collected / summary.totals.goal, 1);
   }, [summary]);
+
+  // Saídas/saldo por mês, indexados por mês (1-12) para cruzar no renderMonth.
+  const balanceByMonth = useMemo(
+    () =>
+      new Map<number, IAnnualBalanceMonth>(
+        (balance?.byMonth ?? []).map((m) => [m.month, m]),
+      ),
+    [balance],
+  );
+
+  const handleExport = useCallback(async () => {
+    if (!balance || exporting) return;
+    setExporting(true);
+    try {
+      await shareBalanceReportPDF({ balance, isCurrentYear, themeMode: mode });
+    } catch {
+      ToastMessage.error("Erro", "Não foi possível gerar o PDF do balanço.");
+    } finally {
+      setExporting(false);
+    }
+  }, [balance, exporting, isCurrentYear, mode]);
 
   // Rótulo do corte: ano corrente acumula até o mês atual; anos passados fecham.
   const cutoffLabel = useMemo(() => {
@@ -130,6 +166,32 @@ export function BalancoAnualScreen() {
             </Text>
           </View>
         </View>
+        {(() => {
+          const mb = balanceByMonth.get(item.month);
+          if (!mb) return null;
+          const positivo = mb.resultado >= 0;
+          return (
+            <View style={styles.monthBalanceRow}>
+              <View style={styles.monthBalanceItem}>
+                <ArrowUpCircle size={13} color={colors.error} />
+                <Text style={styles.monthBalanceLabel}>Saídas</Text>
+                <Text style={styles.monthOut}>{formatMoneyBRL(mb.saidas)}</Text>
+              </View>
+              <View style={styles.monthBalanceItem}>
+                <Text style={styles.monthBalanceLabel}>Resultado</Text>
+                <Text
+                  style={[
+                    styles.monthNet,
+                    { color: positivo ? colors.success : colors.error },
+                  ]}
+                >
+                  {positivo ? "+" : "−"}
+                  {formatMoneyBRL(Math.abs(mb.resultado))}
+                </Text>
+              </View>
+            </View>
+          );
+        })()}
       </View>
     );
   }
@@ -233,6 +295,75 @@ export function BalancoAnualScreen() {
         </View>
       </View>
 
+      {balance && (
+        <View style={styles.card}>
+          <Text style={styles.balanceTitle}>Balanço do ano</Text>
+          <View style={styles.balanceRow}>
+            <View style={styles.balanceItem}>
+              <View style={styles.balanceItemHeader}>
+                <ArrowDownCircle size={14} color={colors.success} />
+                <Text style={styles.balanceItemLabel}>Entradas</Text>
+              </View>
+              <Text style={styles.balanceValueIn}>
+                {formatMoneyBRL(balance.totals.entradas)}
+              </Text>
+            </View>
+            <View style={styles.balanceDivider} />
+            <View style={styles.balanceItem}>
+              <View style={styles.balanceItemHeader}>
+                <ArrowUpCircle size={14} color={colors.error} />
+                <Text style={styles.balanceItemLabel}>Saídas</Text>
+              </View>
+              <Text style={styles.balanceValueOut}>
+                {formatMoneyBRL(balance.totals.saidas)}
+              </Text>
+            </View>
+            <View style={styles.balanceDivider} />
+            <View style={styles.balanceItem}>
+              <View style={styles.balanceItemHeader}>
+                <Wallet size={14} color={colors.primary} />
+                <Text style={styles.balanceItemLabel}>Saldo</Text>
+              </View>
+              <Text
+                style={[
+                  styles.balanceValueNet,
+                  {
+                    color:
+                      balance.totals.saldoFinal >= 0
+                        ? colors.success
+                        : colors.error,
+                  },
+                ]}
+              >
+                {formatMoneyBRL(balance.totals.saldoFinal)}
+              </Text>
+            </View>
+          </View>
+          <Text style={styles.balanceHint}>
+            {isCurrentYear
+              ? "Entradas − saídas, acumulado até o mês atual."
+              : "Entradas − saídas do ano fechado."}
+          </Text>
+
+          <TouchableOpacity
+            style={styles.exportButton}
+            onPress={handleExport}
+            disabled={exporting}
+            activeOpacity={0.8}
+            accessibilityLabel="Exportar balanço em PDF"
+          >
+            {exporting ? (
+              <ActivityIndicator size="small" color={colors.primary} />
+            ) : (
+              <FileDown size={16} color={colors.primary} />
+            )}
+            <Text style={styles.exportButtonText}>
+              {exporting ? "Gerando PDF…" : "Exportar PDF"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
       <View style={styles.metricGrid}>
         <View style={styles.metricCard}>
           <View style={styles.metricHeader}>
@@ -299,7 +430,8 @@ export function BalancoAnualScreen() {
 
   const listData: (IAnnualByMonth | IAnnualByMember)[] = summary
     ? tab === "months"
-      ? summary.byMonth
+      ? // Meses do mais recente para o mais antigo (dez → jan).
+        [...summary.byMonth].reverse()
       : summary.byMember
     : [];
 

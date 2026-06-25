@@ -1,4 +1,5 @@
 import { useAppTheme } from "@/context/ThemeContext";
+import { CommunityGoalCardSkeleton } from "@/components/Skeleton/CommunityGoalCardSkeleton";
 import { ChargeServices } from "@/services/ChargeService";
 import { IGoalProgress } from "@/types/Charge";
 import { useFocusEffect } from "@react-navigation/native";
@@ -26,6 +27,7 @@ export function CommunityGoalCard() {
   const styles = useStyles();
   const { colors } = useAppTheme();
   const [progress, setProgress] = useState<IGoalProgress | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
     try {
@@ -34,6 +36,8 @@ export function CommunityGoalCard() {
     } catch {
       // Silenciosamente esconde o card: a home não deve exibir erro de meta.
       setProgress(null);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -42,6 +46,10 @@ export function CommunityGoalCard() {
       load();
     }, [load]),
   );
+
+  // Skeleton apenas no primeiro carregamento; ao voltar à tela com dados já
+  // em mãos o card permanece e é atualizado silenciosamente (sem flicker).
+  if (loading && !progress) return <CommunityGoalCardSkeleton />;
 
   if (!progress || !Number.isFinite(progress.percent)) return null;
 
