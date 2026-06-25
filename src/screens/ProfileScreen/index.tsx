@@ -68,8 +68,8 @@ export const ProfileScreen = () => {
               description="Veja novamente a apresentação do aplicativo"
               onPress={restartOnboarding}
               icon={<HelpCircle color={colors.primary} />}
+              isLast
             />
-
           </View>
 
           <TouchableOpacity

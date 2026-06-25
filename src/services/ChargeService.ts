@@ -1,4 +1,9 @@
-import { ICharge, IChargeSummary, IGoalProgress } from "@/types/Charge";
+import {
+  IAnnualSummary,
+  ICharge,
+  IChargeSummary,
+  IGoalProgress,
+} from "@/types/Charge";
 import { api } from "./api";
 
 export const ChargeServices = {
@@ -40,6 +45,21 @@ export const ChargeServices = {
       return data;
     } catch (error) {
       console.error("Error fetching charges summary", error);
+      throw error;
+    }
+  },
+  // Balanço anual (YTD) para o painel de admin. Quando `year` é omitido o
+  // backend usa o ano corrente. O endpoint valida que o caller é admin.
+  getAnnualSummary: async (year: number): Promise<IAnnualSummary> => {
+    try {
+      const response = await api.get("/charges/annual-summary", {
+        params: { year },
+      });
+      const { data } = response.data;
+
+      return data;
+    } catch (error) {
+      console.error("Error fetching annual charges summary", error);
       throw error;
     }
   },

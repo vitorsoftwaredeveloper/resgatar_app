@@ -8,6 +8,7 @@ import { RootStackParamList } from "@/navigation/types";
 import { LoadingScreen } from "@/screens/LoadingScreen";
 import { VideosScreen } from "@/screens/VideosScreen";
 import { ArrecadacaoScreen } from "@/screens/ArrecadacaoScreen";
+import { BalancoAnualScreen } from "@/screens/BalancoAnualScreen";
 import { PersonalSettingsScreen } from "@/screens/PersonalSettingsScreen";
 import { MemberActionsScreen } from "@/screens/MemberActionsScreen";
 import { OnboardingScreen } from "@/screens/OnboardingScreen";
@@ -46,6 +47,7 @@ const AppNavigator = () => {
           </Stack.Screen>
           <Stack.Screen name="Videos" component={VideosScreen} />
           <Stack.Screen name="Arrecadacao" component={ArrecadacaoScreen} />
+          <Stack.Screen name="BalancoAnual" component={BalancoAnualScreen} />
           <Stack.Screen name="PersonalSettings" component={PersonalSettingsScreen} />
           <Stack.Screen name="MemberActions" component={MemberActionsScreen} />
         </>

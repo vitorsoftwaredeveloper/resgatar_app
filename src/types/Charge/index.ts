@@ -64,6 +64,58 @@ interface IGoalProgress {
   percent: number;
 }
 
+// Balanço anual (year-to-date) consumido pelo painel de admin via
+// /charges/annual-summary. `asOfMonth` é o corte: ano corrente conta só até o
+// mês atual, anos passados fecham os 12. Valores monetários são números.
+interface IAnnualMethodSplit {
+  pix: number;
+  cash: number;
+}
+
+interface IAnnualByMonth {
+  month: number;
+  goal: number;
+  collected: number;
+  remaining: number;
+  percent: number;
+  counts: {
+    paid: number;
+    pending: number;
+    total: number;
+  };
+  byMethod: IAnnualMethodSplit;
+}
+
+interface IAnnualByMember {
+  id: string;
+  name: string;
+  photo?: string | null;
+  status: string;
+  monthsPaid: number;
+  monthsPending: number;
+  totalPaid: number;
+  totalDue: number;
+  byMethod: IAnnualMethodSplit;
+}
+
+interface IAnnualSummary {
+  year: number;
+  asOfMonth: number;
+  totals: {
+    goal: number;
+    collected: number;
+    remaining: number;
+    percent: number;
+    byMethod: IAnnualMethodSplit;
+    counts: {
+      paid: number;
+      pending: number;
+    };
+  };
+  byMonth: IAnnualByMonth[];
+  byMember: IAnnualByMember[];
+}
+
 const TRANSACTION_STATUS = {
   PENDING: "pending",
   APPROVED: "approved",
@@ -86,6 +138,9 @@ export {
   IChargeSummary,
   IChargeSummaryMember,
   IGoalProgress,
+  IAnnualSummary,
+  IAnnualByMonth,
+  IAnnualByMember,
   TRANSACTION_STATUS,
   PAYMENT_NOTIFICATION_TYPE,
   PAYMENT_CONFIRMED_NOTIFICATION_TYPE,

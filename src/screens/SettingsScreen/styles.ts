@@ -1,5 +1,5 @@
 import { useAppTheme } from "@/context/ThemeContext";
-import { RADIUS, SHADOW, SPACING } from "@/theme";
+import { RADIUS, SHADOW, SPACING, TYPOGRAPHY } from "@/theme";
 import { useMemo } from "react";
 import { StyleSheet } from "react-native";
 
@@ -26,6 +26,17 @@ export function useStyles() {
           borderRadius: RADIUS.md,
           paddingHorizontal: SPACING.md,
           ...SHADOW.card,
+        },
+        sectionGroup: {
+          gap: SPACING.xs,
+        },
+        sectionLabel: {
+          fontSize: TYPOGRAPHY.small,
+          color: colors.textMuted,
+          fontWeight: "600",
+          textTransform: "uppercase",
+          letterSpacing: 0.8,
+          paddingHorizontal: SPACING.xs,
         },
       }),
     [colors],
