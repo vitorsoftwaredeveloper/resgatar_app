@@ -62,8 +62,7 @@ export function ExpensesScreen() {
   const [deleteTarget, setDeleteTarget] = useState<IExpense | null>(null);
 
   // Bloqueia navegação para meses futuros (igual à Arrecadação).
-  const isCurrentMonth =
-    year === now.getFullYear() && month === now.getMonth();
+  const isCurrentMonth = year === now.getFullYear() && month === now.getMonth();
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -199,8 +198,7 @@ export function ExpensesScreen() {
         <Text style={styles.metaLabel}>Total de despesas no mês</Text>
         <Text style={styles.totalValue}>{formatMoneyBRL(summary.total)}</Text>
         <Text style={styles.metaLabel}>
-          {summary.count}{" "}
-          {summary.count === 1 ? "lançamento" : "lançamentos"}
+          {summary.count} {summary.count === 1 ? "lançamento" : "lançamentos"}
         </Text>
 
         {categoryEntries.length > 0 && (
@@ -231,7 +229,11 @@ export function ExpensesScreen() {
 
       <View style={styles.content}>
         {loading ? (
-          <ActivityIndicator color={colors.primary} style={{ marginTop: 32 }} />
+          <ActivityIndicator
+            size="large"
+            color={colors.primary}
+            style={{ marginTop: 32 }}
+          />
         ) : !summary ? (
           <View style={styles.centered}>
             <Text style={styles.emptyText}>

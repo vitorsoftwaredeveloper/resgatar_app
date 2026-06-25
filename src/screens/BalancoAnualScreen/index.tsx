@@ -5,7 +5,11 @@ import { useAppTheme } from "@/context/ThemeContext";
 import { BalanceServices } from "@/services/BalanceService";
 import { ChargeServices } from "@/services/ChargeService";
 import { IAnnualBalance, IAnnualBalanceMonth } from "@/types/Balance";
-import { IAnnualByMember, IAnnualByMonth, IAnnualSummary } from "@/types/Charge";
+import {
+  IAnnualByMember,
+  IAnnualByMonth,
+  IAnnualSummary,
+} from "@/types/Charge";
 import { formatMoneyBRL } from "@/utils/helper";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import {
@@ -445,7 +449,11 @@ export function BalancoAnualScreen() {
 
       <View style={styles.content}>
         {loading ? (
-          <ActivityIndicator color={colors.primary} style={{ marginTop: 32 }} />
+          <ActivityIndicator
+            size="large"
+            color={colors.primary}
+            style={{ marginTop: 32 }}
+          />
         ) : !summary ? (
           <View style={styles.centered}>
             <Text style={styles.emptyText}>

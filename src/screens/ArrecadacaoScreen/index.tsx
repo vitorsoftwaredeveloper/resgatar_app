@@ -16,7 +16,13 @@ import {
   Target,
 } from "lucide-react-native";
 import React, { useCallback, useContext, useMemo, useState } from "react";
-import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { ToastMessage } from "@/components/Toast";
 import { useStyles } from "./styles";
 
@@ -51,8 +57,7 @@ export function ArrecadacaoScreen() {
   const [loading, setLoading] = useState(true);
 
   // Não permite navegar para meses futuros (não há arrecadação a mostrar).
-  const isCurrentMonth =
-    year === now.getFullYear() && month === now.getMonth();
+  const isCurrentMonth = year === now.getFullYear() && month === now.getMonth();
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -100,9 +105,7 @@ export function ArrecadacaoScreen() {
 
   const members = useMemo(() => {
     if (!summary) return [];
-    return summary.members.filter((m) =>
-      tab === "paid" ? m.paid : !m.paid,
-    );
+    return summary.members.filter((m) => (tab === "paid" ? m.paid : !m.paid));
   }, [summary, tab]);
 
   function renderMember({ item }: { item: IChargeSummaryMember }) {
@@ -164,7 +167,9 @@ export function ArrecadacaoScreen() {
           <Text style={styles.metaGoal}>/ {formatMoneyBRL(summary.goal)}</Text>
         </View>
         <View style={styles.progressTrack}>
-          <View style={[styles.progressFill, { width: `${progress * 100}%` }]} />
+          <View
+            style={[styles.progressFill, { width: `${progress * 100}%` }]}
+          />
         </View>
         <View style={styles.remainingRow}>
           {summary.goal <= 0 ? (
@@ -240,7 +245,9 @@ export function ArrecadacaoScreen() {
           onPress={() => setTab("paid")}
           activeOpacity={0.8}
         >
-          <Text style={[styles.tabText, tab === "paid" && styles.tabTextActive]}>
+          <Text
+            style={[styles.tabText, tab === "paid" && styles.tabTextActive]}
+          >
             Pagaram ({summary.counts.paid})
           </Text>
         </TouchableOpacity>
@@ -269,7 +276,11 @@ export function ArrecadacaoScreen() {
 
       <View style={styles.content}>
         {loading ? (
-          <ActivityIndicator color={colors.primary} style={{ marginTop: 32 }} />
+          <ActivityIndicator
+            size="large"
+            color={colors.primary}
+            style={{ marginTop: 32 }}
+          />
         ) : !summary ? (
           <View style={styles.centered}>
             <Text style={styles.emptyText}>

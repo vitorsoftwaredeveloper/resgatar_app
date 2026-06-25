@@ -1,4 +1,5 @@
 import { Avatar } from "@/components/Avatar";
+import { Dialog } from "@/components/Dialog";
 import { VideoService } from "@/services/VideoService";
 import { IVideoFeedItem } from "@/types/Video";
 import { ChevronLeft, Trash2 } from "lucide-react-native";
@@ -59,6 +60,7 @@ export function ModalVideoFeed({
 }: IModalVideoFeed) {
   const { width, height } = useWindowDimensions();
   const [currentIndex, setCurrentIndex] = useState(startIndex);
+  const [deleteDialogVideoId, setDeleteDialogVideoId] = useState<string | null>(null);
   const listRef = useRef<FlatList>(null);
 
   useEffect(() => {
@@ -72,26 +74,24 @@ export function ModalVideoFeed({
   }, [visible, startIndex]);
 
   const handleDelete = (videoId: string) => {
-    Alert.alert("Remover vídeo", "Tem certeza que deseja remover este vídeo?", [
-      { text: "Cancelar", style: "cancel" },
-      {
-        text: "Remover",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            await VideoService.removeVideo(videoId);
-            onVideoRemoved?.(videoId);
-            if (videos.length <= 1) {
-              onClose();
-            } else {
-              setCurrentIndex((idx) => Math.max(0, Math.min(idx, videos.length - 2)));
-            }
-          } catch {
-            Alert.alert("Erro", "Não foi possível remover o vídeo.");
-          }
-        },
-      },
-    ]);
+    setDeleteDialogVideoId(videoId);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteDialogVideoId) return;
+    const videoId = deleteDialogVideoId;
+    setDeleteDialogVideoId(null);
+    try {
+      await VideoService.removeVideo(videoId);
+      onVideoRemoved?.(videoId);
+      if (videos.length <= 1) {
+        onClose();
+      } else {
+        setCurrentIndex((idx) => Math.max(0, Math.min(idx, videos.length - 2)));
+      }
+    } catch {
+      Alert.alert("Erro", "Não foi possível remover o vídeo.");
+    }
   };
 
   const viewabilityCallbacks = useRef([
@@ -188,6 +188,17 @@ export function ModalVideoFeed({
             })}
           />
         )}
+
+        <Dialog
+          visible={!!deleteDialogVideoId}
+          title="Remover vídeo"
+          description="Tem certeza que deseja remover este vídeo?"
+          onClose={() => setDeleteDialogVideoId(null)}
+          actions={[
+            { label: "Cancelar", onPress: () => setDeleteDialogVideoId(null), variant: "secondary" },
+            { label: "Remover", onPress: confirmDelete, variant: "primary" },
+          ]}
+        />
 
         <SafeAreaView style={styles.topBar} edges={["top"]}>
           <TouchableOpacity
