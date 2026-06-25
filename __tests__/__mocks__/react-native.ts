@@ -78,6 +78,9 @@ export const FlatList = ({ data, renderItem, keyExtractor, ...props }: any) =>
     ),
   );
 
+export const KeyboardAvoidingView = ({ children, style, ...props }: any) =>
+  React.createElement("View", { style, ...props }, children);
+
 export const Modal = ({ children, visible, ...props }: any) =>
   visible ? React.createElement("Modal", props, children) : null;
 

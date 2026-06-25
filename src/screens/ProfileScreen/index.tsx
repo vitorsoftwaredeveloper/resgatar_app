@@ -10,13 +10,11 @@ import { RootStackParamList } from "@/navigation/types";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { HelpCircle, Lock, LogOut, Pencil, Video } from "lucide-react-native";
+import { HelpCircle, LogOut, Settings, Video } from "lucide-react-native";
 import React, { useContext, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, Text, View } from "react-native";
 import { AuthContext } from "../../context/AuthContext";
 import { ModalEditPhoto } from "./ModalEditPhoto";
-import { ModalEditProfile } from "./ModalEditProfile";
-import { ModalUpdatePassword } from "./ModalUpdatePassword";
 import { useStyles } from "./styles";
 
 export const ProfileScreen = () => {
@@ -26,8 +24,6 @@ export const ProfileScreen = () => {
   const styles = useStyles();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const [editModalVisible, setEditModalVisible] = useState(false);
-  const [passwordModalVisible, setPasswordModalVisible] = useState(false);
   const [photoModalVisible, setPhotoModalVisible] = useState(false);
   const [dialogLogoutVisible, setDialogLogoutVisible] = useState(false);
 
@@ -51,23 +47,12 @@ export const ProfileScreen = () => {
           />
 
           <View style={styles.menuCard}>
-            <CoachTarget id="profile-edit">
-              <ItemActionList
-                title="Meus dados"
-                description="Visualize ou edite seus dados pessoais"
-                onPress={() => setEditModalVisible(true)}
-                icon={<Pencil color={colors.primary} />}
-              />
-            </CoachTarget>
-
-            <CoachTarget id="profile-password">
-              <ItemActionList
-                title="Atualizar senha"
-                description="Atualize sua senha de login do aplicativo"
-                onPress={() => setPasswordModalVisible(true)}
-                icon={<Lock color={colors.primary} />}
-              />
-            </CoachTarget>
+            <ItemActionList
+              title="Configurações pessoais"
+              description="Dados, senha e encerramento de conta"
+              onPress={() => navigation.navigate("PersonalSettings")}
+              icon={<Settings color={colors.primary} />}
+            />
 
             <CoachTarget id="profile-videos">
               <ItemActionList
@@ -83,8 +68,8 @@ export const ProfileScreen = () => {
               description="Veja novamente a apresentação do aplicativo"
               onPress={restartOnboarding}
               icon={<HelpCircle color={colors.primary} />}
-              isLast
             />
+
           </View>
 
           <TouchableOpacity
@@ -94,20 +79,6 @@ export const ProfileScreen = () => {
             <LogOut color={colors.error} />
             <Text style={styles.logoutText}>Sair da conta</Text>
           </TouchableOpacity>
-
-          {editModalVisible && (
-            <ModalEditProfile
-              editModalVisible={editModalVisible}
-              onClose={() => setEditModalVisible(false)}
-            />
-          )}
-
-          {passwordModalVisible && (
-            <ModalUpdatePassword
-              passwordModalVisible={passwordModalVisible}
-              onClose={() => setPasswordModalVisible(false)}
-            />
-          )}
 
           {photoModalVisible && (
             <ModalEditPhoto

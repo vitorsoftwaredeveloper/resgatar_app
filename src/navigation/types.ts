@@ -5,4 +5,5 @@ export type RootStackParamList = {
   Home: undefined;
   Videos: undefined;
   Arrecadacao: undefined;
+  PersonalSettings: undefined;
 };

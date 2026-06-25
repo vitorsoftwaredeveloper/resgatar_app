@@ -39,6 +39,7 @@ interface AuthContextData {
   register: (payload: RegisterPayload) => Promise<void>;
   listMembers: () => Promise<void>;
   removeMember: (memberId: string) => Promise<void>;
+  deleteAccount: (password: string) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextData>(
@@ -211,6 +212,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }
 
+  async function deleteAccount(password: string) {
+    if (!member) throw new Error("Usuário não autenticado.");
+    const email = member.email;
+    const memberIdToRemove = member._id;
+
+    try {
+      await signOut();
+    } catch {}
+
+    const { isSignedIn } = await signIn({
+      username: email,
+      password,
+      options: { authFlowType: "USER_PASSWORD_AUTH" },
+    });
+    if (!isSignedIn) throw new Error("Senha incorreta.");
+
+    await MemberServices.removeMember(memberIdToRemove);
+    await signOut();
+    setMember(null);
+  }
+
   async function removeMember(memberId: string) {
     try {
       await MemberServices.removeMember(memberId);
@@ -272,6 +294,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         register,
         listMembers,
         removeMember,
+        deleteAccount,
       }}
     >
       {children}
