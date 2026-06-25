@@ -1,7 +1,6 @@
 import { QuickActionsSheet } from "@/components/QuickActionsSheet";
-import { useCoach } from "@/context/CoachContext";
 import { useAppTheme } from "@/context/ThemeContext";
-import { useTodayBirthdays } from "@/hooks/useTodayBirthdays";
+import { useBirthday } from "@/context/BirthdayContext";
 import { resolveAvatarUri } from "@/utils/image";
 import { useIsFocused } from "@react-navigation/native";
 import { ChevronLeft, EllipsisVertical } from "lucide-react-native";
@@ -20,17 +19,12 @@ interface Props {
 export function Header({ name, photo, onBack }: Props) {
   const { colors } = useAppTheme();
   const styles = useStyles();
-  const { registerAction, unregisterAction } = useCoach();
-  const todayBirthdays = useTodayBirthdays();
+  const { todayBirthdays } = useBirthday();
   const [sheetVisible, setSheetVisible] = useState(false);
   const [anchorPosition, setAnchorPosition] = useState<{ top: number; right: number } | undefined>();
   const buttonRef = useRef<View>(null);
   const isFocused = useIsFocused();
 
-  useEffect(() => {
-    registerAction("header-quickactions", handleOpenSheet);
-    return () => unregisterAction("header-quickactions");
-  }, []);
 
   useEffect(() => {
     if (!isFocused) setSheetVisible(false);

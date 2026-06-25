@@ -7,6 +7,7 @@ import Toast from "react-native-toast-message";
 import { toastConfig } from "./components/Toast/toastConfig";
 import "./config/amplify";
 import { AuthContext, AuthProvider } from "./context/AuthContext";
+import { BirthdayProvider } from "./context/BirthdayContext";
 import { ChargeProvider } from "./context/ChargeContext";
 import { CoachProvider } from "./context/CoachContext";
 import { ThemeProvider } from "./context/ThemeContext";
@@ -50,7 +51,9 @@ export const App = () => {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <DevModeGuard>
           <AuthProvider>
-            <AppContent />
+            <BirthdayProvider>
+              <AppContent />
+            </BirthdayProvider>
           </AuthProvider>
           <Toast config={toastConfig} />
         </DevModeGuard>
