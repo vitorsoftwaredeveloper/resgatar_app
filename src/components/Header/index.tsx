@@ -1,6 +1,7 @@
 import { QuickActionsSheet } from "@/components/QuickActionsSheet";
 import { useCoach } from "@/context/CoachContext";
 import { useAppTheme } from "@/context/ThemeContext";
+import { useTodayBirthdays } from "@/hooks/useTodayBirthdays";
 import { resolveAvatarUri } from "@/utils/image";
 import { useIsFocused } from "@react-navigation/native";
 import { ChevronLeft, EllipsisVertical } from "lucide-react-native";
@@ -20,6 +21,7 @@ export function Header({ name, photo, onBack }: Props) {
   const { colors } = useAppTheme();
   const styles = useStyles();
   const { registerAction, unregisterAction } = useCoach();
+  const todayBirthdays = useTodayBirthdays();
   const [sheetVisible, setSheetVisible] = useState(false);
   const [anchorPosition, setAnchorPosition] = useState<{ top: number; right: number } | undefined>();
   const buttonRef = useRef<View>(null);
@@ -79,6 +81,11 @@ export function Header({ name, photo, onBack }: Props) {
             style={styles.themeToggle}
           >
             <EllipsisVertical size={18} color={colors.primary} />
+            {todayBirthdays > 0 && (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>{todayBirthdays}</Text>
+              </View>
+            )}
           </TouchableOpacity>
         </CoachTarget>
       </View>
@@ -87,6 +94,7 @@ export function Header({ name, photo, onBack }: Props) {
         visible={sheetVisible}
         onClose={() => setSheetVisible(false)}
         anchorPosition={anchorPosition}
+        todayBirthdays={todayBirthdays}
       />
     </View>
   );

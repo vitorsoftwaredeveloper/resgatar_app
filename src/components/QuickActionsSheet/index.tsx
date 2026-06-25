@@ -11,9 +11,10 @@ interface Props {
   visible: boolean;
   onClose: () => void;
   anchorPosition?: { top: number; right: number };
+  todayBirthdays?: number;
 }
 
-export function QuickActionsSheet({ visible, onClose, anchorPosition }: Props) {
+export function QuickActionsSheet({ visible, onClose, anchorPosition, todayBirthdays = 0 }: Props) {
   const styles = useStyles();
   const { mode, toggleTheme, colors } = useAppTheme();
   const { active: tutorialActive } = useCoach();
@@ -68,6 +69,11 @@ export function QuickActionsSheet({ visible, onClose, anchorPosition }: Props) {
                 <Cake size={16} color={colors.primary} />
               </View>
               <Text style={styles.itemLabel}>Aniversariantes</Text>
+              {todayBirthdays > 0 && (
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>{todayBirthdays}</Text>
+                </View>
+              )}
             </TouchableOpacity>
           </CoachTarget>
         </View>

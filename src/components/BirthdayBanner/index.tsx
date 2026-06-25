@@ -67,7 +67,7 @@ export function BirthdayBanner() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Cake size={14} style={styles.icon} />
+        <Cake size={14} color={styles.icon.color} />
         <Text style={styles.label}>ANIVERSARIANTES DO MÊS</Text>
       </View>
 

@@ -53,6 +53,22 @@ export function useStyles() {
           backgroundColor: colors.border,
           marginHorizontal: SPACING.md,
         },
+        badge: {
+          minWidth: 18,
+          height: 18,
+          borderRadius: 9,
+          backgroundColor: "#E53935",
+          alignItems: "center",
+          justifyContent: "center",
+          paddingHorizontal: 4,
+          marginLeft: 8,
+        },
+        badgeText: {
+          color: "#fff",
+          fontSize: 10,
+          fontWeight: "700",
+          lineHeight: 14,
+        },
       }),
     [colors],
   );
