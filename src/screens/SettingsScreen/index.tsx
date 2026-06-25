@@ -3,9 +3,13 @@ import { ItemActionList } from "@/components/ItemActionList";
 import { SwipeableTab } from "@/components/SwipeableTab";
 import { useAppTheme } from "@/context/ThemeContext";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "@/navigation/types";
 import {
   HandCoins,
   Mail,
+  PiggyBank,
   UserRoundMinus,
   UserRoundPen,
   ShieldCheck,
@@ -25,6 +29,8 @@ export const SettingsScreen = () => {
   const { colors } = useAppTheme();
   const tabBarHeight = useBottomTabBarHeight();
   const styles = useStyles();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const [openRemoveMember, setOpenRemoveMember] = useState(false);
   const [openEditMember, setOpenEditMember] = useState(false);
@@ -42,6 +48,13 @@ export const SettingsScreen = () => {
 
         <View style={[styles.content, { paddingBottom: tabBarHeight }]}>
           <View style={styles.menuCard}>
+            <ItemActionList
+              title="Painel de arrecadação"
+              description="Acompanhe os pagamentos do mês: quem pagou, inadimplentes, total arrecadado e o quanto falta para a meta."
+              onPress={() => navigation.navigate("Arrecadacao")}
+              icon={<PiggyBank color={colors.primary} />}
+            />
+
             <ItemActionList
               title="Remover membro"
               description="Essa funcionalidade permite remover um membro impedindo de não acessar o aplicativo."

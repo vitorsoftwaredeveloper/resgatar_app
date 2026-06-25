@@ -1,4 +1,4 @@
-import { ICharge } from "@/types/Charge";
+import { ICharge, IChargeSummary } from "@/types/Charge";
 import { api } from "./api";
 
 export const ChargeServices = {
@@ -25,6 +25,24 @@ export const ChargeServices = {
       await api.post("/charges/cash", { memberId, referenceMonth });
     } catch (error) {
       console.error("Error registering cash payment", error);
+      throw error;
+    }
+  },
+  // Resumo agregado de arrecadação de um mês para o painel de admin.
+  // month é 1-indexado (1 = janeiro), conforme o endpoint /charges/summary.
+  getSummary: async (
+    year: number,
+    month: number,
+  ): Promise<IChargeSummary> => {
+    try {
+      const response = await api.get("/charges/summary", {
+        params: { year, month },
+      });
+      const { data } = response.data;
+
+      return data;
+    } catch (error) {
+      console.error("Error fetching charges summary", error);
       throw error;
     }
   },

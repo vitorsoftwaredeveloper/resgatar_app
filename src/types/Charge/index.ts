@@ -25,6 +25,34 @@ interface ICharge {
   };
 }
 
+// Resumo agregado de um mês de arrecadação, consumido pelo painel de admin.
+// O backend calcula a meta como a soma dos `paymentInfo.amount` dos membros.
+interface IChargeSummaryMember {
+  id: string;
+  name: string;
+  photo?: string | null;
+  paid: boolean;
+  method?: "pix" | "cash";
+  paidAt?: string;
+  amount: number;
+}
+
+interface IChargeSummary {
+  goal: number;
+  collected: number;
+  remaining: number;
+  byMethod: {
+    pix: number;
+    cash: number;
+  };
+  counts: {
+    paid: number;
+    pending: number;
+    total: number;
+  };
+  members: IChargeSummaryMember[];
+}
+
 const TRANSACTION_STATUS = {
   PENDING: "pending",
   APPROVED: "approved",
@@ -42,4 +70,11 @@ const PAYMENT_NOTIFICATION_TYPE = "PAYMENT_UPDATE";
 // O campo `data.paymentMethod` distingue o método: "cash" ou ausente para PIX.
 const PAYMENT_CONFIRMED_NOTIFICATION_TYPE = "PAYMENT_CONFIRMED";
 
-export { ICharge, TRANSACTION_STATUS, PAYMENT_NOTIFICATION_TYPE, PAYMENT_CONFIRMED_NOTIFICATION_TYPE };
+export {
+  ICharge,
+  IChargeSummary,
+  IChargeSummaryMember,
+  TRANSACTION_STATUS,
+  PAYMENT_NOTIFICATION_TYPE,
+  PAYMENT_CONFIRMED_NOTIFICATION_TYPE,
+};

@@ -7,6 +7,7 @@ import { BottomTabs } from "@/components/BottonTabs";
 import { RootStackParamList } from "@/navigation/types";
 import { LoadingScreen } from "@/screens/LoadingScreen";
 import { VideosScreen } from "@/screens/VideosScreen";
+import { ArrecadacaoScreen } from "@/screens/ArrecadacaoScreen";
 import { OnboardingScreen } from "@/screens/OnboardingScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -42,6 +43,7 @@ const AppNavigator = () => {
             {() => <BottomTabs isAdmin={member?.role === "admin"} />}
           </Stack.Screen>
           <Stack.Screen name="Videos" component={VideosScreen} />
+          <Stack.Screen name="Arrecadacao" component={ArrecadacaoScreen} />
         </>
       )}
     </Stack.Navigator>
