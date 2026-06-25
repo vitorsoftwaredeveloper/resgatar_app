@@ -2,11 +2,19 @@ jest.mock("axios");
 jest.mock("@/utils/helper", () => ({
   normalizeText: (text: string) => text.trim().replace(/\s+/g, " "),
 }));
+jest.mock("@/storage/asyncStorage", () => ({
+  getLiturgyCache: jest.fn(),
+  setLiturgyCache: jest.fn(),
+}));
 
 import axios from "axios";
+import { getLiturgyCache, setLiturgyCache } from "@/storage/asyncStorage";
 import { LiturgyService } from "@/services/LiturgyService";
+import { ILiturgia } from "@/types/Liturgy";
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
+const mockedGetCache = getLiturgyCache as jest.Mock;
+const mockedSetCache = setLiturgyCache as jest.Mock;
 
 const makeRaw = (overrides: any = {}) => ({
   data: "17/06/2026",
@@ -42,7 +50,12 @@ const makeRaw = (overrides: any = {}) => ({
 });
 
 describe("LiturgyService", () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+    // padrão: cache miss — testes específicos de cache sobrescrevem quando necessário
+    mockedGetCache.mockResolvedValue(null);
+    mockedSetCache.mockResolvedValue(undefined);
+  });
 
   describe("getToday", () => {
     it("faz GET para /v2/ e retorna liturgia normalizada", async () => {
@@ -199,6 +212,99 @@ describe("LiturgyService", () => {
       const result = await LiturgyService.getToday();
 
       expect(result.leituras.salmo).toBeUndefined();
+    });
+  });
+
+  describe("getToday — cache diário", () => {
+    const makeLiturgia = (): ILiturgia => ({
+      data: "25/06/2026",
+      liturgia: "Tempo Comum",
+      cor: "Verde",
+      leituras: {
+        primeiraLeitura: { referencia: "Gn 1,1", titulo: "Criação", texto: "No princípio" },
+        salmo: { referencia: "Sl 1", refrao: "Feliz o homem", texto: "Texto do salmo" },
+        evangelho: { referencia: "Mt 1,1", titulo: "Genealogia", texto: "Texto do evangelho" },
+      },
+    });
+
+    it("retorna do cache sem chamar axios quando há cache para o dia", async () => {
+      const cached = makeLiturgia();
+      mockedGetCache.mockResolvedValue(cached);
+
+      const result = await LiturgyService.getToday();
+
+      expect(mockedAxios.get).not.toHaveBeenCalled();
+      expect(result).toEqual(cached);
+    });
+
+    it("chama axios em cache miss e salva o resultado no cache", async () => {
+      mockedAxios.get.mockResolvedValue({ data: makeRaw() });
+
+      await LiturgyService.getToday();
+
+      expect(mockedAxios.get).toHaveBeenCalledTimes(1);
+      expect(mockedSetCache).toHaveBeenCalledTimes(1);
+    });
+
+    it("salva no cache exatamente o objeto normalizado retornado", async () => {
+      mockedAxios.get.mockResolvedValue({ data: makeRaw() });
+
+      const result = await LiturgyService.getToday();
+      const [, savedData] = mockedSetCache.mock.calls[0] as [string, ILiturgia];
+
+      expect(savedData).toEqual(result);
+    });
+
+    it("usa chave no formato YYYY-MM-DD ao consultar o cache", async () => {
+      mockedAxios.get.mockResolvedValue({ data: makeRaw() });
+
+      await LiturgyService.getToday();
+
+      expect(mockedGetCache).toHaveBeenCalledWith(
+        expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
+      );
+    });
+
+    it("usa a mesma chave no getLiturgyCache e no setLiturgyCache", async () => {
+      mockedAxios.get.mockResolvedValue({ data: makeRaw() });
+
+      await LiturgyService.getToday();
+
+      const [getKey] = mockedGetCache.mock.calls[0] as [string];
+      const [setKey] = mockedSetCache.mock.calls[0] as [string];
+      expect(getKey).toBe(setKey);
+    });
+
+    it("ignora o cache e chama axios quando force=true", async () => {
+      mockedGetCache.mockResolvedValue(makeLiturgia());
+      mockedAxios.get.mockResolvedValue({ data: makeRaw() });
+
+      await LiturgyService.getToday(true);
+
+      expect(mockedAxios.get).toHaveBeenCalledTimes(1);
+    });
+
+    it("atualiza o cache após fetch mesmo quando force=true", async () => {
+      mockedGetCache.mockResolvedValue(makeLiturgia());
+      mockedAxios.get.mockResolvedValue({ data: makeRaw() });
+
+      await LiturgyService.getToday(true);
+
+      expect(mockedSetCache).toHaveBeenCalledTimes(1);
+    });
+
+    it("não consulta o cache quando force=true", async () => {
+      mockedAxios.get.mockResolvedValue({ data: makeRaw() });
+
+      await LiturgyService.getToday(true);
+
+      expect(mockedGetCache).not.toHaveBeenCalled();
+    });
+
+    it("propaga erro de rede quando cache está vazio", async () => {
+      mockedAxios.get.mockRejectedValue(new Error("timeout"));
+
+      await expect(LiturgyService.getToday()).rejects.toThrow("timeout");
     });
   });
 

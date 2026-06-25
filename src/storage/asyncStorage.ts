@@ -1,8 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
 import { IMemberWithContribution } from "@/types/Member/index";
+import { ILiturgia } from "@/types/Liturgy";
 
 const MEMBER_PUBLIC_KEY = "@auth:member_public";
+const LITURGY_CACHE_PREFIX = "@liturgy:";
 const MEMBER_SENSITIVE_KEY = "auth_member_sensitive";
 const ONBOARDING_KEY_PREFIX = "@onboarding:seen:";
 
@@ -73,6 +75,25 @@ async function clearOnboardingSeen(memberId: string) {
   await AsyncStorage.removeItem(`${ONBOARDING_KEY_PREFIX}${memberId}`);
 }
 
+// Liturgy daily cache — key includes the date so yesterday's entry is never
+// read again; no explicit expiration or cleanup required.
+async function getLiturgyCache(dateKey: string): Promise<ILiturgia | null> {
+  const raw = await AsyncStorage.getItem(`${LITURGY_CACHE_PREFIX}${dateKey}`);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as ILiturgia;
+  } catch {
+    return null;
+  }
+}
+
+async function setLiturgyCache(dateKey: string, data: ILiturgia): Promise<void> {
+  await AsyncStorage.setItem(
+    `${LITURGY_CACHE_PREFIX}${dateKey}`,
+    JSON.stringify(data),
+  );
+}
+
 export {
   saveMember,
   getStoredMember,
@@ -80,4 +101,6 @@ export {
   getOnboardingSeen,
   setOnboardingSeen,
   clearOnboardingSeen,
+  getLiturgyCache,
+  setLiturgyCache,
 };

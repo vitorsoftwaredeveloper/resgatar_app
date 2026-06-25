@@ -1,4 +1,5 @@
 import { ILiturgia } from "@/types/Liturgy";
+import { getLiturgyCache, setLiturgyCache } from "@/storage/asyncStorage";
 import { normalizeText } from "@/utils/helper";
 import axios from "axios";
 
@@ -49,10 +50,25 @@ function pad(n: number): string {
   return String(n).padStart(2, "0");
 }
 
+function todayKey(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
 export const LiturgyService = {
-  async getToday(): Promise<ILiturgia> {
+  // `force` bypasses the daily cache — use only for explicit user refresh.
+  async getToday(force = false): Promise<ILiturgia> {
+    const key = todayKey();
+
+    if (!force) {
+      const cached = await getLiturgyCache(key);
+      if (cached) return cached;
+    }
+
     const { data } = await axios.get(`${LITURGY_BASE}/v2/`);
-    return normalizeLiturgy(data);
+    const liturgy = normalizeLiturgy(data);
+    await setLiturgyCache(key, liturgy);
+    return liturgy;
   },
 
   async getByDate(date: Date): Promise<ILiturgia> {

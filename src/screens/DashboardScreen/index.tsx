@@ -45,12 +45,12 @@ export function DashboardScreen() {
   const [liturgy, setLiturgy] = useState<ILiturgia | null>(null);
   const [error, setError] = useState(false);
 
-  const fetchLiturgy = useCallback(async (date: Date) => {
+  const fetchLiturgy = useCallback(async (date: Date, force = false) => {
     setLoading(true);
     setError(false);
     try {
       const data = isSameDay(date, today())
-        ? await LiturgyService.getToday()
+        ? await LiturgyService.getToday(force)
         : await LiturgyService.getByDate(date);
       setLiturgy(data);
     } catch {
@@ -129,7 +129,7 @@ export function DashboardScreen() {
               </Text>
               <TouchableOpacity
                 style={styles.retryButton}
-                onPress={() => fetchLiturgy(selectedDate)}
+                onPress={() => fetchLiturgy(selectedDate, true)}
               >
                 <RefreshCw size={16} color={colors.primary} />
                 <Text style={styles.retryText}>Tentar novamente</Text>

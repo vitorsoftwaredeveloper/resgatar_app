@@ -7,8 +7,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   Home,
   FileText,
-  Settings,
   TextAlignJustify,
+  ShieldUser,
 } from "lucide-react-native";
 import { CoachTarget } from "@/components/CoachTarget";
 import { useStyles, TAB_WIDTH, TAB_WIDTH_ADMIN } from "./styles";
@@ -51,7 +51,7 @@ export function TabBar({ state, navigation, isAdmin }: any) {
             Bills: <FileText size={24} color={iconColor} />,
             Profile: <TextAlignJustify size={24} color={iconColor} />,
             ...(isAdmin && {
-              Settings: <Settings size={24} color={iconColor} />,
+              Settings: <ShieldUser size={24} color={iconColor} />,
             }),
           };
 
@@ -74,7 +74,7 @@ export function TabBar({ state, navigation, isAdmin }: any) {
                       ? "Contribuições"
                       : route.name === "Profile"
                         ? "Mais"
-                        : "Ações"}
+                        : "Administrativo"}
                 </Text>
               </CoachTarget>
             </Pressable>

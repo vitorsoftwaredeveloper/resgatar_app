@@ -11,8 +11,15 @@ jest.mock("expo-secure-store", () => ({
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
-import { saveMember, getStoredMember, removeMember } from "@/storage/asyncStorage";
+import {
+  saveMember,
+  getStoredMember,
+  removeMember,
+  getLiturgyCache,
+  setLiturgyCache,
+} from "@/storage/asyncStorage";
 import { IMemberWithContribution } from "@/types/Member";
+import { ILiturgia } from "@/types/Liturgy";
 
 const mockedAsync = AsyncStorage as jest.Mocked<typeof AsyncStorage>;
 const mockedSecure = SecureStore as jest.Mocked<typeof SecureStore>;
@@ -223,6 +230,84 @@ describe("asyncStorage", () => {
       expect(mockedSecure.deleteItemAsync).toHaveBeenCalledWith(
         "auth_member_sensitive",
       );
+    });
+  });
+
+  describe("setLiturgyCache", () => {
+    const makeLiturgia = (): ILiturgia => ({
+      data: "25/06/2026",
+      liturgia: "Tempo Comum",
+      cor: "Verde",
+      leituras: {
+        primeiraLeitura: { referencia: "Gn 1,1", titulo: "Criação", texto: "No princípio" },
+        salmo: { referencia: "Sl 1", refrao: "Feliz o homem", texto: "Texto do salmo" },
+        evangelho: { referencia: "Mt 1,1", titulo: "Genealogia", texto: "Texto do evangelho" },
+      },
+    });
+
+    it("persiste com a chave no formato @liturgy:<dateKey>", async () => {
+      mockedAsync.setItem.mockResolvedValue(undefined);
+
+      await setLiturgyCache("2026-06-25", makeLiturgia());
+
+      expect(mockedAsync.setItem).toHaveBeenCalledWith(
+        "@liturgy:2026-06-25",
+        expect.any(String),
+      );
+    });
+
+    it("serializa os dados como JSON contendo os campos da liturgia", async () => {
+      mockedAsync.setItem.mockResolvedValue(undefined);
+
+      await setLiturgyCache("2026-06-25", makeLiturgia());
+
+      const stored = (mockedAsync.setItem as jest.Mock).mock.calls[0][1] as string;
+      expect(JSON.parse(stored)).toMatchObject({ data: "25/06/2026", cor: "Verde" });
+    });
+  });
+
+  describe("getLiturgyCache", () => {
+    const makeLiturgia = (): ILiturgia => ({
+      data: "25/06/2026",
+      liturgia: "Tempo Comum",
+      cor: "Verde",
+      leituras: {
+        primeiraLeitura: { referencia: "Gn 1,1", titulo: "Criação", texto: "No princípio" },
+        salmo: { referencia: "Sl 1", refrao: "Feliz o homem", texto: "Texto do salmo" },
+        evangelho: { referencia: "Mt 1,1", titulo: "Genealogia", texto: "Texto do evangelho" },
+      },
+    });
+
+    it("retorna os dados parseados quando há cache para a chave", async () => {
+      mockedAsync.getItem.mockResolvedValue(JSON.stringify(makeLiturgia()));
+
+      const result = await getLiturgyCache("2026-06-25");
+
+      expect(result).toMatchObject({ data: "25/06/2026", cor: "Verde" });
+    });
+
+    it("retorna null quando não há item para a chave", async () => {
+      mockedAsync.getItem.mockResolvedValue(null);
+
+      const result = await getLiturgyCache("2026-06-25");
+
+      expect(result).toBeNull();
+    });
+
+    it("retorna null quando o JSON armazenado é inválido", async () => {
+      mockedAsync.getItem.mockResolvedValue("{ invalid json }");
+
+      const result = await getLiturgyCache("2026-06-25");
+
+      expect(result).toBeNull();
+    });
+
+    it("lê a chave correta do AsyncStorage", async () => {
+      mockedAsync.getItem.mockResolvedValue(null);
+
+      await getLiturgyCache("2026-06-25");
+
+      expect(mockedAsync.getItem).toHaveBeenCalledWith("@liturgy:2026-06-25");
     });
   });
 });
