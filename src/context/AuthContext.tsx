@@ -19,6 +19,7 @@ interface RegisterPayload {
   numberType: string;
   password: string;
   profileImage?: string;
+  dateOfBirth?: number;
 }
 
 interface AuthContextData {
@@ -244,7 +245,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           numberType: payload.numberType,
         },
         paymentInfo: { datePayment: 1, amount: "10,00" },
-        dateOfBirth: new Date().getTime(),
+        dateOfBirth: payload.dateOfBirth ?? new Date().getTime(),
         password: payload.password,
       });
     } catch (error) {

@@ -10,8 +10,10 @@ import { useAppTheme } from "@/context/ThemeContext";
 import { useMaskedFieldFromFormik } from "@/hooks/useMaskedField";
 import { RootStackParamList } from "@/navigation/types";
 import { getApiErrorMessage } from "@/utils/apiError";
+import { parseDateBRToTimestamp } from "@/utils/helper";
 import {
   maskCPFOrCNPJ,
+  maskDateBR,
   maskPhoneBR,
   onlyNumbers,
   validateCNPJ,
@@ -21,6 +23,7 @@ import {
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Formik } from "formik";
 import {
+  Cake,
   Eye,
   EyeOff,
   IdCard,
@@ -75,6 +78,28 @@ const registerSchema = Yup.object().shape({
         : validateCNPJ(value || "");
     })
     .required("Documento obrigatório"),
+  dateOfBirth: Yup.string()
+    .required("Data de nascimento obrigatória")
+    .test("valid-date", "Data inválida", (value?: string) => {
+      if (!value || value.length !== 10) return false;
+      const [day, month, year] = value.split("/").map(Number);
+      const date = new Date(year, month - 1, day);
+      return (
+        date.getFullYear() === year &&
+        date.getMonth() === month - 1 &&
+        date.getDate() === day
+      );
+    })
+    .test("min-year-1970", "Data deve ser a partir de 1970", (value?: string) => {
+      if (!value) return true;
+      const year = parseInt(value.split("/")[2] ?? "0", 10);
+      return year >= 1970;
+    })
+    .test("not-future", "Data de nascimento não pode ser no futuro", (value?: string) => {
+      if (!value || value.length !== 10) return true;
+      const [day, month, year] = value.split("/").map(Number);
+      return new Date(year, month - 1, day) <= new Date();
+    }),
   password: Yup.string()
     .required("Senha obrigatória")
     .min(8, "Mínimo 8 caracteres")
@@ -94,6 +119,7 @@ const initialValues = {
   phoneNumber: "",
   type: "CPF" as "CPF" | "CNPJ",
   numberType: "",
+  dateOfBirth: "",
   password: "",
   confirmPassword: "",
   profileImage: "",
@@ -116,6 +142,7 @@ export const RegisterScreen = ({ navigation }: Props) => {
       type: values.type,
       numberType: onlyNumbers(values.numberType),
       profileImage: values.profileImage || undefined,
+      dateOfBirth: parseDateBRToTimestamp(values.dateOfBirth),
     })
       .then(() => {
         ToastMessage.success("Sucesso", "Cadastro realizado!");
@@ -162,6 +189,11 @@ export const RegisterScreen = ({ navigation }: Props) => {
           (v) => maskCPFOrCNPJ(v, values.type),
           { values, setFieldValue },
         );
+
+        const birthField = useMaskedFieldFromFormik("dateOfBirth", maskDateBR, {
+          values,
+          setFieldValue,
+        });
 
         return (
           <KeyboardAvoidingView
@@ -249,6 +281,14 @@ export const RegisterScreen = ({ navigation }: Props) => {
                       error={touched.phoneNumber && errors.phoneNumber}
                       rightIcon={<Phone size={20} color={colors.muted} />}
                       {...phoneField}
+                    />
+
+                    <Input
+                      placeholder="Data de nascimento (dd/mm/aaaa)"
+                      keyboardType="numeric"
+                      error={touched.dateOfBirth && errors.dateOfBirth}
+                      rightIcon={<Cake size={20} color={colors.muted} />}
+                      {...birthField}
                     />
 
                     <DocTypeToggle
