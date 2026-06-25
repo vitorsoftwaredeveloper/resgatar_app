@@ -53,6 +53,17 @@ interface IChargeSummary {
   members: IChargeSummaryMember[];
 }
 
+// Progresso da meta do mês, exposto a todos os membros (sem dados por membro).
+// `percent` é 0–100; `month` é 1-indexado.
+interface IGoalProgress {
+  year: number;
+  month: number;
+  goal: number;
+  collected: number;
+  remaining: number;
+  percent: number;
+}
+
 const TRANSACTION_STATUS = {
   PENDING: "pending",
   APPROVED: "approved",
@@ -74,6 +85,7 @@ export {
   ICharge,
   IChargeSummary,
   IChargeSummaryMember,
+  IGoalProgress,
   TRANSACTION_STATUS,
   PAYMENT_NOTIFICATION_TYPE,
   PAYMENT_CONFIRMED_NOTIFICATION_TYPE,

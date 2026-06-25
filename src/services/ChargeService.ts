@@ -1,4 +1,4 @@
-import { ICharge, IChargeSummary } from "@/types/Charge";
+import { ICharge, IChargeSummary, IGoalProgress } from "@/types/Charge";
 import { api } from "./api";
 
 export const ChargeServices = {
@@ -30,10 +30,7 @@ export const ChargeServices = {
   },
   // Resumo agregado de arrecadação de um mês para o painel de admin.
   // month é 1-indexado (1 = janeiro), conforme o endpoint /charges/summary.
-  getSummary: async (
-    year: number,
-    month: number,
-  ): Promise<IChargeSummary> => {
+  getSummary: async (year: number, month: number): Promise<IChargeSummary> => {
     try {
       const response = await api.get("/charges/summary", {
         params: { year, month },
@@ -43,6 +40,17 @@ export const ChargeServices = {
       return data;
     } catch (error) {
       console.error("Error fetching charges summary", error);
+      throw error;
+    }
+  },
+  getGoalProgress: async (): Promise<IGoalProgress> => {
+    try {
+      const response = await api.get("/charges/goal-progress");
+      const { data } = response.data;
+
+      return data;
+    } catch (error) {
+      console.error("Error fetching goal progress", error);
       throw error;
     }
   },

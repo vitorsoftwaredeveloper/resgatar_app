@@ -8,7 +8,12 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { ICharge, PAYMENT_NOTIFICATION_TYPE, PAYMENT_CONFIRMED_NOTIFICATION_TYPE } from "@/types/Charge";
+import {
+  ICharge,
+  PAYMENT_NOTIFICATION_TYPE,
+  PAYMENT_CONFIRMED_NOTIFICATION_TYPE,
+  TRANSACTION_STATUS,
+} from "@/types/Charge";
 import { ChargeServices } from "@/services/ChargeService";
 import { AuthContext } from "@/context/AuthContext";
 
@@ -70,10 +75,21 @@ export const ChargeProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const data = remoteMessage.data;
 
-    // Push de pagamento confirmado (cash ou PIX via notifyPaymentConfirmed):
-    // recarrega os dados do membro. Para cash não há transactionId nem consulta.
+    // Push de pagamento confirmado (cash ou PIX via notifyPaymentConfirmed).
+    // Para PIX há uma cobrança ativa pendente (modal aberto): atualizamos o
+    // status dela para `approved` para que o PixPaymentModal feche sozinho.
+    // Para cash não há transactionId — apenas recarregamos os dados do membro.
     if (data?.type === PAYMENT_CONFIRMED_NOTIFICATION_TYPE) {
+      const notifiedTransactionId = data?.transactionId as string | undefined;
+      const active = chargeRef.current;
+      const transactionId =
+        notifiedTransactionId ??
+        (active?.status === TRANSACTION_STATUS.PENDING
+          ? active.transactionId
+          : undefined);
+
       try {
+        if (transactionId) await consultCharge(transactionId);
         await reloadMemberData();
       } catch (error) {
         console.error("Error reloading member after confirmed payment", error);

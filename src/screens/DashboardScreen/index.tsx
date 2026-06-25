@@ -1,5 +1,7 @@
 import { CalendarModal } from "@/components/CalendarModal";
+import { CommunityGoalCard } from "@/components/CommunityGoalCard";
 import { DateNavigator } from "@/components/DateNavigator";
+import { SectionDivider } from "@/components/SectionDivider";
 import { Header } from "@/components/Header";
 import { LiturgySeasonBanner } from "@/components/LiturgySeasonBanner";
 import { PsalmCard } from "@/components/PsalmCard";
@@ -104,6 +106,10 @@ export function DashboardScreen() {
           ]}
           showsVerticalScrollIndicator={false}
         >
+          <CommunityGoalCard />
+
+          <SectionDivider title="Liturgia diária" />
+
           {loading ? (
             <>
               <DateNavigator
@@ -174,7 +180,7 @@ export function DashboardScreen() {
 
               <ReadingCard
                 testID="card-evangelho"
-                label="✝  EVANGELHO"
+                label="EVANGELHO"
                 referencia={liturgy.leituras.evangelho.referencia}
                 titulo={liturgy.leituras.evangelho.titulo}
                 texto={liturgy.leituras.evangelho.texto}
