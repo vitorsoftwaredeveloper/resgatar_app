@@ -448,6 +448,7 @@ export function BalancoAnualScreen() {
       />
 
       <View style={styles.content}>
+        <Text style={styles.screenTitle}>Balanço anual</Text>
         {loading ? (
           <ActivityIndicator
             size="large"

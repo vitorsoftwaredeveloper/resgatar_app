@@ -275,6 +275,7 @@ export function ArrecadacaoScreen() {
       />
 
       <View style={styles.content}>
+        <Text style={styles.screenTitle}>Entrada mensal</Text>
         {loading ? (
           <ActivityIndicator
             size="large"

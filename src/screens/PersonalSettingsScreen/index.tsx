@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Lock, Trash2, UserRoundCog } from "lucide-react-native";
 import React, { useContext, useState } from "react";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 import { ModalDeleteAccount } from "../ProfileScreen/ModalDeleteAccount";
 import { ModalEditProfile } from "../ProfileScreen/ModalEditProfile";
 import { ModalUpdatePassword } from "../ProfileScreen/ModalUpdatePassword";
@@ -36,28 +36,31 @@ export function PersonalSettingsScreen({ navigation }: Props) {
       />
 
       <View style={[styles.content, { paddingBottom: bottom + 16 }]}>
-        <View style={styles.menuCard}>
-          <ItemActionList
-            title="Meus dados"
-            description="Visualize ou edite seus dados pessoais"
-            onPress={() => setEditModalVisible(true)}
-            icon={<UserRoundCog color={colors.primary} />}
-          />
+        <View style={styles.sectionGroup}>
+          <Text style={styles.sectionLabel}>Configurações pessoais</Text>
+          <View style={styles.menuCard}>
+            <ItemActionList
+              title="Meus dados"
+              description="Visualize ou edite seus dados pessoais"
+              onPress={() => setEditModalVisible(true)}
+              icon={<UserRoundCog color={colors.primary} />}
+            />
 
-          <ItemActionList
-            title="Atualizar senha"
-            description="Atualize sua senha de login do aplicativo"
-            onPress={() => setPasswordModalVisible(true)}
-            icon={<Lock color={colors.primary} />}
-          />
+            <ItemActionList
+              title="Atualizar senha"
+              description="Atualize sua senha de login do aplicativo"
+              onPress={() => setPasswordModalVisible(true)}
+              icon={<Lock color={colors.primary} />}
+            />
 
-          <ItemActionList
-            title="Encerrar conta"
-            description="Remova permanentemente sua conta e dados"
-            onPress={() => setDeleteAccountVisible(true)}
-            icon={<Trash2 color={colors.primary} />}
-            isLast
-          />
+            <ItemActionList
+              title="Encerrar conta"
+              description="Remova permanentemente sua conta e dados"
+              onPress={() => setDeleteAccountVisible(true)}
+              icon={<Trash2 color={colors.primary} />}
+              isLast
+            />
+          </View>
         </View>
       </View>
 

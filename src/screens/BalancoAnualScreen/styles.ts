@@ -19,6 +19,15 @@ export function useStyles() {
           borderTopRightRadius: RADIUS.xl,
           overflow: "hidden",
         },
+        screenTitle: {
+          fontSize: TYPOGRAPHY.small,
+          color: colors.textMuted,
+          fontWeight: "600",
+          textTransform: "uppercase",
+          letterSpacing: 0.8,
+          paddingHorizontal: SPACING.md,
+          paddingTop: SPACING.md,
+        },
         list: {
           padding: SPACING.md,
           gap: SPACING.sm2,

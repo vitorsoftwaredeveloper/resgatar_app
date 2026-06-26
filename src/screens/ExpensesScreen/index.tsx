@@ -317,6 +317,7 @@ export function ExpensesScreen() {
       />
 
       <View style={styles.content}>
+        <Text style={styles.screenTitle}>Despesa mensal</Text>
         {loading ? (
           <ActivityIndicator
             size="large"
