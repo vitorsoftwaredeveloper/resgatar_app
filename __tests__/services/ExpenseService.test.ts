@@ -131,4 +131,72 @@ describe("ExpenseServices", () => {
       await expect(ExpenseServices.remove("exp1")).rejects.toThrow("not found");
     });
   });
+
+  describe("uploadReceipt", () => {
+    afterEach(() => {
+      (global.fetch as jest.Mock | undefined)?.mockRestore?.();
+    });
+
+    it("pede a URL assinada, faz PUT no S3 e retorna a key", async () => {
+      (api.get as jest.Mock).mockResolvedValue({
+        data: {
+          data: { uploadUrl: "https://s3.amazonaws.com/signed", key: "receipts/a/x.jpg" },
+        },
+      });
+
+      const fakeBlob = { size: 10 };
+      global.fetch = jest
+        .fn()
+        // 1ª chamada: lê o arquivo local e vira blob
+        .mockResolvedValueOnce({ blob: jest.fn().mockResolvedValue(fakeBlob) })
+        // 2ª chamada: PUT no S3
+        .mockResolvedValueOnce({ ok: true }) as unknown as typeof fetch;
+
+      const key = await ExpenseServices.uploadReceipt(
+        "file:///tmp/recibo.jpg",
+        "image/jpeg",
+      );
+
+      expect(api.get).toHaveBeenCalledWith("/expenses/receipt-upload-url", {
+        params: { contentType: "image/jpeg" },
+      });
+      expect(global.fetch).toHaveBeenLastCalledWith(
+        "https://s3.amazonaws.com/signed",
+        expect.objectContaining({
+          method: "PUT",
+          body: fakeBlob,
+          headers: { "Content-Type": "image/jpeg" },
+        }),
+      );
+      expect(key).toBe("receipts/a/x.jpg");
+    });
+
+    it("lança erro quando o PUT no S3 falha", async () => {
+      (api.get as jest.Mock).mockResolvedValue({
+        data: { data: { uploadUrl: "https://s3/signed", key: "k" } },
+      });
+
+      global.fetch = jest
+        .fn()
+        .mockResolvedValueOnce({ blob: jest.fn().mockResolvedValue({}) })
+        .mockResolvedValueOnce({ ok: false, status: 403 }) as unknown as typeof fetch;
+
+      await expect(
+        ExpenseServices.uploadReceipt("file:///r.jpg", "image/jpeg"),
+      ).rejects.toThrow("S3 upload failed with status 403");
+    });
+  });
+
+  describe("getReceiptViewUrl", () => {
+    it("faz GET /expenses/{id}/receipt e retorna a viewUrl", async () => {
+      (api.get as jest.Mock).mockResolvedValue({
+        data: { data: { viewUrl: "https://s3/view" } },
+      });
+
+      const url = await ExpenseServices.getReceiptViewUrl("exp1");
+
+      expect(api.get).toHaveBeenCalledWith("/expenses/exp1/receipt");
+      expect(url).toBe("https://s3/view");
+    });
+  });
 });

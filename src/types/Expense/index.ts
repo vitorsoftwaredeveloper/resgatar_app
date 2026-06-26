@@ -44,9 +44,17 @@ interface ICreateExpensePayload {
   referenceYear: number;
   date: number;
   note?: string;
+  // Key do comprovante no S3 (ex.: receipts/<adminId>/<uuid>.jpg). A imagem em
+  // si fica no bucket — aqui trafega só o ponteiro. Ver ExpenseServices.upload-
+  // Receipt para o fluxo de upload via URL pré-assinada.
+  receiptKey?: string;
 }
 
-type IEditExpensePayload = Partial<ICreateExpensePayload>;
+// Na edição, `receiptKey: null` remove o comprovante existente (o backend
+// aceita nullable). `undefined`/ausente mantém o atual.
+type IEditExpensePayload = Partial<Omit<ICreateExpensePayload, "receiptKey">> & {
+  receiptKey?: string | null;
+};
 
 // Despesa retornada pelo backend (DTO).
 interface IExpense {
@@ -58,6 +66,7 @@ interface IExpense {
   referenceYear: number;
   date: number;
   note?: string;
+  receiptKey?: string;
   adminId: string;
 }
 

@@ -101,15 +101,41 @@ export function useStyles() {
 
         // Item de despesa
         expenseCard: {
-          flexDirection: "row",
-          alignItems: "center",
-          gap: SPACING.sm2,
           backgroundColor: colors.card,
           borderWidth: 1,
           borderColor: colors.border,
           borderRadius: RADIUS.md,
           paddingHorizontal: SPACING.md,
           paddingVertical: SPACING.sm2,
+        },
+        expenseRow: {
+          flexDirection: "row",
+          alignItems: "center",
+          gap: SPACING.sm2,
+        },
+        expenseDetails: {
+          marginTop: SPACING.sm,
+          paddingTop: SPACING.sm,
+          borderTopWidth: 1,
+          borderTopColor: colors.border,
+          gap: SPACING.xs,
+        },
+        detailRow: {
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          gap: SPACING.md,
+        },
+        detailLabel: {
+          fontSize: TYPOGRAPHY.small,
+          color: colors.textMuted,
+        },
+        detailValue: {
+          fontSize: TYPOGRAPHY.small,
+          color: colors.text,
+          fontWeight: "600",
+          flexShrink: 1,
+          textAlign: "right",
         },
         expenseInfo: {
           flex: 1,
@@ -129,6 +155,11 @@ export function useStyles() {
           fontSize: TYPOGRAPHY.body,
           color: colors.textStrong,
           fontWeight: "700",
+        },
+        expenseActions: {
+          flexDirection: "row",
+          alignItems: "center",
+          gap: SPACING.xs,
         },
         rowAction: {
           padding: SPACING.xs,

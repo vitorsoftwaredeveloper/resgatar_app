@@ -24,6 +24,7 @@ import React, { useCallback, useContext, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  Linking,
   Text,
   TouchableOpacity,
   View,
@@ -60,6 +61,14 @@ export function ExpensesScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [editing, setEditing] = useState<IExpense | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<IExpense | null>(null);
+  // _id da despesa cujo comprovante está sendo buscado (spinner no ícone).
+  const [loadingReceiptId, setLoadingReceiptId] = useState<string | null>(null);
+  // _id da despesa expandida (mostra os detalhes completos). Só uma por vez.
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  function toggleExpanded(id: string) {
+    setExpandedId((prev) => (prev === id ? null : id));
+  }
 
   // Bloqueia navegação para meses futuros (igual à Arrecadação).
   const isCurrentMonth = year === now.getFullYear() && month === now.getMonth();
@@ -113,6 +122,20 @@ export function ExpensesScreen() {
     setModalVisible(true);
   }
 
+  // Abre o comprovante da despesa numa URL temporária (presigned GET).
+  async function handleViewReceipt(expense: IExpense) {
+    if (loadingReceiptId) return;
+    setLoadingReceiptId(expense._id);
+    try {
+      const url = await ExpenseServices.getReceiptViewUrl(expense._id);
+      await Linking.openURL(url);
+    } catch {
+      ToastMessage.error("Erro", "Não foi possível abrir o comprovante.");
+    } finally {
+      setLoadingReceiptId(null);
+    }
+  }
+
   async function handleDelete() {
     if (!deleteTarget) return;
     try {
@@ -127,36 +150,102 @@ export function ExpensesScreen() {
   }
 
   function renderExpense({ item }: { item: IExpense }) {
+    const isExpanded = expandedId === item._id;
+    const categoryLabel =
+      EXPENSE_CATEGORY_LABELS[item.category as ExpenseCategory] ??
+      item.category;
+
     return (
-      <View style={styles.expenseCard}>
-        <TouchableOpacity
-          style={styles.rowAction}
-          onPress={() => openEdit(item)}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          accessibilityLabel="Editar despesa"
-        >
-          <Pencil size={18} color={colors.primary} />
-        </TouchableOpacity>
-        <View style={styles.expenseInfo}>
-          <Text style={styles.expenseName} numberOfLines={1}>
-            {item.description}
-          </Text>
-          <Text style={styles.expenseMeta} numberOfLines={1}>
-            {EXPENSE_CATEGORY_LABELS[item.category as ExpenseCategory] ??
-              item.category}{" "}
-            · {formatDateFromTimestamp(item.date)}
-          </Text>
+      <TouchableOpacity
+        style={styles.expenseCard}
+        onPress={() => toggleExpanded(item._id)}
+        activeOpacity={0.7}
+        accessibilityLabel={
+          isExpanded ? "Recolher despesa" : "Expandir despesa"
+        }
+      >
+        <View style={styles.expenseRow}>
+          <View style={styles.expenseInfo}>
+            <Text style={styles.expenseName} numberOfLines={isExpanded ? 0 : 1}>
+              {item.description}
+            </Text>
+            <Text style={styles.expenseMeta} numberOfLines={1}>
+              {categoryLabel} · {formatDateFromTimestamp(item.date)}
+            </Text>
+          </View>
+          <Text style={styles.expenseValue}>{formatMoneyBRL(item.amount)}</Text>
+          <View style={styles.expenseActions}>
+            <TouchableOpacity
+              style={styles.rowAction}
+              onPress={() => openEdit(item)}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              accessibilityLabel="Editar despesa"
+            >
+              <Pencil size={18} color={colors.primary} />
+            </TouchableOpacity>
+            {item.receiptKey ? (
+              <TouchableOpacity
+                style={styles.rowAction}
+                onPress={() => handleViewReceipt(item)}
+                disabled={loadingReceiptId === item._id}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                accessibilityLabel="Ver comprovante"
+              >
+                {loadingReceiptId === item._id ? (
+                  <ActivityIndicator size={18} color={colors.textMuted} />
+                ) : (
+                  <Receipt size={18} color={colors.textMuted} />
+                )}
+              </TouchableOpacity>
+            ) : null}
+            <TouchableOpacity
+              style={styles.rowAction}
+              onPress={() => setDeleteTarget(item)}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              accessibilityLabel="Remover item"
+            >
+              <Trash2 size={18} color={colors.error} />
+            </TouchableOpacity>
+          </View>
         </View>
-        <Text style={styles.expenseValue}>{formatMoneyBRL(item.amount)}</Text>
-        <TouchableOpacity
-          style={styles.rowAction}
-          onPress={() => setDeleteTarget(item)}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          accessibilityLabel="Remover despesa"
-        >
-          <Trash2 size={18} color={colors.error} />
-        </TouchableOpacity>
-      </View>
+
+        {isExpanded && (
+          <View style={styles.expenseDetails}>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Categoria</Text>
+              <Text style={styles.detailValue}>{categoryLabel}</Text>
+            </View>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Data</Text>
+              <Text style={styles.detailValue}>
+                {formatDateFromTimestamp(item.date)}
+              </Text>
+            </View>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Valor</Text>
+              <Text style={styles.detailValue}>
+                {formatMoneyBRL(item.amount)}
+              </Text>
+            </View>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Referência</Text>
+              <Text style={styles.detailValue}>
+                {MONTH_LABELS[item.referenceMonth]} {item.referenceYear}
+              </Text>
+            </View>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Observação</Text>
+              <Text style={styles.detailValue}>{item.note || "—"}</Text>
+            </View>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Comprovante</Text>
+              <Text style={styles.detailValue}>
+                {item.receiptKey ? "Anexado" : "Nenhum"}
+              </Text>
+            </View>
+          </View>
+        )}
+      </TouchableOpacity>
     );
   }
 
