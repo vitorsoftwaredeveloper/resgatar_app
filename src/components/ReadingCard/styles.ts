@@ -8,6 +8,12 @@ export function useStyles() {
   return useMemo(
     () =>
       StyleSheet.create({
+        cardHeader: {
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: SPACING.xs,
+        },
         card: {
           backgroundColor: colors.card,
           borderRadius: RADIUS.md,
@@ -20,7 +26,6 @@ export function useStyles() {
           fontSize: TYPOGRAPHY.xsmall,
           fontWeight: "700",
           letterSpacing: 0.8,
-          marginBottom: SPACING.xs,
           color: colors.textMuted,
         },
         referencia: {
@@ -66,6 +71,18 @@ export function useStyles() {
           position: "absolute",
           opacity: 0,
           zIndex: -1,
+        },
+        ttsBtn: {
+          width: 28,
+          height: 28,
+          borderRadius: 14,
+          borderWidth: 1,
+          borderColor: colors.primary,
+          alignItems: "center",
+          justifyContent: "center",
+        },
+        ttsBtnActive: {
+          backgroundColor: colors.softBrown,
         },
         verseNumber: {
           fontSize: TYPOGRAPHY.xsmall,

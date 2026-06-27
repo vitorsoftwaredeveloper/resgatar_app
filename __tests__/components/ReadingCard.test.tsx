@@ -16,7 +16,11 @@ jest.mock("react-native-reanimated", () => {
     },
   };
 });
-jest.mock("lucide-react-native", () => ({ ChevronDown: () => null }));
+jest.mock("lucide-react-native", () => ({
+  ChevronDown: () => null,
+  Play: () => null,
+  Pause: () => null,
+}));
 jest.mock("@/context/ThemeContext", () => ({
   useAppTheme: () => ({
     colors: { primary: "#6B4F3A", text: "#000", textMuted: "#999", card: "#FFF", border: "#ccc" },
@@ -95,5 +99,60 @@ describe("ReadingCard", () => {
         nativeEvent: { layout: { height: 200 } },
       }),
     ).not.toThrow();
+  });
+
+  describe("botão de TTS", () => {
+    const stopPropagation = jest.fn();
+
+    it("não renderiza o botão quando onTTSPlay não é fornecido", () => {
+      const { queryByLabelText } = render(<ReadingCard {...baseProps} />);
+      expect(queryByLabelText("Ouvir leitura")).toBeNull();
+    });
+
+    it("renderiza o botão de play quando onTTSPlay é fornecido", () => {
+      const { getByLabelText } = render(
+        <ReadingCard {...baseProps} onTTSPlay={jest.fn()} ttsState="idle" />,
+      );
+      expect(getByLabelText("Ouvir leitura")).toBeTruthy();
+    });
+
+    it("exibe o rótulo de pausar quando ttsState é playing", () => {
+      const { getByLabelText } = render(
+        <ReadingCard {...baseProps} onTTSPlay={jest.fn()} ttsState="playing" />,
+      );
+      expect(getByLabelText("Pausar leitura")).toBeTruthy();
+    });
+
+    it("chama onTTSPlay ao pressionar com estado idle", () => {
+      const onTTSPlay = jest.fn();
+      const { getByLabelText } = render(
+        <ReadingCard {...baseProps} onTTSPlay={onTTSPlay} ttsState="idle" />,
+      );
+      fireEvent.press(getByLabelText("Ouvir leitura"), { stopPropagation });
+      expect(onTTSPlay).toHaveBeenCalled();
+    });
+
+    it("chama onTTSPause ao pressionar com estado playing", () => {
+      const onTTSPause = jest.fn();
+      const { getByLabelText } = render(
+        <ReadingCard
+          {...baseProps}
+          onTTSPlay={jest.fn()}
+          onTTSPause={onTTSPause}
+          ttsState="playing"
+        />,
+      );
+      fireEvent.press(getByLabelText("Pausar leitura"), { stopPropagation });
+      expect(onTTSPause).toHaveBeenCalled();
+    });
+
+    it("interrompe a propagação para não alternar o card ao tocar no botão", () => {
+      const stop = jest.fn();
+      const { getByLabelText } = render(
+        <ReadingCard {...baseProps} onTTSPlay={jest.fn()} ttsState="idle" />,
+      );
+      fireEvent.press(getByLabelText("Ouvir leitura"), { stopPropagation: stop });
+      expect(stop).toHaveBeenCalled();
+    });
   });
 });

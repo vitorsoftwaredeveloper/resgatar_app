@@ -1,7 +1,8 @@
 import { useAppTheme } from "@/context/ThemeContext";
-import { ChevronDown } from "lucide-react-native";
+import { TTSState } from "@/hooks/useLiturgyTTS";
+import { ChevronDown, Pause, Play } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
-import { LayoutChangeEvent, Pressable, Text, View } from "react-native";
+import { LayoutChangeEvent, Pressable, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -18,6 +19,9 @@ interface Props {
   formulaFinal?: string;
   defaultExpanded?: boolean;
   testID?: string;
+  ttsState?: TTSState;
+  onTTSPlay?: () => void;
+  onTTSPause?: () => void;
 }
 
 function formatVerseText(text: string, textStyle: any, verseStyle: any) {
@@ -43,6 +47,9 @@ export function ReadingCard({
   formulaFinal,
   defaultExpanded = false,
   testID,
+  ttsState,
+  onTTSPlay,
+  onTTSPause,
 }: Props) {
   const styles = useStyles();
   const [expanded, setExpanded] = useState(defaultExpanded);
@@ -81,11 +88,29 @@ export function ReadingCard({
   return (
     <Pressable
       testID={testID}
-      style={[styles.card]}
+      style={styles.card}
       onPress={() => setExpanded((v) => !v)}
       accessibilityRole="button"
     >
-      <Text style={[styles.label]}>{label}</Text>
+      <View style={styles.cardHeader}>
+        <Text style={[styles.label]}>{label}</Text>
+        {onTTSPlay && (
+          <TouchableOpacity
+            onPress={(e) => {
+              e.stopPropagation();
+              ttsState === "playing" ? onTTSPause?.() : onTTSPlay();
+            }}
+            style={[styles.ttsBtn, ttsState === "playing" && styles.ttsBtnActive]}
+            accessibilityLabel={ttsState === "playing" ? "Pausar leitura" : "Ouvir leitura"}
+          >
+            {ttsState === "playing" ? (
+              <Pause size={13} color={colors.primary} fill={colors.primary} />
+            ) : (
+              <Play size={13} color={colors.primary} fill={colors.primary} />
+            )}
+          </TouchableOpacity>
+        )}
+      </View>
 
       {!!referencia && <Text style={styles.referencia}>{referencia}</Text>}
       {!!titulo && <Text style={styles.titulo}>{titulo}</Text>}

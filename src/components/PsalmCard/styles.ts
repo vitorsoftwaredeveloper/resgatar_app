@@ -17,10 +17,14 @@ export function useStyles() {
           borderColor: colors.primary,
         },
         labelBadge: {
-          alignSelf: "flex-start",
           paddingVertical: 3,
           borderRadius: 6,
           marginBottom: SPACING.xxs,
+        },
+        labelRow: {
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
         },
         label: {
           fontSize: TYPOGRAPHY.xsmall,
@@ -67,6 +71,18 @@ export function useStyles() {
           position: "absolute",
           opacity: 0,
           zIndex: -1,
+        },
+        ttsBtn: {
+          width: 28,
+          height: 28,
+          borderRadius: 14,
+          borderWidth: 1,
+          borderColor: colors.primary,
+          alignItems: "center",
+          justifyContent: "center",
+        },
+        ttsBtnActive: {
+          backgroundColor: colors.softBrown,
         },
         footer: {
           flexDirection: "row",

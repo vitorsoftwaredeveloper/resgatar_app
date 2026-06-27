@@ -1,7 +1,8 @@
 import { useAppTheme } from "@/context/ThemeContext";
-import { ChevronDown } from "lucide-react-native";
+import { TTSState } from "@/hooks/useLiturgyTTS";
+import { ChevronDown, Pause, Play } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
-import { LayoutChangeEvent, Pressable, Text, View } from "react-native";
+import { LayoutChangeEvent, Pressable, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -15,15 +16,19 @@ interface Props {
   refrao?: string;
   texto: string;
   testID?: string;
+  ttsState?: TTSState;
+  onTTSPlay?: () => void;
+  onTTSPause?: () => void;
 }
 
-export function PsalmCard({ referencia, refrao, texto, testID }: Props) {
+export function PsalmCard({ referencia, refrao, texto, testID, ttsState, onTTSPlay, onTTSPause }: Props) {
   const styles = useStyles();
   const [expanded, setExpanded] = useState(false);
   const [contentHeight, setContentHeight] = useState(0);
   const animatedHeight = useSharedValue(0);
   const rotate = useSharedValue(0);
   const { colors } = useAppTheme();
+
   const handleContentLayout = (e: LayoutChangeEvent) => {
     const { height } = e.nativeEvent.layout;
     if (height > 0 && contentHeight === 0) setContentHeight(height + 8);
@@ -54,12 +59,30 @@ export function PsalmCard({ referencia, refrao, texto, testID }: Props) {
   return (
     <Pressable
       testID={testID}
-      style={[styles.card]}
+      style={styles.card}
       onPress={() => setExpanded((v) => !v)}
       accessibilityRole="button"
     >
       <View style={[styles.labelBadge]}>
-        <Text style={[styles.label]}>SALMO RESPONSORIAL</Text>
+        <View style={styles.labelRow}>
+          <Text style={[styles.label]}>SALMO RESPONSORIAL</Text>
+          {onTTSPlay && (
+            <TouchableOpacity
+              onPress={(e) => {
+                e.stopPropagation();
+                ttsState === "playing" ? onTTSPause?.() : onTTSPlay();
+              }}
+              style={[styles.ttsBtn, ttsState === "playing" && styles.ttsBtnActive]}
+              accessibilityLabel={ttsState === "playing" ? "Pausar leitura" : "Ouvir salmo"}
+            >
+              {ttsState === "playing" ? (
+                <Pause size={13} color={colors.primary} fill={colors.primary} />
+              ) : (
+                <Play size={13} color={colors.primary} fill={colors.primary} />
+              )}
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
 
       <Text style={styles.referencia}>{referencia}</Text>

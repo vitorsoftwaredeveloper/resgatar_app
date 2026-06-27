@@ -10,6 +10,7 @@ import { LiturgySkeleton } from "@/components/Skeleton/LiturgySkeleton";
 import { SwipeableTab } from "@/components/SwipeableTab";
 import { AuthContext } from "@/context/AuthContext";
 import { useAppTheme } from "@/context/ThemeContext";
+import { useLiturgyTTS } from "@/hooks/useLiturgyTTS";
 import { LiturgyService } from "@/services/LiturgyService";
 import { ILiturgia } from "@/types/Liturgy";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
@@ -33,6 +34,15 @@ function isSameDay(a: Date, b: Date): boolean {
   );
 }
 
+function buildSectionText(
+  titulo: string,
+  referencia: string,
+  texto: string,
+  formulaFinal?: string,
+): string {
+  return [titulo, referencia, texto, formulaFinal].filter(Boolean).join(". ");
+}
+
 export function DashboardScreen() {
   const { member } = useContext(AuthContext);
   const { colors } = useAppTheme();
@@ -45,7 +55,10 @@ export function DashboardScreen() {
   const [liturgy, setLiturgy] = useState<ILiturgia | null>(null);
   const [error, setError] = useState(false);
 
+  const { activeId, state: ttsState, playSection, pause, stop } = useLiturgyTTS();
+
   const fetchLiturgy = useCallback(async (date: Date, force = false) => {
+    stop();
     setLoading(true);
     setError(false);
     try {
@@ -89,6 +102,15 @@ export function DashboardScreen() {
   const handleSelectDate = useCallback((date: Date) => {
     setSelectedDate(date);
   }, []);
+
+  const sectionTTSProps = useCallback(
+    (id: string, text: string) => ({
+      ttsState: activeId === id ? ttsState : ("idle" as const),
+      onTTSPlay: () => playSection(id, text),
+      onTTSPause: pause,
+    }),
+    [activeId, ttsState, playSection, pause],
+  );
 
   return (
     <SwipeableTab>
@@ -158,6 +180,15 @@ export function DashboardScreen() {
                 titulo={liturgy.leituras.primeiraLeitura.titulo}
                 texto={liturgy.leituras.primeiraLeitura.texto}
                 formulaFinal="Palavra do Senhor."
+                {...sectionTTSProps(
+                  "primeira-leitura",
+                  buildSectionText(
+                    "Primeira leitura",
+                    liturgy.leituras.primeiraLeitura.referencia,
+                    liturgy.leituras.primeiraLeitura.texto,
+                    "Palavra do Senhor.",
+                  ),
+                )}
               />
 
               <PsalmCard
@@ -165,6 +196,14 @@ export function DashboardScreen() {
                 referencia={liturgy.leituras.salmo.referencia}
                 refrao={liturgy.leituras.salmo.refrao}
                 texto={liturgy.leituras.salmo.texto}
+                {...sectionTTSProps(
+                  "salmo",
+                  buildSectionText(
+                    "Salmo responsorial",
+                    liturgy.leituras.salmo.referencia,
+                    liturgy.leituras.salmo.texto,
+                  ),
+                )}
               />
 
               {!!liturgy.leituras.segundaLeitura && (
@@ -175,6 +214,15 @@ export function DashboardScreen() {
                   titulo={liturgy.leituras.segundaLeitura.titulo}
                   texto={liturgy.leituras.segundaLeitura.texto}
                   formulaFinal="Palavra do Senhor."
+                  {...sectionTTSProps(
+                    "segunda-leitura",
+                    buildSectionText(
+                      "Segunda leitura",
+                      liturgy.leituras.segundaLeitura.referencia,
+                      liturgy.leituras.segundaLeitura.texto,
+                      "Palavra do Senhor.",
+                    ),
+                  )}
                 />
               )}
 
@@ -185,6 +233,15 @@ export function DashboardScreen() {
                 titulo={liturgy.leituras.evangelho.titulo}
                 texto={liturgy.leituras.evangelho.texto}
                 formulaFinal="Palavra da Salvação."
+                {...sectionTTSProps(
+                  "evangelho",
+                  buildSectionText(
+                    "Evangelho",
+                    liturgy.leituras.evangelho.referencia,
+                    liturgy.leituras.evangelho.texto,
+                    "Palavra da Salvação.",
+                  ),
+                )}
               />
 
               {!!liturgy.oracoes?.coleta && (
@@ -193,6 +250,7 @@ export function DashboardScreen() {
                   label="ORAÇÃO DO DIA"
                   referencia=""
                   texto={liturgy.oracoes.coleta}
+                  {...sectionTTSProps("oracao", liturgy.oracoes.coleta)}
                 />
               )}
             </>
