@@ -1,4 +1,5 @@
 import { CalendarModal } from "@/components/CalendarModal";
+import { GraceEarnedModal } from "@/components/GraceEarnedModal";
 import { DateNavigator } from "@/components/DateNavigator";
 import { Header } from "@/components/Header";
 import { LiturgySeasonBanner } from "@/components/LiturgySeasonBanner";
@@ -54,6 +55,8 @@ export function ReadingsScreen() {
   const [loading, setLoading] = useState(true);
   const [liturgy, setLiturgy] = useState<ILiturgia | null>(null);
   const [error, setError] = useState(false);
+  // Saves disponíveis após ganhar um (controla a modal de "novo save").
+  const [graceEarned, setGraceEarned] = useState<number | null>(null);
 
   const {
     activeId,
@@ -124,10 +127,8 @@ export function ReadingsScreen() {
         "Você faltou um dia, mas sua sequência continua viva.",
       );
     } else if (result.graceEarned) {
-      ToastMessage.success(
-        "🕊️ Você ganhou um dia de graça!",
-        "Uma falta futura será perdoada.",
-      );
+      // Um save conquistado ganha uma modal de celebração (≠ toast).
+      setGraceEarned(result.data.grace);
     } else if (result.countedToday) {
       // Ordinary day: still confirm the streak advanced. Fires only on the
       // first read of the day (countedToday is false on re-opens).
@@ -349,6 +350,11 @@ export function ReadingsScreen() {
           selectedDate={selectedDate}
           onSelectDate={handleSelectDate}
           onClose={() => setCalendarVisible(false)}
+        />
+        <GraceEarnedModal
+          visible={graceEarned !== null}
+          graceCount={graceEarned ?? 0}
+          onClose={() => setGraceEarned(null)}
         />
       </View>
     </SwipeableTab>

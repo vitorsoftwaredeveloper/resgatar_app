@@ -118,15 +118,52 @@ export function useStyles() {
         },
 
         graceCard: {
+          flexDirection: "row",
+          gap: SPACING.sm,
           backgroundColor: colors.background,
           borderRadius: RADIUS.md,
           padding: SPACING.md,
+        },
+        graceIcon: {
+          width: 44,
+          height: 44,
+          borderRadius: 22,
+          backgroundColor: colors.softBrown,
+          alignItems: "center",
+          justifyContent: "center",
+        },
+        graceBody: {
+          flex: 1,
+        },
+        graceHeaderRow: {
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
         },
         graceTitle: {
           fontSize: TYPOGRAPHY.subtitle,
           fontWeight: "700",
           color: colors.text,
-          marginBottom: 4,
+        },
+        graceCount: {
+          fontSize: TYPOGRAPHY.body,
+          fontWeight: "700",
+          color: STREAK_ACCENT,
+        },
+        gracePips: {
+          flexDirection: "row",
+          gap: 6,
+          marginTop: 8,
+          marginBottom: 8,
+        },
+        gracePip: {
+          flex: 1,
+          height: 6,
+          borderRadius: 3,
+          backgroundColor: colors.border,
+        },
+        gracePipOn: {
+          backgroundColor: STREAK_ACCENT,
         },
         graceText: {
           fontSize: TYPOGRAPHY.small,

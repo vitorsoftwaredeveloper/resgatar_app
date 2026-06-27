@@ -7,11 +7,11 @@ import {
   resolveFrameIndex,
   unlockedBadgeIds,
 } from "@/services/BadgeService";
-import { emptyStreak } from "@/services/StreakService";
+import { emptyStreak, GRACE_MAX } from "@/services/StreakService";
 import { IStreakData } from "@/storage/asyncStorage";
 import { STREAK_ACCENT } from "@/components/StreakCard/styles";
 import { badgeIcon } from "./badgeIcons";
-import { Check, Flame, Lock } from "lucide-react-native";
+import { Check, Flame, Lock, ShieldCheck } from "lucide-react-native";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Modal,
@@ -148,14 +148,32 @@ export function AchievementsModal({
                 </View>
 
                 <View style={styles.graceCard}>
-                  <Text style={styles.graceTitle}>
-                    🕊️ {streak.grace} {streak.grace === 1 ? "dia" : "dias"} de
-                    graça
-                  </Text>
-                  <Text style={styles.graceText}>
-                    A cada 7 dias seguidos você ganha um dia de graça, que perdoa
-                    uma falta e mantém sua sequência viva.
-                  </Text>
+                  <View style={styles.graceIcon}>
+                    <ShieldCheck size={24} color={STREAK_ACCENT} />
+                  </View>
+                  <View style={styles.graceBody}>
+                    <View style={styles.graceHeaderRow}>
+                      <Text style={styles.graceTitle}>Saves</Text>
+                      <Text style={styles.graceCount}>
+                        {streak.grace}/{GRACE_MAX}
+                      </Text>
+                    </View>
+                    <View style={styles.gracePips}>
+                      {Array.from({ length: GRACE_MAX }).map((_, i) => (
+                        <View
+                          key={i}
+                          style={[
+                            styles.gracePip,
+                            i < streak.grace && styles.gracePipOn,
+                          ]}
+                        />
+                      ))}
+                    </View>
+                    <Text style={styles.graceText}>
+                      Cada 7 dias seguidos rende um save, que perdoa uma falta e
+                      mantém sua sequência viva.
+                    </Text>
+                  </View>
                 </View>
 
                 <View style={styles.sectionHeader}>
