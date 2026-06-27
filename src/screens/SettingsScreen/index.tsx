@@ -1,13 +1,13 @@
 import { Header } from "@/components/Header";
 import { ItemActionList } from "@/components/ItemActionList";
-import { SwipeableTab } from "@/components/SwipeableTab";
 import { useAppTheme } from "@/context/ThemeContext";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/navigation/types";
 import {
   CalendarRange,
+  Gift,
   Mail,
   PiggyBank,
   Receipt,
@@ -22,7 +22,7 @@ import { useStyles } from "./styles";
 export const SettingsScreen = () => {
   const { member } = useContext(AuthContext);
   const { colors } = useAppTheme();
-  const tabBarHeight = useBottomTabBarHeight();
+  const insets = useSafeAreaInsets();
   const styles = useStyles();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -30,16 +30,16 @@ export const SettingsScreen = () => {
   const [openSendNotification, setOpenSendNotification] = useState(false);
 
   return (
-    <SwipeableTab>
-      <View style={styles.container}>
-        <Header
-          name={member?.firstName + " " + member?.lastName}
-          photo={member?.profileImage}
-        />
+    <View style={styles.container}>
+      <Header
+        name={member?.firstName + " " + member?.lastName}
+        photo={member?.profileImage}
+        onBack={() => navigation.goBack()}
+      />
 
-        <View
-          style={[styles.content, { paddingBottom: tabBarHeight, gap: 16 }]}
-        >
+      <View
+        style={[styles.content, { paddingBottom: insets.bottom + 16, gap: 16 }]}
+      >
           <View style={styles.sectionGroup}>
             <Text style={styles.sectionLabel}>Financeiro</Text>
             <View style={styles.menuCard}>
@@ -60,6 +60,12 @@ export const SettingsScreen = () => {
                 description="Registre e acompanhe as saídas de caixa do mês por categoria."
                 onPress={() => navigation.navigate("Expenses")}
                 icon={<Receipt color={colors.primary} />}
+              />
+              <ItemActionList
+                title="Listagem de doações"
+                description="Veja todas as doações avulsas do ano por membro, valor e forma de pagamento."
+                onPress={() => navigation.navigate("Donations")}
+                icon={<Gift color={colors.primary} />}
                 isLast
               />
             </View>
@@ -91,6 +97,5 @@ export const SettingsScreen = () => {
           )}
         </View>
       </View>
-    </SwipeableTab>
   );
 };

@@ -7,6 +7,8 @@ export type RootStackParamList = {
   Arrecadacao: undefined;
   BalancoAnual: undefined;
   Expenses: undefined;
+  Donations: undefined;
   PersonalSettings: undefined;
   MemberActions: undefined;
+  Settings: undefined;
 };

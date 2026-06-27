@@ -10,7 +10,13 @@ import { RootStackParamList } from "@/navigation/types";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { HelpCircle, LogOut, Settings, Video } from "lucide-react-native";
+import {
+  HelpCircle,
+  LogOut,
+  Settings,
+  ShieldUser,
+  Video,
+} from "lucide-react-native";
 import React, { useContext, useState } from "react";
 import { TouchableOpacity, Text, View } from "react-native";
 import { AuthContext } from "../../context/AuthContext";
@@ -47,6 +53,15 @@ export const ProfileScreen = () => {
           />
 
           <View style={styles.menuCard}>
+            {member?.role === "admin" && (
+              <ItemActionList
+                title="Administrativo"
+                description="Financeiro, membros e notificações da comunidade"
+                onPress={() => navigation.navigate("Settings")}
+                icon={<ShieldUser color={colors.primary} />}
+              />
+            )}
+
             <ItemActionList
               title="Configurações pessoais"
               description="Dados, senha e encerramento de conta"

@@ -2,8 +2,14 @@ import { ThemeMode } from "@/context/ThemeContext";
 import { IAnnualBalance } from "@/types/Balance";
 import { EXPENSE_CATEGORY_LABELS, ExpenseCategory } from "@/types/Expense";
 import { formatMoneyBRL } from "@/utils/helper";
+import {
+  cacheDirectory,
+  EncodingType,
+  writeAsStringAsync,
+} from "expo-file-system/legacy";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
+import * as XLSX from "xlsx";
 
 const MONTH_LABELS = [
   "Janeiro",
@@ -78,6 +84,7 @@ export const generateBalanceReportHTML = ({
       <tr>
         <td class="month">${MONTH_LABELS[m.month - 1] ?? m.month}</td>
         <td class="num in">${formatMoneyBRL(m.entradas)}</td>
+        <td class="num in">${formatMoneyBRL(m.doacoes)}</td>
         <td class="num out">${formatMoneyBRL(m.saidas)}</td>
         <td class="num" style="color:${netColor(m.resultado, C)}">${signed(m.resultado)}</td>
         <td class="num strong" style="color:${netColor(m.saldoAcumulado, C)}">${formatMoneyBRL(m.saldoAcumulado)}</td>
@@ -148,6 +155,10 @@ export const generateBalanceReportHTML = ({
       <div class="summaryValue" style="color:${C.success}">${formatMoneyBRL(balance.totals.entradas)}</div>
     </div>
     <div class="summaryCard">
+      <div class="summaryLabel">Doações</div>
+      <div class="summaryValue" style="color:${C.success}">${formatMoneyBRL(balance.totals.doacoes)}</div>
+    </div>
+    <div class="summaryCard">
       <div class="summaryLabel">Saídas</div>
       <div class="summaryValue" style="color:${C.error}">${formatMoneyBRL(balance.totals.saidas)}</div>
     </div>
@@ -163,6 +174,7 @@ export const generateBalanceReportHTML = ({
       <tr>
         <th>Mês</th>
         <th style="text-align:right">Entradas</th>
+        <th style="text-align:right">Doações</th>
         <th style="text-align:right">Saídas</th>
         <th style="text-align:right">Resultado</th>
         <th style="text-align:right">Saldo acum.</th>
@@ -198,5 +210,121 @@ export const shareBalanceReportPDF = async (params: {
     mimeType: "application/pdf",
     dialogTitle: `Balanço ${params.balance.year}`,
     UTI: "com.adobe.pdf",
+  });
+};
+
+// Formato de número monetário do Excel (BRL). Mantém os valores como números
+// para que o Excel permita somar/filtrar, exibindo "R$ 1.234,56".
+const BRL_FORMAT = '"R$" #,##0.00';
+
+// Aplica o formato BRL a um intervalo de colunas (0-indexadas) a partir da
+// linha `fromRow` (0-indexada) até o fim da planilha.
+const applyMoneyFormat = (
+  ws: XLSX.WorkSheet,
+  cols: number[],
+  fromRow: number,
+) => {
+  const range = XLSX.utils.decode_range(ws["!ref"] ?? "A1");
+  for (let r = fromRow; r <= range.e.r; r++) {
+    for (const c of cols) {
+      const cell = ws[XLSX.utils.encode_cell({ r, c })];
+      if (cell && cell.t === "n") cell.z = BRL_FORMAT;
+    }
+  }
+};
+
+export const generateBalanceReportWorkbook = ({
+  balance,
+  isCurrentYear,
+}: {
+  balance: IAnnualBalance;
+  isCurrentYear: boolean;
+}): XLSX.WorkBook => {
+  const cutoffLabel = isCurrentYear
+    ? `Acumulado até ${MONTH_LABELS[balance.asOfMonth - 1] ?? "o mês atual"}`
+    : "Ano fechado";
+
+  const wb = XLSX.utils.book_new();
+
+  // Aba 1 — Resumo (totais do ano).
+  const summaryRows: (string | number)[][] = [
+    [`Balanço Anual ${balance.year}`],
+    [cutoffLabel],
+    [],
+    ["Entradas", balance.totals.entradas],
+    ["Doações", balance.totals.doacoes],
+    ["Saídas", balance.totals.saidas],
+    ["Saldo", balance.totals.saldoFinal],
+  ];
+  const wsSummary = XLSX.utils.aoa_to_sheet(summaryRows);
+  wsSummary["!cols"] = [{ wch: 22 }, { wch: 16 }];
+  applyMoneyFormat(wsSummary, [1], 3);
+  XLSX.utils.book_append_sheet(wb, wsSummary, "Resumo");
+
+  // Aba 2 — Por mês.
+  const monthHeader = [
+    "Mês",
+    "Entradas",
+    "Doações",
+    "Saídas",
+    "Resultado",
+    "Saldo acumulado",
+  ];
+  const monthRows = balance.byMonth.map((m) => [
+    MONTH_LABELS[m.month - 1] ?? String(m.month),
+    m.entradas,
+    m.doacoes,
+    m.saidas,
+    m.resultado,
+    m.saldoAcumulado,
+  ]);
+  const wsMonths = XLSX.utils.aoa_to_sheet([monthHeader, ...monthRows]);
+  wsMonths["!cols"] = [
+    { wch: 12 },
+    { wch: 14 },
+    { wch: 14 },
+    { wch: 14 },
+    { wch: 14 },
+    { wch: 16 },
+  ];
+  applyMoneyFormat(wsMonths, [1, 2, 3, 4, 5], 1);
+  XLSX.utils.book_append_sheet(wb, wsMonths, "Por mês");
+
+  // Aba 3 — Despesas por categoria.
+  const categoryEntries = Object.entries(balance.expensesByCategory).sort(
+    (a, b) => b[1] - a[1],
+  );
+  const categoryRows = categoryEntries.map(([cat, value]) => [
+    EXPENSE_CATEGORY_LABELS[cat as ExpenseCategory] ?? cat,
+    value,
+  ]);
+  const wsCategories = XLSX.utils.aoa_to_sheet([
+    ["Categoria", "Total"],
+    ...(categoryRows.length
+      ? categoryRows
+      : [["Nenhuma despesa registrada no período.", ""]]),
+  ]);
+  wsCategories["!cols"] = [{ wch: 28 }, { wch: 16 }];
+  if (categoryRows.length) applyMoneyFormat(wsCategories, [1], 1);
+  XLSX.utils.book_append_sheet(wb, wsCategories, "Despesas por categoria");
+
+  return wb;
+};
+
+export const shareBalanceReportExcel = async (params: {
+  balance: IAnnualBalance;
+  isCurrentYear: boolean;
+}): Promise<void> => {
+  const wb = generateBalanceReportWorkbook(params);
+  const base64 = XLSX.write(wb, { type: "base64", bookType: "xlsx" });
+
+  const uri = `${cacheDirectory}balanco-${params.balance.year}.xlsx`;
+  await writeAsStringAsync(uri, base64, { encoding: EncodingType.Base64 });
+
+  await Sharing.shareAsync(uri, {
+    mimeType:
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    dialogTitle: `Balanço ${params.balance.year}`,
+    UTI: "org.openxmlformats.spreadsheetml.sheet",
   });
 };

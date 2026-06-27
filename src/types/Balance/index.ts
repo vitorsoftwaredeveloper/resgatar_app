@@ -6,8 +6,9 @@
 interface IAnnualBalanceMonth {
   month: number;
   entradas: number;
+  doacoes: number; // doações avulsas aprovadas no mês (PIX + dinheiro)
   saidas: number;
-  resultado: number;
+  resultado: number; // entradas + doacoes - saidas
   saldoAcumulado: number;
 }
 
@@ -16,6 +17,7 @@ interface IAnnualBalance {
   asOfMonth: number;
   totals: {
     entradas: number;
+    doacoes: number;
     saidas: number;
     resultado: number;
     saldoFinal: number;

@@ -4,12 +4,16 @@ import { SwipeableTab } from "@/components/SwipeableTab";
 import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";
 import { ChargeContext } from "@/context/ChargeContext";
+import { useAppTheme } from "@/context/ThemeContext";
+import { RADIUS, SHADOW, SPACING, TYPOGRAPHY } from "@/theme";
 import { TRANSACTION_STATUS } from "@/types/Charge";
 import { formatDateFromTimestamp, formatMoneyBRL } from "@/utils/helper";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { HandHeart } from "lucide-react-native";
 import React, { useContext, useMemo, useState } from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { ModalComprovante } from "./ModalComprovante";
+import { ModalDonate } from "../ProfileScreen/ModalDonate";
 import { PixPaymentModal } from "./PixPaymentModal";
 import { useStyles } from "./styles";
 
@@ -30,9 +34,11 @@ const MONTH: Record<string, string> = {
 
 export const BillsScreen = () => {
   const tabBarHeight = useBottomTabBarHeight();
-  const { createCharge } = useContext(ChargeContext);
+  const { charge, createCharge } = useContext(ChargeContext);
   const { member } = useContext(AuthContext);
+  const { colors } = useAppTheme();
   const styles = useStyles();
+  const [donateModalVisible, setDonateModalVisible] = useState(false);
 
   const [modalPayVisible, setModalPayVisible] = useState(false);
   const [comprovanteItem, setComprovanteItem] = useState<null | {
@@ -99,6 +105,44 @@ export const BillsScreen = () => {
           ]}
           data={contributions}
           keyExtractor={(item) => item.id}
+          ListHeaderComponent={
+            <TouchableOpacity
+              onPress={() => setDonateModalVisible(true)}
+              style={{
+                backgroundColor: colors.primary,
+                borderRadius: RADIUS.md,
+                padding: SPACING.lg,
+                flexDirection: "row",
+                alignItems: "center",
+                gap: SPACING.md,
+                marginBottom: SPACING.lg,
+                ...SHADOW.card,
+              }}
+            >
+              <HandHeart color={colors.white} size={28} />
+              <View style={{ flex: 1 }}>
+                <Text
+                  style={{
+                    color: colors.white,
+                    fontSize: TYPOGRAPHY.subtitle,
+                    fontWeight: "700",
+                  }}
+                >
+                  Fazer uma doação
+                </Text>
+                <Text
+                  style={{
+                    color: colors.white,
+                    fontSize: TYPOGRAPHY.small,
+                    opacity: 0.85,
+                    marginTop: 2,
+                  }}
+                >
+                  Contribua com um valor extra via PIX ou dinheiro
+                </Text>
+              </View>
+            </TouchableOpacity>
+          }
           renderItem={({ item }) => (
             <ContributionItem
               data={item}
@@ -120,6 +164,11 @@ export const BillsScreen = () => {
           <PixPaymentModal
             visible={modalPayVisible}
             onClose={() => setModalPayVisible(false)}
+            payment={{
+              amountLabel: `${charge.transactionAmount ?? ""}`.replace(".", ","),
+              qrCode: charge.transactionData?.qrCode ?? "",
+              status: charge.status,
+            }}
           />
         )}
 
@@ -128,6 +177,14 @@ export const BillsScreen = () => {
             visible={!!comprovanteItem}
             onClose={() => setComprovanteItem(null)}
             data={comprovanteItem}
+          />
+        )}
+
+        {donateModalVisible && (
+          <ModalDonate
+            visible={donateModalVisible}
+            onClose={() => setDonateModalVisible(false)}
+            isAdmin={member?.role === "admin"}
           />
         )}
       </View>

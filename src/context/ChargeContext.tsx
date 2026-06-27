@@ -8,6 +8,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { AppState } from "react-native";
 import {
   ICharge,
   PAYMENT_NOTIFICATION_TYPE,
@@ -148,6 +149,36 @@ export const ChargeProvider: React.FC<{ children: React.ReactNode }> = ({
       unsubscribeOpened();
     };
   }, []);
+
+  // Fallback para quando o push não chega (ex.: usuário sai para o app do banco
+  // e volta pelo seletor de apps, sem tocar na notificação). Enquanto a cobrança
+  // está pendente, reconsultamos o status ao voltar ao foreground e em um
+  // polling leve. O push continua sendo o caminho feliz; isto é só a rede de
+  // segurança.
+  useEffect(() => {
+    if (charge?.status !== TRANSACTION_STATUS.PENDING || !charge?.transactionId)
+      return;
+
+    async function refreshPending() {
+      try {
+        await consultCharge();
+        await reloadMemberData();
+      } catch (error) {
+        console.error("Error refreshing pending charge", error);
+      }
+    }
+
+    const subscription = AppState.addEventListener("change", (state) => {
+      if (state === "active") refreshPending();
+    });
+
+    const interval = setInterval(refreshPending, 5000);
+
+    return () => {
+      subscription.remove();
+      clearInterval(interval);
+    };
+  }, [charge?.status, charge?.transactionId]);
 
   return (
     <ChargeContext.Provider value={{ charge, createCharge }}>

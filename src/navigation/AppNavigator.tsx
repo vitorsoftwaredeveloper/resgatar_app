@@ -10,16 +10,17 @@ import { VideosScreen } from "@/screens/VideosScreen";
 import { ArrecadacaoScreen } from "@/screens/ArrecadacaoScreen";
 import { BalancoAnualScreen } from "@/screens/BalancoAnualScreen";
 import { ExpensesScreen } from "@/screens/ExpensesScreen";
+import { DonationsScreen } from "@/screens/DonationsScreen";
 import { PersonalSettingsScreen } from "@/screens/PersonalSettingsScreen";
 import { MemberActionsScreen } from "@/screens/MemberActionsScreen";
 import { OnboardingScreen } from "@/screens/OnboardingScreen";
+import { SettingsScreen } from "@/screens/SettingsScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator = () => {
   const {
     isLoggedIn,
-    member,
     loading,
     needsOnboarding,
     onboardingChecked,
@@ -44,14 +45,16 @@ const AppNavigator = () => {
       ) : (
         <>
           <Stack.Screen name="Home">
-            {() => <BottomTabs isAdmin={member?.role === "admin"} />}
+            {() => <BottomTabs />}
           </Stack.Screen>
           <Stack.Screen name="Videos" component={VideosScreen} />
           <Stack.Screen name="Arrecadacao" component={ArrecadacaoScreen} />
           <Stack.Screen name="BalancoAnual" component={BalancoAnualScreen} />
           <Stack.Screen name="Expenses" component={ExpensesScreen} />
+          <Stack.Screen name="Donations" component={DonationsScreen} />
           <Stack.Screen name="PersonalSettings" component={PersonalSettingsScreen} />
           <Stack.Screen name="MemberActions" component={MemberActionsScreen} />
+          <Stack.Screen name="Settings" component={SettingsScreen} />
         </>
       )}
     </Stack.Navigator>

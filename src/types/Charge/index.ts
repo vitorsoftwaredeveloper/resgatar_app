@@ -125,6 +125,17 @@ const TRANSACTION_STATUS = {
   CHARGED_BACK: "charged_back",
 };
 
+// Transações cujo dinheiro voltou para quem pagou: não entram em nenhum total
+// nem aparecem nas listas (cobranças e doações). Mesmo que tenham sido
+// aprovadas antes, o valor não está mais em caixa.
+const RETURNED_TRANSACTION_STATUSES: string[] = [
+  TRANSACTION_STATUS.REFUNDED,
+  TRANSACTION_STATUS.CHARGED_BACK,
+];
+
+const isReturnedTransaction = (status?: string): boolean =>
+  status != null && RETURNED_TRANSACTION_STATUSES.includes(status);
+
 // Valor enviado pelo backend no campo `data.type` do push (FCM) quando o
 // webhook do Mercado Pago confirma a atualização de uma cobrança.
 const PAYMENT_NOTIFICATION_TYPE = "PAYMENT_UPDATE";
@@ -142,6 +153,7 @@ export {
   IAnnualByMonth,
   IAnnualByMember,
   TRANSACTION_STATUS,
+  isReturnedTransaction,
   PAYMENT_NOTIFICATION_TYPE,
   PAYMENT_CONFIRMED_NOTIFICATION_TYPE,
 };

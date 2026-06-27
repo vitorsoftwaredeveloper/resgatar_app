@@ -5,7 +5,6 @@ import { useAppTheme } from "@/context/ThemeContext";
 const { width } = Dimensions.get("window");
 
 export const TAB_WIDTH = width / 3;
-export const TAB_WIDTH_ADMIN = width / 4;
 
 export function useStyles() {
   const { colors } = useAppTheme();
@@ -30,20 +29,12 @@ export function useStyles() {
           width: TAB_WIDTH,
           backgroundColor: colors.primary,
         },
-        indicatorAdmin: {
-          width: TAB_WIDTH_ADMIN,
-        },
         row: {
           flexDirection: "row",
           height: 72,
         },
         tab: {
           width: TAB_WIDTH,
-          alignItems: "center",
-          justifyContent: "center",
-        },
-        tabAdmin: {
-          width: TAB_WIDTH_ADMIN,
           alignItems: "center",
           justifyContent: "center",
         },

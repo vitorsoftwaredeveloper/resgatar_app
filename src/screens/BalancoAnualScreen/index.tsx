@@ -21,11 +21,16 @@ import {
   CircleAlert,
   CircleCheck,
   FileDown,
+  FileSpreadsheet,
+  Gift,
   QrCode,
   Target,
   Wallet,
 } from "lucide-react-native";
-import { shareBalanceReportPDF } from "@/utils/generateBalanceReport";
+import {
+  shareBalanceReportExcel,
+  shareBalanceReportPDF,
+} from "@/utils/generateBalanceReport";
 import React, { useCallback, useContext, useMemo, useState } from "react";
 import {
   ActivityIndicator,
@@ -60,6 +65,7 @@ export function BalancoAnualScreen() {
   const { colors, mode } = useAppTheme();
   const { member } = useContext(AuthContext);
   const [exporting, setExporting] = useState(false);
+  const [exportingExcel, setExportingExcel] = useState(false);
 
   const currentYear = new Date().getFullYear();
   const [year, setYear] = useState(currentYear);
@@ -122,6 +128,18 @@ export function BalancoAnualScreen() {
     }
   }, [balance, exporting, isCurrentYear, mode]);
 
+  const handleExportExcel = useCallback(async () => {
+    if (!balance || exportingExcel) return;
+    setExportingExcel(true);
+    try {
+      await shareBalanceReportExcel({ balance, isCurrentYear });
+    } catch {
+      ToastMessage.error("Erro", "Não foi possível gerar o Excel do balanço.");
+    } finally {
+      setExportingExcel(false);
+    }
+  }, [balance, exportingExcel, isCurrentYear]);
+
   // Rótulo do corte: ano corrente acumula até o mês atual; anos passados fecham.
   const cutoffLabel = useMemo(() => {
     if (!summary) return "";
@@ -176,6 +194,15 @@ export function BalancoAnualScreen() {
           const positivo = mb.resultado >= 0;
           return (
             <View style={styles.monthBalanceRow}>
+              {mb.doacoes > 0 && (
+                <View style={styles.monthBalanceItem}>
+                  <Gift size={13} color={colors.info} />
+                  <Text style={styles.monthBalanceLabel}>Doações</Text>
+                  <Text style={styles.monthSplitText}>
+                    {formatMoneyBRL(mb.doacoes)}
+                  </Text>
+                </View>
+              )}
               <View style={styles.monthBalanceItem}>
                 <ArrowUpCircle size={13} color={colors.error} />
                 <Text style={styles.monthBalanceLabel}>Saídas</Text>
@@ -315,6 +342,16 @@ export function BalancoAnualScreen() {
             <View style={styles.balanceDivider} />
             <View style={styles.balanceItem}>
               <View style={styles.balanceItemHeader}>
+                <Gift size={14} color={colors.info} />
+                <Text style={styles.balanceItemLabel}>Doações</Text>
+              </View>
+              <Text style={styles.balanceValueIn}>
+                {formatMoneyBRL(balance.totals.doacoes)}
+              </Text>
+            </View>
+            <View style={styles.balanceDivider} />
+            <View style={styles.balanceItem}>
+              <View style={styles.balanceItemHeader}>
                 <ArrowUpCircle size={14} color={colors.error} />
                 <Text style={styles.balanceItemLabel}>Saídas</Text>
               </View>
@@ -349,22 +386,41 @@ export function BalancoAnualScreen() {
               : "Entradas − saídas do ano fechado."}
           </Text>
 
-          <TouchableOpacity
-            style={styles.exportButton}
-            onPress={handleExport}
-            disabled={exporting}
-            activeOpacity={0.8}
-            accessibilityLabel="Exportar balanço em PDF"
-          >
-            {exporting ? (
-              <ActivityIndicator size="small" color={colors.primary} />
-            ) : (
-              <FileDown size={16} color={colors.primary} />
-            )}
-            <Text style={styles.exportButtonText}>
-              {exporting ? "Gerando PDF…" : "Exportar PDF"}
-            </Text>
-          </TouchableOpacity>
+          <View style={styles.exportRow}>
+            <TouchableOpacity
+              style={styles.exportButton}
+              onPress={handleExport}
+              disabled={exporting || exportingExcel}
+              activeOpacity={0.8}
+              accessibilityLabel="Exportar balanço em PDF"
+            >
+              {exporting ? (
+                <ActivityIndicator size="small" color={colors.primary} />
+              ) : (
+                <FileDown size={16} color={colors.primary} />
+              )}
+              <Text style={styles.exportButtonText}>
+                {exporting ? "Gerando PDF…" : "PDF"}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.exportButton}
+              onPress={handleExportExcel}
+              disabled={exporting || exportingExcel}
+              activeOpacity={0.8}
+              accessibilityLabel="Exportar balanço em Excel"
+            >
+              {exportingExcel ? (
+                <ActivityIndicator size="small" color={colors.primary} />
+              ) : (
+                <FileSpreadsheet size={16} color={colors.primary} />
+              )}
+              <Text style={styles.exportButtonText}>
+                {exportingExcel ? "Gerando Excel…" : "Excel"}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
 

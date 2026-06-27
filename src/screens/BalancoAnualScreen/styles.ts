@@ -183,13 +183,19 @@ export function useStyles() {
           color: colors.textMuted,
           marginTop: SPACING.sm2,
         },
+        exportRow: {
+          flexDirection: "row",
+          gap: SPACING.sm,
+          marginTop: SPACING.md,
+        },
         exportButton: {
+          flex: 1,
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
           gap: SPACING.xs,
-          marginTop: SPACING.md,
           paddingVertical: SPACING.sm2,
+          paddingHorizontal: SPACING.xs,
           borderRadius: RADIUS.sm,
           borderWidth: 1,
           borderColor: colors.primary,
@@ -204,8 +210,10 @@ export function useStyles() {
         // Linha de saídas/resultado dentro do card de mês
         monthBalanceRow: {
           flexDirection: "row",
-          justifyContent: "space-between",
+          flexWrap: "wrap",
           alignItems: "center",
+          columnGap: SPACING.md,
+          rowGap: SPACING.xs,
           marginTop: SPACING.sm,
           paddingTop: SPACING.sm,
           borderTopWidth: 1,

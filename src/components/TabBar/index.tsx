@@ -4,41 +4,27 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import {
-  Home,
-  FileText,
-  TextAlignJustify,
-  ShieldUser,
-} from "lucide-react-native";
+import { Home, FileText, TextAlignJustify } from "lucide-react-native";
 import { CoachTarget } from "@/components/CoachTarget";
-import { useStyles, TAB_WIDTH, TAB_WIDTH_ADMIN } from "./styles";
+import { useStyles, TAB_WIDTH } from "./styles";
 
-export function TabBar({ state, navigation, isAdmin }: any) {
+export function TabBar({ state, navigation }: any) {
   const { bottom } = useSafeAreaInsets();
   const { styles, ACTIVE_COLOR, INACTIVE_COLOR } = useStyles();
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
       {
-        translateX: withTiming(
-          state.index * (isAdmin ? TAB_WIDTH_ADMIN : TAB_WIDTH),
-          {
-            duration: 250,
-          },
-        ),
+        translateX: withTiming(state.index * TAB_WIDTH, {
+          duration: 250,
+        }),
       },
     ],
   }));
 
   return (
     <View style={[styles.container, { paddingBottom: bottom }]}>
-      <Animated.View
-        style={[
-          styles.indicator,
-          isAdmin && styles.indicatorAdmin,
-          animatedStyle,
-        ]}
-      />
+      <Animated.View style={[styles.indicator, animatedStyle]} />
 
       <View style={styles.row}>
         {state.routes.map((route: any, index: number) => {
@@ -50,16 +36,13 @@ export function TabBar({ state, navigation, isAdmin }: any) {
             Dashboard: <Home size={24} color={iconColor} />,
             Bills: <FileText size={24} color={iconColor} />,
             Profile: <TextAlignJustify size={24} color={iconColor} />,
-            ...(isAdmin && {
-              Settings: <ShieldUser size={24} color={iconColor} />,
-            }),
           };
 
           return (
             <Pressable
               key={route.key}
               onPress={() => navigation.navigate(route.name)}
-              style={isAdmin ? styles.tabAdmin : styles.tab}
+              style={styles.tab}
             >
               <CoachTarget
                 id={`tab-${route.name.toLowerCase()}`}
@@ -72,9 +55,7 @@ export function TabBar({ state, navigation, isAdmin }: any) {
                     ? "Início"
                     : route.name === "Bills"
                       ? "Contribuições"
-                      : route.name === "Profile"
-                        ? "Mais"
-                        : "Administrativo"}
+                      : "Mais"}
                 </Text>
               </CoachTarget>
             </Pressable>

@@ -2,23 +2,18 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { DashboardScreen } from "../../screens/DashboardScreen";
 import { BillsScreen } from "../../screens/BillsScreen";
 import { ProfileScreen } from "../../screens/ProfileScreen";
-import { SettingsScreen } from "../../screens/SettingsScreen";
 import { TabBar } from "../TabBar";
 
 const Tab = createBottomTabNavigator();
 
-interface IButtonTabsProps {
-  isAdmin: boolean;
-}
-export const BottomTabs = ({ isAdmin }: IButtonTabsProps) => {
+export const BottomTabs = () => {
   return (
     <Tab.Navigator
       screenOptions={{ headerShown: false }}
-      tabBar={(props) => <TabBar isAdmin={isAdmin} {...props} />}
+      tabBar={(props) => <TabBar {...props} />}
     >
       <Tab.Screen name="Dashboard" component={DashboardScreen} />
       <Tab.Screen name="Bills" component={BillsScreen} />
-      {isAdmin && <Tab.Screen name="Settings" component={SettingsScreen} />}
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
