@@ -24,7 +24,7 @@ import { ModalEditPhoto } from "./ModalEditPhoto";
 import { useStyles } from "./styles";
 
 export const ProfileScreen = () => {
-  const { logout, member, restartOnboarding, myTier } = useContext(AuthContext);
+  const { logout, member, restartOnboarding } = useContext(AuthContext);
   const { colors } = useAppTheme();
   const tabBarHeight = useBottomTabBarHeight();
   const styles = useStyles();
@@ -49,7 +49,6 @@ export const ProfileScreen = () => {
         <View style={[styles.content, { paddingBottom: tabBarHeight }]}>
           <ProfileHeaderCard
             member={member as IMember}
-            tier={myTier}
             onPressAvatar={() => setPhotoModalVisible(true)}
           />
 
