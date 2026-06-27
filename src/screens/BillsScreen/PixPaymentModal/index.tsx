@@ -111,56 +111,62 @@ export function PixPaymentModal({
             <Text style={styles.amount}>R$ {payment.amountLabel}</Text>
           </View>
 
-          <View style={styles.qrContainer}>
-            <View style={styles.qrBox}>
-              <QRCode
-                value={payment.qrCode}
-                size={200}
-                color="#3E3328"
-                backgroundColor="#00000000"
-              />
+          {!!payment.qrCode && (
+            <View style={styles.qrContainer}>
+              <View style={styles.qrBox}>
+                <QRCode
+                  value={payment.qrCode}
+                  size={200}
+                  color="#3E3328"
+                  backgroundColor="#00000000"
+                />
+              </View>
             </View>
-          </View>
+          )}
 
-          <Text style={styles.helperText}>
-            Escaneie o QR Code ou copie o código PIX
-          </Text>
+          {!!payment.qrCode && (
+            <>
+              <Text style={styles.helperText}>
+                Escaneie o QR Code ou copie o código PIX
+              </Text>
 
-          <View style={styles.pixCodeContainer}>
-            <Text
-              style={styles.pixCode}
-              numberOfLines={1}
-              ellipsizeMode="middle"
-            >
-              {payment.qrCode}
-            </Text>
+              <View style={styles.pixCodeContainer}>
+                <Text
+                  style={styles.pixCode}
+                  numberOfLines={1}
+                  ellipsizeMode="middle"
+                >
+                  {payment.qrCode}
+                </Text>
 
-            <View style={styles.containerCopy}>
-              {isCopied && (
-                <View style={styles.tooltipContainer}>
-                  <View style={styles.balloon}>
-                    <Text style={styles.balloonText}>Copiado!</Text>
-                  </View>
+                <View style={styles.containerCopy}>
+                  {isCopied && (
+                    <View style={styles.tooltipContainer}>
+                      <View style={styles.balloon}>
+                        <Text style={styles.balloonText}>Copiado!</Text>
+                      </View>
 
-                  <View style={styles.arrow} />
+                      <View style={styles.arrow} />
+                    </View>
+                  )}
+
+                  <Pressable
+                    style={styles.copyButton}
+                    onPress={() => {
+                      setIsCopied(true);
+                      copyToClipboard(payment.qrCode);
+                    }}
+                  >
+                    {isCopied ? (
+                      <Check size={18} color="#fff" />
+                    ) : (
+                      <Copy size={18} color="#fff" />
+                    )}
+                  </Pressable>
                 </View>
-              )}
-
-              <Pressable
-                style={styles.copyButton}
-                onPress={() => {
-                  setIsCopied(true);
-                  copyToClipboard(payment.qrCode);
-                }}
-              >
-                {isCopied ? (
-                  <Check size={18} color="#fff" />
-                ) : (
-                  <Copy size={18} color="#fff" />
-                )}
-              </Pressable>
-            </View>
-          </View>
+              </View>
+            </>
+          )}
 
           <View style={styles.infoBox}>
             <Text style={styles.infoText}>

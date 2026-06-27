@@ -1,5 +1,5 @@
 import { useAppTheme } from "@/context/ThemeContext";
-import { RADIUS, SPACING, TYPOGRAPHY } from "@/theme";
+import { RADIUS, SHADOW, SPACING, TYPOGRAPHY } from "@/theme";
 import { STREAK_ACCENT } from "@/components/StreakCard/styles";
 import { useMemo } from "react";
 import { StyleSheet } from "react-native";
@@ -12,23 +12,23 @@ export function useStyles() {
         overlay: {
           flex: 1,
           justifyContent: "flex-end",
-          backgroundColor: "rgba(0,0,0,0.45)",
+          backgroundColor: "rgba(0,0,0,0.5)",
         },
+        // Altura fixa: a folha não "pula" conforme o conteúdo de cada aba; o
+        // miolo rola dentro dela.
         sheet: {
+          height: "85%",
           backgroundColor: colors.card,
-          borderTopLeftRadius: RADIUS.lg,
-          borderTopRightRadius: RADIUS.lg,
-          paddingHorizontal: SPACING.md,
-          paddingTop: SPACING.sm,
-          maxHeight: "85%",
+          borderTopLeftRadius: 28,
+          borderTopRightRadius: 28,
+          paddingHorizontal: SPACING.lg,
+          paddingTop: SPACING.sm2,
         },
-        // flexShrink lets the ScrollView shrink to the sheet's capped height so
-        // the content scrolls instead of clipping (RN defaults flexShrink to 0).
         scroll: {
-          flexShrink: 1,
+          flex: 1,
         },
         handle: {
-          width: 36,
+          width: 40,
           height: 4,
           borderRadius: 2,
           backgroundColor: colors.border,
@@ -43,19 +43,56 @@ export function useStyles() {
         },
         title: {
           flex: 1,
-          fontSize: TYPOGRAPHY.subtitle,
+          fontSize: TYPOGRAPHY.large,
           fontWeight: "700",
           color: colors.text,
+          letterSpacing: 0.2,
         },
         close: {
+          width: 30,
+          height: 30,
+          borderRadius: 15,
+          backgroundColor: colors.background,
+          textAlign: "center",
+          lineHeight: 30,
           fontSize: TYPOGRAPHY.body,
           color: colors.textMuted,
-          paddingHorizontal: SPACING.xs,
+          overflow: "hidden",
         },
+
+        // Segmented control em "track" único, com o item ativo elevado.
+        tabsRow: {
+          flexDirection: "row",
+          backgroundColor: colors.background,
+          borderRadius: RADIUS.md,
+          padding: 4,
+          marginBottom: SPACING.md,
+        },
+        tabItem: {
+          flex: 1,
+          paddingVertical: SPACING.xs,
+          borderRadius: RADIUS.sm,
+          alignItems: "center",
+        },
+        tabItemOn: {
+          backgroundColor: colors.card,
+          ...SHADOW.card,
+        },
+        tabLabel: {
+          fontSize: TYPOGRAPHY.small,
+          fontWeight: "600",
+          color: colors.textMuted,
+        },
+        tabLabelOn: {
+          color: colors.text,
+        },
+
         content: {
           gap: SPACING.md,
-          paddingBottom: SPACING.sm,
+          paddingTop: SPACING.xs,
+          paddingBottom: SPACING.lg,
         },
+
         statsRow: {
           flexDirection: "row",
           gap: SPACING.sm,
@@ -66,52 +103,59 @@ export function useStyles() {
           backgroundColor: colors.background,
           borderRadius: RADIUS.md,
           paddingVertical: SPACING.md,
-          borderWidth: 1,
-          borderColor: colors.border,
         },
         statValue: {
-          fontSize: TYPOGRAPHY.hero,
+          fontSize: TYPOGRAPHY.title,
           fontWeight: "700",
           color: colors.primary,
         },
         statLabel: {
-          fontSize: TYPOGRAPHY.xsmall,
+          fontSize: 10,
           color: colors.textMuted,
-          marginTop: 2,
+          marginTop: 4,
+          textTransform: "uppercase",
+          letterSpacing: 0.6,
         },
+
         graceCard: {
           backgroundColor: colors.background,
           borderRadius: RADIUS.md,
           padding: SPACING.md,
-          borderWidth: 1,
-          borderColor: colors.border,
         },
         graceTitle: {
           fontSize: TYPOGRAPHY.subtitle,
           fontWeight: "700",
           color: colors.text,
-          marginBottom: SPACING.xs,
+          marginBottom: 4,
         },
         graceText: {
           fontSize: TYPOGRAPHY.small,
           color: colors.textMuted,
-          lineHeight: TYPOGRAPHY.small * 1.4,
+          lineHeight: TYPOGRAPHY.small * 1.5,
         },
+
         sectionHeader: {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
         },
         sectionTitle: {
-          fontSize: TYPOGRAPHY.large,
+          fontSize: TYPOGRAPHY.subtitle,
           fontWeight: "700",
           color: colors.text,
+          letterSpacing: 0.2,
         },
         sectionCount: {
-          fontSize: TYPOGRAPHY.body,
-          fontWeight: "600",
+          fontSize: TYPOGRAPHY.xsmall,
+          fontWeight: "700",
           color: STREAK_ACCENT,
+          backgroundColor: colors.softBrown,
+          paddingHorizontal: SPACING.xs,
+          paddingVertical: 2,
+          borderRadius: 999,
+          overflow: "hidden",
         },
+
         grid: {
           flexDirection: "row",
           flexWrap: "wrap",
@@ -125,64 +169,20 @@ export function useStyles() {
           borderRadius: RADIUS.md,
           paddingVertical: SPACING.md,
           paddingHorizontal: SPACING.xs,
-          borderWidth: 1,
+          borderWidth: StyleSheet.hairlineWidth,
           borderColor: colors.border,
         },
         badgeUnlocked: {
-          backgroundColor: colors.softBrown,
           borderColor: STREAK_ACCENT,
         },
         badgeLocked: {
-          opacity: 0.55,
+          opacity: 0.5,
         },
-        frameRow: {
-          flexDirection: "row",
-          flexWrap: "wrap",
-          gap: SPACING.sm,
-        },
-        frameCard: {
-          width: "31%",
-          flexGrow: 1,
-          alignItems: "center",
-          gap: 4,
-          backgroundColor: colors.background,
-          borderRadius: RADIUS.md,
-          paddingVertical: SPACING.md,
-          paddingHorizontal: SPACING.xs,
-          borderWidth: 1,
-          borderColor: colors.border,
-        },
-        frameCardOn: {
-          borderWidth: 2,
-          borderColor: STREAK_ACCENT,
-          backgroundColor: colors.softBrown,
-        },
-        frameName: {
-          fontSize: TYPOGRAPHY.small,
-          fontWeight: "600",
-          color: colors.text,
-          textAlign: "center",
-        },
-        seloCheck: {
-          position: "absolute",
-          top: 6,
-          right: 6,
-          width: 18,
-          height: 18,
-          borderRadius: 9,
-          backgroundColor: STREAK_ACCENT,
-          alignItems: "center",
-          justifyContent: "center",
-        },
-        seloHint: {
-          fontSize: TYPOGRAPHY.small,
-          color: colors.textMuted,
-          marginTop: -SPACING.xs,
-        },
+
         badgeIconWrap: {
-          width: 48,
-          height: 48,
-          borderRadius: 24,
+          width: 46,
+          height: 46,
+          borderRadius: 23,
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: colors.softBrown,
@@ -205,6 +205,7 @@ export function useStyles() {
           color: colors.textMuted,
           textAlign: "center",
           marginTop: 2,
+          lineHeight: TYPOGRAPHY.xsmall * 1.35,
         },
         progressTrack: {
           width: "100%",
@@ -223,6 +224,52 @@ export function useStyles() {
           fontSize: TYPOGRAPHY.xsmall,
           color: colors.textMuted,
           marginTop: 4,
+        },
+
+        seloHint: {
+          fontSize: TYPOGRAPHY.small,
+          color: colors.textMuted,
+          lineHeight: TYPOGRAPHY.small * 1.45,
+        },
+        frameRow: {
+          flexDirection: "row",
+          flexWrap: "wrap",
+          gap: SPACING.sm,
+        },
+        frameCard: {
+          width: "31%",
+          flexGrow: 1,
+          alignItems: "center",
+          gap: 6,
+          backgroundColor: colors.background,
+          borderRadius: RADIUS.md,
+          paddingVertical: SPACING.md,
+          paddingHorizontal: SPACING.xs,
+          borderWidth: StyleSheet.hairlineWidth,
+          borderColor: colors.border,
+        },
+        frameCardOn: {
+          borderWidth: 1.5,
+          borderColor: STREAK_ACCENT,
+          backgroundColor: colors.softBrown,
+        },
+        frameName: {
+          fontSize: TYPOGRAPHY.small,
+          fontWeight: "600",
+          color: colors.text,
+          textAlign: "center",
+        },
+        seloCheck: {
+          position: "absolute",
+          top: 6,
+          right: 6,
+          width: 18,
+          height: 18,
+          borderRadius: 9,
+          backgroundColor: STREAK_ACCENT,
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1,
         },
       }),
     [colors],

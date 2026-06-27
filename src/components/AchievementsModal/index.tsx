@@ -12,7 +12,7 @@ import { IStreakData } from "@/storage/asyncStorage";
 import { STREAK_ACCENT } from "@/components/StreakCard/styles";
 import { badgeIcon } from "./badgeIcons";
 import { Check, Flame, Lock } from "lucide-react-native";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Modal,
   Pressable,
@@ -55,6 +55,14 @@ export function AchievementsModal({
   const insets = useSafeAreaInsets();
   const streak = data ?? EMPTY;
 
+  type Tab = "conquistas" | "molduras" | "efeitos";
+  const [tab, setTab] = useState<Tab>("conquistas");
+
+  // Sempre reabre na aba leve (Conquistas), evitando carregar Avatares à toa.
+  useEffect(() => {
+    if (!visible) setTab("conquistas");
+  }, [visible]);
+
   const badges = useMemo(() => evaluateBadges(streak), [streak]);
   const unlockedCount = badges.filter((b) => b.unlocked).length;
   const badgeCount = useMemo(() => unlockedBadgeIds(streak).length, [streak]);
@@ -63,6 +71,15 @@ export function AchievementsModal({
     () => resolveFrameIndex(streak, selectedFrame),
     [streak, selectedFrame],
   );
+
+  // Monta o conteúdo só quando aberta — evita o custo das seções em segundo plano.
+  if (!visible) return null;
+
+  const tabs: { key: Tab; label: string }[] = [
+    { key: "conquistas", label: "Conquistas" },
+    ...(onSelectFrame ? [{ key: "molduras" as Tab, label: "Molduras" }] : []),
+    ...(onSelectEffect ? [{ key: "efeitos" as Tab, label: "Efeitos" }] : []),
+  ];
 
   return (
     <Modal
@@ -86,46 +103,129 @@ export function AchievementsModal({
             </TouchableOpacity>
           </View>
 
+          {tabs.length > 1 && (
+            <View style={styles.tabsRow}>
+              {tabs.map((t) => (
+                <TouchableOpacity
+                  key={t.key}
+                  style={[styles.tabItem, tab === t.key && styles.tabItemOn]}
+                  onPress={() => setTab(t.key)}
+                  activeOpacity={0.8}
+                >
+                  <Text
+                    style={[
+                      styles.tabLabel,
+                      tab === t.key && styles.tabLabelOn,
+                    ]}
+                  >
+                    {t.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+
           <ScrollView
             style={styles.scroll}
             contentContainerStyle={styles.content}
             showsVerticalScrollIndicator={false}
           >
-            <View style={styles.statsRow}>
-              <View style={styles.statBox}>
-                <Text style={styles.statValue}>{streak.current}</Text>
-                <Text style={styles.statLabel}>Sequência</Text>
-              </View>
-              <View style={styles.statBox}>
-                <Text style={styles.statValue}>{streak.best}</Text>
-                <Text style={styles.statLabel}>Recorde</Text>
-              </View>
-              <View style={styles.statBox}>
-                <Text style={styles.statValue}>{streak.totalDays}</Text>
-                <Text style={styles.statLabel}>Total de dias</Text>
-              </View>
-            </View>
-
-            <View style={styles.graceCard}>
-              <Text style={styles.graceTitle}>
-                🕊️ {streak.grace} {streak.grace === 1 ? "dia" : "dias"} de graça
-              </Text>
-              <Text style={styles.graceText}>
-                A cada 7 dias seguidos você ganha um dia de graça, que perdoa
-                uma falta e mantém sua sequência viva.
-              </Text>
-            </View>
-
-            {onSelectFrame && (
+            {tab === "conquistas" && (
               <>
-                <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionTitle}>Molduras</Text>
+                <View style={styles.statsRow}>
+                  <View style={styles.statBox}>
+                    <Text style={styles.statValue}>{streak.current}</Text>
+                    <Text style={styles.statLabel}>Sequência</Text>
+                  </View>
+                  <View style={styles.statBox}>
+                    <Text style={styles.statValue}>{streak.best}</Text>
+                    <Text style={styles.statLabel}>Recorde</Text>
+                  </View>
+                  <View style={styles.statBox}>
+                    <Text style={styles.statValue}>{streak.totalDays}</Text>
+                    <Text style={styles.statLabel}>Total de dias</Text>
+                  </View>
                 </View>
-                <Text style={styles.seloHint}>
-                  Conforme você conquista, novas molduras e efeitos são
-                  liberados. Toque para escolher a do seu avatar.
-                </Text>
 
+                <View style={styles.graceCard}>
+                  <Text style={styles.graceTitle}>
+                    🕊️ {streak.grace} {streak.grace === 1 ? "dia" : "dias"} de
+                    graça
+                  </Text>
+                  <Text style={styles.graceText}>
+                    A cada 7 dias seguidos você ganha um dia de graça, que perdoa
+                    uma falta e mantém sua sequência viva.
+                  </Text>
+                </View>
+
+                <View style={styles.sectionHeader}>
+                  <Text style={styles.sectionTitle}>Conquistas</Text>
+                  <Text style={styles.sectionCount}>
+                    {unlockedCount}/{badges.length}
+                  </Text>
+                </View>
+
+                <View style={styles.grid}>
+                  {badges.map(({ def, unlocked, value, progress }) => {
+                    const Icon = unlocked ? badgeIcon(def.iconId) : Lock;
+                    return (
+                      <View
+                        key={def.id}
+                        style={[
+                          styles.badge,
+                          unlocked ? styles.badgeUnlocked : styles.badgeLocked,
+                        ]}
+                      >
+                        <View
+                          style={[
+                            styles.badgeIconWrap,
+                            unlocked && styles.badgeIconWrapOn,
+                          ]}
+                        >
+                          <Icon
+                            size={24}
+                            color={unlocked ? STREAK_ACCENT : colors.muted}
+                          />
+                        </View>
+                        <Text
+                          style={[
+                            styles.badgeTitle,
+                            !unlocked && styles.badgeTitleLocked,
+                          ]}
+                          numberOfLines={2}
+                        >
+                          {def.title}
+                        </Text>
+                        <Text style={styles.badgeDesc} numberOfLines={2}>
+                          {def.description}
+                        </Text>
+                        {!unlocked && (
+                          <>
+                            <View style={styles.progressTrack}>
+                              <View
+                                style={[
+                                  styles.progressFill,
+                                  { width: `${Math.round(progress * 100)}%` },
+                                ]}
+                              />
+                            </View>
+                            <Text style={styles.badgeProgress}>
+                              {value}/{def.threshold}
+                            </Text>
+                          </>
+                        )}
+                      </View>
+                    );
+                  })}
+                </View>
+              </>
+            )}
+
+            {tab === "molduras" && onSelectFrame && (
+              <>
+                <Text style={styles.seloHint}>
+                  Toque para escolher a moldura do seu avatar.
+                </Text>
                 <View style={styles.frameRow}>
                   {FRAME_TIERS.map((f, i) => {
                     const unlocked = badgeCount >= f.minBadges;
@@ -165,15 +265,11 @@ export function AchievementsModal({
               </>
             )}
 
-            {onSelectEffect && (
+            {tab === "efeitos" && onSelectEffect && (
               <>
-                <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionTitle}>Efeitos</Text>
-                </View>
                 <Text style={styles.seloHint}>
                   Efeitos ao redor do avatar, desbloqueados por conquistas.
                 </Text>
-
                 <View style={styles.frameRow}>
                   {EFFECTS.map((e) => {
                     const unlocked = badgeCount >= e.minBadges;
@@ -216,67 +312,6 @@ export function AchievementsModal({
                 </View>
               </>
             )}
-
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Conquistas</Text>
-              <Text style={styles.sectionCount}>
-                {unlockedCount}/{badges.length}
-              </Text>
-            </View>
-
-            <View style={styles.grid}>
-              {badges.map(({ def, unlocked, value, progress }) => {
-                const Icon = unlocked ? badgeIcon(def.iconId) : Lock;
-                return (
-                  <View
-                    key={def.id}
-                    style={[
-                      styles.badge,
-                      unlocked ? styles.badgeUnlocked : styles.badgeLocked,
-                    ]}
-                  >
-                    <View
-                      style={[
-                        styles.badgeIconWrap,
-                        unlocked && styles.badgeIconWrapOn,
-                      ]}
-                    >
-                      <Icon
-                        size={24}
-                        color={unlocked ? STREAK_ACCENT : colors.muted}
-                      />
-                    </View>
-                    <Text
-                      style={[
-                        styles.badgeTitle,
-                        !unlocked && styles.badgeTitleLocked,
-                      ]}
-                      numberOfLines={2}
-                    >
-                      {def.title}
-                    </Text>
-                    <Text style={styles.badgeDesc} numberOfLines={2}>
-                      {def.description}
-                    </Text>
-                    {!unlocked && (
-                      <>
-                        <View style={styles.progressTrack}>
-                          <View
-                            style={[
-                              styles.progressFill,
-                              { width: `${Math.round(progress * 100)}%` },
-                            ]}
-                          />
-                        </View>
-                        <Text style={styles.badgeProgress}>
-                          {value}/{def.threshold}
-                        </Text>
-                      </>
-                    )}
-                  </View>
-                );
-              })}
-            </View>
           </ScrollView>
         </View>
       </View>

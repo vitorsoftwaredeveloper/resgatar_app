@@ -355,7 +355,16 @@ export const FRAME_TIERS: FrameTier[] = [
 
 // Efeitos cosméticos ao redor do avatar — categoria SEPARADA da moldura, com
 // seus próprios desbloqueios. Renderizados pelo Avatar (um caso por id).
-export type FrameEffect = "none" | "glow" | "pulse" | "orbit" | "rotate";
+export type FrameEffect =
+  | "none"
+  | "glow"
+  | "breathe"
+  | "pulse"
+  | "ripple"
+  | "orbit"
+  | "dual-orbit"
+  | "dashed"
+  | "rotate";
 
 export interface EffectDef {
   id: FrameEffect;
@@ -365,10 +374,14 @@ export interface EffectDef {
 
 export const EFFECTS: EffectDef[] = [
   { id: "none", name: "Nenhum", minBadges: 0 },
-  { id: "glow", name: "Brilho", minBadges: 6 },
-  { id: "pulse", name: "Pulso", minBadges: 10 },
-  { id: "orbit", name: "Órbita", minBadges: 14 },
-  { id: "rotate", name: "Rotação", minBadges: 18 },
+  { id: "glow", name: "Brilho", minBadges: 5 },
+  { id: "breathe", name: "Respiro", minBadges: 8 },
+  { id: "pulse", name: "Pulso", minBadges: 11 },
+  { id: "ripple", name: "Ondas", minBadges: 14 },
+  { id: "orbit", name: "Órbita", minBadges: 17 },
+  { id: "dual-orbit", name: "Órbita dupla", minBadges: 20 },
+  { id: "dashed", name: "Tracejado", minBadges: 24 },
+  { id: "rotate", name: "Rotação", minBadges: 28 },
 ];
 
 // Highest tier whose badge requirement the member has met.

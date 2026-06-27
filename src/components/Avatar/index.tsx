@@ -8,6 +8,7 @@ import Animated, {
   Easing,
   useAnimatedStyle,
   useSharedValue,
+  withDelay,
   withRepeat,
   withTiming,
 } from "react-native-reanimated";
@@ -71,14 +72,23 @@ export function Avatar({
   const ringOuterR = photoR + ringBand;
   const dotD = Math.max(6, Math.round(size * 0.16));
 
+  const spins = effect === "rotate" || effect === "orbit" ||
+    effect === "dual-orbit" || effect === "dashed";
+  const pulses = effect === "pulse" || effect === "ripple";
+  const orbits = effect === "orbit" || effect === "dual-orbit";
+
   const effectPad =
     effect === "glow"
       ? Math.round(size * 0.18)
-      : effect === "pulse"
+      : pulses
         ? Math.round(size * 0.14)
-        : effect === "orbit"
+        : orbits
           ? dotD / 2 + 2
-          : 0;
+          : effect === "dashed"
+            ? Math.round(size * 0.12)
+            : effect === "breathe"
+              ? Math.round(size * 0.05)
+              : 0;
 
   const totalR = ringOuterR + effectPad;
   const total = totalR * 2;
@@ -91,25 +101,46 @@ export function Avatar({
     borderRadius: size / 2,
   };
 
-  // Um valor de giro serve a rotate (anel) e orbit (ponto); pulse tem o seu.
+  // Um valor de giro serve rotate/orbit/dual-orbit/dashed; pulse/ripple usam a
+  // onda (pulse + pulse2 defasada); breathe escala o avatar inteiro.
   const spin = useSharedValue(0);
   const pulse = useSharedValue(0);
+  const pulse2 = useSharedValue(0);
+  const breathe = useSharedValue(0);
   useEffect(() => {
-    if (effect === "rotate" || effect === "orbit") {
+    if (spins) {
       spin.value = 0;
       spin.value = withRepeat(
         withTiming(360, { duration: 6000, easing: Easing.linear }),
         -1,
       );
     }
-    if (effect === "pulse") {
+    if (pulses) {
       pulse.value = 0;
       pulse.value = withRepeat(
         withTiming(1, { duration: 1800, easing: Easing.out(Easing.ease) }),
         -1,
       );
     }
-  }, [effect, spin, pulse]);
+    if (effect === "ripple") {
+      pulse2.value = 0;
+      pulse2.value = withDelay(
+        900,
+        withRepeat(
+          withTiming(1, { duration: 1800, easing: Easing.out(Easing.ease) }),
+          -1,
+        ),
+      );
+    }
+    if (effect === "breathe") {
+      breathe.value = 0;
+      breathe.value = withRepeat(
+        withTiming(1, { duration: 2200, easing: Easing.inOut(Easing.ease) }),
+        -1,
+        true,
+      );
+    }
+  }, [effect, spins, pulses, spin, pulse, pulse2, breathe]);
 
   const spinStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${spin.value}deg` }],
@@ -118,6 +149,38 @@ export function Avatar({
     transform: [{ scale: 1 + pulse.value * 0.4 }],
     opacity: 0.5 * (1 - pulse.value),
   }));
+  const pulse2Style = useAnimatedStyle(() => ({
+    transform: [{ scale: 1 + pulse2.value * 0.4 }],
+    opacity: 0.5 * (1 - pulse2.value),
+  }));
+  const breatheStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: 1 + breathe.value * 0.06 }],
+  }));
+
+  const sonarRing = (animStyle: typeof pulseStyle) => (
+    <Animated.View
+      style={[
+        {
+          width: ringOuterR * 2,
+          height: ringOuterR * 2,
+          borderRadius: ringOuterR,
+          borderWidth: 2,
+          borderColor: accent,
+        },
+        animStyle,
+      ]}
+    />
+  );
+  const dot = (
+    <View
+      style={{
+        width: dotD,
+        height: dotD,
+        borderRadius: dotD / 2,
+        backgroundColor: accent,
+      }}
+    />
+  );
 
   const photoContent = uri ? (
     <Image source={{ uri }} style={[styles.image, photoCircle]} />
@@ -180,49 +243,78 @@ export function Avatar({
       </Layer>
     ) : null;
 
-  // Anel "sonar" que expande e some em loop.
-  const pulseNode =
-    effect === "pulse" ? (
-      <Layer>
-        <Animated.View
-          style={[
-            {
-              width: ringOuterR * 2,
-              height: ringOuterR * 2,
-              borderRadius: ringOuterR,
-              borderWidth: 2,
-              borderColor: accent,
-            },
-            pulseStyle,
-          ]}
-        />
-      </Layer>
-    ) : null;
+  // Anel(éis) "sonar" que expandem e somem em loop (pulse = 1, ripple = 2).
+  const pulseNode = pulses ? (
+    <Layer>{sonarRing(pulseStyle)}</Layer>
+  ) : null;
+  const rippleNode =
+    effect === "ripple" ? <Layer>{sonarRing(pulse2Style)}</Layer> : null;
 
-  // Ponto que orbita o avatar (container do tamanho total gira no próprio centro).
+  // Ponto(s) que orbitam (container do tamanho total gira no próprio centro).
   const orbit =
     effect === "orbit" ? (
       <Layer>
         <Animated.View
           style={[{ width: total, height: total, alignItems: "center" }, spinStyle]}
         >
-          <View
-            style={{
-              width: dotD,
-              height: dotD,
-              borderRadius: dotD / 2,
-              backgroundColor: accent,
-            }}
-          />
+          {dot}
+        </Animated.View>
+      </Layer>
+    ) : null;
+  const dualOrbit =
+    effect === "dual-orbit" ? (
+      <Layer>
+        <Animated.View
+          style={[
+            {
+              width: total,
+              height: total,
+              alignItems: "center",
+              justifyContent: "space-between",
+            },
+            spinStyle,
+          ]}
+        >
+          {dot}
+          {dot}
+        </Animated.View>
+      </Layer>
+    ) : null;
+
+  // Anel tracejado girando, por fora da moldura.
+  const dashed =
+    effect === "dashed" ? (
+      <Layer>
+        <Animated.View style={spinStyle}>
+          <Svg width={total} height={total}>
+            <Circle
+              cx={total / 2}
+              cy={total / 2}
+              r={totalR - 1.5}
+              fill="none"
+              stroke={accent}
+              strokeWidth={3}
+              strokeDasharray="6 7"
+              strokeLinecap="round"
+            />
+          </Svg>
         </Animated.View>
       </Layer>
     ) : null;
 
   const content = (
-    <View style={{ width: total, height: total, ...styles_center }}>
+    <Animated.View
+      style={[
+        { width: total, height: total, ...styles_center },
+        effect === "breathe" && breatheStyle,
+      ]}
+    >
       {glow}
       {pulseNode}
+      {rippleNode}
       {orbit}
+      {dualOrbit}
+      {dashed}
       {ring}
       <View style={[styles.circle, photoCircle]}>{photoContent}</View>
 
@@ -231,7 +323,7 @@ export function Avatar({
           <Camera size={14} color={colors.white} />
         </View>
       )}
-    </View>
+    </Animated.View>
   );
 
   if (!onPress) return content;
