@@ -11,6 +11,9 @@ const config: Config = {
     "^@/(.*)$": "<rootDir>/src/$1",
     "^@env$": "<rootDir>/__tests__/__mocks__/env.ts",
     "^react-native$": "<rootDir>/__tests__/__mocks__/react-native.ts",
+    "^react-native-reanimated$":
+      "<rootDir>/__tests__/__mocks__/react-native-reanimated.tsx",
+    "^react-native-svg$": "<rootDir>/__tests__/__mocks__/react-native-svg.tsx",
   },
   transform: {
     "^.+\\.tsx?$": ["ts-jest", { tsconfig: { strict: true, jsx: "react-jsx" } }],

@@ -6,6 +6,7 @@ import React, {
   useState,
 } from "react";
 import { navigateToScreen, navigateToTab } from "@/navigation/navigationRef";
+import { AuthContext } from "@/context/AuthContext";
 
 export interface CoachRect {
   x: number;
@@ -35,14 +36,20 @@ export const COACH_STEPS: CoachStep[] = [
   {
     id: "tab-dashboard",
     title: "Início",
-    text: "Aqui você acompanha a liturgia do dia: leituras, salmo e evangelho.",
+    text: "Aqui você acompanha a meta da comunidade, sua caminhada de leituras e os avisos.",
     tab: "Dashboard",
+  },
+  {
+    id: "tab-readings",
+    title: "Leituras",
+    text: "Esta é a sua aba de leituras: a liturgia do dia com primeira leitura, salmo e evangelho.",
+    tab: "Readings",
   },
   {
     id: "dashboard-date",
     title: "Escolha o dia",
     text: "Toque na data para abrir o calendário e ver a liturgia de qualquer dia.",
-    tab: "Dashboard",
+    tab: "Readings",
   },
   {
     id: "tab-bills",
@@ -120,6 +127,8 @@ export function CoachProvider({ children }: { children: React.ReactNode }) {
     actionRegistry.current.delete(id);
   }, []);
 
+  const { completeTutorial } = useContext(AuthContext);
+
   const [active, setActive] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [targetRect, setTargetRect] = useState<CoachRect | null>(null);
@@ -155,6 +164,8 @@ export function CoachProvider({ children }: { children: React.ReactNode }) {
       if (index < 0 || index >= COACH_STEPS.length) {
         setActive(false);
         setTargetRect(null);
+        // Avançar além do último passo = tutorial concluído (≠ pular via stop).
+        if (index >= COACH_STEPS.length) completeTutorial();
         return;
       }
 
@@ -188,7 +199,7 @@ export function CoachProvider({ children }: { children: React.ReactNode }) {
       setStepIndex(index);
       setTargetRect(rect);
     },
-    [measureWithRetry],
+    [measureWithRetry, completeTutorial],
   );
 
   const start = useCallback(() => {

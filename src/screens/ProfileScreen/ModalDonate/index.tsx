@@ -2,6 +2,7 @@ import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { ModalBase } from "@/components/ModalBase";
 import { ToastMessage } from "@/components/Toast";
+import { AuthContext } from "@/context/AuthContext";
 import { PixPaymentModal } from "@/screens/BillsScreen/PixPaymentModal";
 import { DonationServices } from "@/services/DonationService";
 import {
@@ -15,7 +16,7 @@ import {
   onlyNumbers,
 } from "@/utils/mask";
 import messaging from "@react-native-firebase/messaging";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   AppState,
   KeyboardAvoidingView,
@@ -38,6 +39,7 @@ interface Props {
 
 export function ModalDonate({ visible, onClose, isAdmin }: Props) {
   const styles = useStyles();
+  const { syncDonationYear } = useContext(AuthContext);
 
   const [amount, setAmount] = useState("10,00");
   const [donorName, setDonorName] = useState("");
@@ -63,6 +65,14 @@ export function ModalDonate({ visible, onClose, isAdmin }: Props) {
     reset();
     onClose();
   }
+
+  // Quando o PIX é aprovado, sincroniza as conquistas de doação (e celebra).
+  useEffect(() => {
+    if (pixStatus === TRANSACTION_STATUS.APPROVED) {
+      syncDonationYear(new Date().getFullYear());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pixStatus]);
 
   // Confirmação do PIX chega por push (mesmo notifyPaymentConfirmed das charges).
   // Ao receber com o transactionId desta doação, marcamos como aprovado para o
@@ -149,6 +159,7 @@ export function ModalDonate({ visible, onClose, isAdmin }: Props) {
         "Doação registrada",
         "A doação em dinheiro foi registrada.",
       );
+      await syncDonationYear(new Date().getFullYear());
       // O Toast é renderizado dentro do ModalBase; fechar na hora desmonta essa
       // instância antes do toast aparecer. Deixa o modal aberto até o toast subir.
       setTimeout(handleClose, 800);

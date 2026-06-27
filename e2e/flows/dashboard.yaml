@@ -4,11 +4,14 @@ appId: ${APP_ID}
 - launchApp
 
 # ===========================
-# Tela de Início carregada
+# Tela de Início carregada; a liturgia agora vive na aba "Leituras"
 # ===========================
 - extendedWaitUntil:
     visible: "Início"
     timeout: 30000
+
+# Navega para a aba dedicada de leituras
+- tapOn: "Leituras"
 
 - extendedWaitUntil:
     visible: "LITURGIA DO DIA"
@@ -199,7 +202,7 @@ appId: ${APP_ID}
     timeout: 5000
 
 # ===========================
-# 8. Dark mode na tela de Início
+# 8. Dark mode na aba Leituras
 # ===========================
 
 # Confirma que estamos em modo claro

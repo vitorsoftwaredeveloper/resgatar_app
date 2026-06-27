@@ -48,7 +48,12 @@ jest.mock("@react-navigation/native", () => {
 
 jest.mock("@/context/AuthContext", () => {
   const React = require("react");
-  return { AuthContext: React.createContext({ member: null }) };
+  return {
+    AuthContext: React.createContext({
+      member: null,
+      notifyUnlocks: jest.fn().mockResolvedValue(undefined),
+    }),
+  };
 });
 
 jest.mock("@/context/ThemeContext", () => ({
@@ -74,6 +79,10 @@ jest.mock("@/services/DonationService", () => ({
   DonationServices: {
     list: (...args: any[]) => mockList(...args),
   },
+}));
+
+jest.mock("@/services/StreakService", () => ({
+  StreakService: { syncDonations: jest.fn().mockResolvedValue([]) },
 }));
 
 jest.mock("@/utils/helper", () => ({

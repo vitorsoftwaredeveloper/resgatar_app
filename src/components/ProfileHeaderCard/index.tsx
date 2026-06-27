@@ -9,9 +9,11 @@ import { useStyles } from "./styles";
 interface Props {
   member: IMember;
   onPressAvatar?: () => void;
+  /** Tier da moldura da caminhada (índice em FRAME_TIERS). */
+  tier?: number;
 }
 
-export function ProfileHeaderCard({ member, onPressAvatar }: Props) {
+export function ProfileHeaderCard({ member, onPressAvatar, tier = 0 }: Props) {
   const styles = useStyles();
 
   return (
@@ -22,6 +24,7 @@ export function ProfileHeaderCard({ member, onPressAvatar }: Props) {
           size={56}
           onPress={onPressAvatar}
           editable={!!onPressAvatar}
+          tier={tier}
         />
       </CoachTarget>
 

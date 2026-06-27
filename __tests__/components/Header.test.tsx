@@ -32,6 +32,23 @@ jest.mock("@/components/CoachTarget", () => {
 jest.mock("@/components/QuickActionsSheet", () => ({
   QuickActionsSheet: () => null,
 }));
+jest.mock("@/components/AchievementsModal", () => ({
+  AchievementsModal: () => null,
+}));
+jest.mock("@/components/CosmeticUnlockedModal", () => ({
+  CosmeticUnlockedModal: () => null,
+}));
+jest.mock("@/context/AuthContext", () => {
+  const React = require("react");
+  return {
+    AuthContext: React.createContext({
+      myTier: 0,
+      myStreak: null,
+      selectedFrame: null,
+      setFrame: jest.fn(),
+    }),
+  };
+});
 jest.mock("@/utils/image", () => ({
   resolveAvatarUri: (photo: string | null | undefined) => {
     if (!photo || photo.trim().length === 0) return null;

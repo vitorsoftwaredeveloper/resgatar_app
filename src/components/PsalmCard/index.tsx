@@ -19,9 +19,11 @@ interface Props {
   ttsState?: TTSState;
   onTTSPlay?: () => void;
   onTTSPause?: () => void;
+  /** Disparado quando a seção é expandida (abre o conteúdo). */
+  onExpand?: () => void;
 }
 
-export function PsalmCard({ referencia, refrao, texto, testID, ttsState, onTTSPlay, onTTSPause }: Props) {
+export function PsalmCard({ referencia, refrao, texto, testID, ttsState, onTTSPlay, onTTSPause, onExpand }: Props) {
   const styles = useStyles();
   const [expanded, setExpanded] = useState(false);
   const [contentHeight, setContentHeight] = useState(0);
@@ -60,7 +62,12 @@ export function PsalmCard({ referencia, refrao, texto, testID, ttsState, onTTSPl
     <Pressable
       testID={testID}
       style={styles.card}
-      onPress={() => setExpanded((v) => !v)}
+      onPress={() =>
+        setExpanded((v) => {
+          if (!v) onExpand?.();
+          return !v;
+        })
+      }
       accessibilityRole="button"
     >
       <View style={[styles.labelBadge]}>

@@ -4,18 +4,27 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Home, FileText, TextAlignJustify } from "lucide-react-native";
+import { BookOpen, FileText, Home, TextAlignJustify } from "lucide-react-native";
 import { CoachTarget } from "@/components/CoachTarget";
-import { useStyles, TAB_WIDTH } from "./styles";
+import { useStyles, SCREEN_WIDTH } from "./styles";
+
+const TAB_LABELS: Record<string, string> = {
+  Dashboard: "Início",
+  Readings: "Leituras",
+  Bills: "Contribuições",
+  Profile: "Mais",
+};
 
 export function TabBar({ state, navigation }: any) {
   const { bottom } = useSafeAreaInsets();
   const { styles, ACTIVE_COLOR, INACTIVE_COLOR } = useStyles();
 
+  const tabWidth = SCREEN_WIDTH / state.routes.length;
+
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
       {
-        translateX: withTiming(state.index * TAB_WIDTH, {
+        translateX: withTiming(state.index * tabWidth, {
           duration: 250,
         }),
       },
@@ -24,7 +33,9 @@ export function TabBar({ state, navigation }: any) {
 
   return (
     <View style={[styles.container, { paddingBottom: bottom }]}>
-      <Animated.View style={[styles.indicator, animatedStyle]} />
+      <Animated.View
+        style={[styles.indicator, { width: tabWidth }, animatedStyle]}
+      />
 
       <View style={styles.row}>
         {state.routes.map((route: any, index: number) => {
@@ -34,6 +45,7 @@ export function TabBar({ state, navigation }: any) {
 
           const icons: any = {
             Dashboard: <Home size={24} color={iconColor} />,
+            Readings: <BookOpen size={24} color={iconColor} />,
             Bills: <FileText size={24} color={iconColor} />,
             Profile: <TextAlignJustify size={24} color={iconColor} />,
           };
@@ -42,7 +54,7 @@ export function TabBar({ state, navigation }: any) {
             <Pressable
               key={route.key}
               onPress={() => navigation.navigate(route.name)}
-              style={styles.tab}
+              style={[styles.tab, { width: tabWidth }]}
             >
               <CoachTarget
                 id={`tab-${route.name.toLowerCase()}`}
@@ -51,11 +63,7 @@ export function TabBar({ state, navigation }: any) {
                 <View>{icons[route.name]}</View>
 
                 <Text style={[styles.label, { color: iconColor }]}>
-                  {route.name === "Dashboard"
-                    ? "Início"
-                    : route.name === "Bills"
-                      ? "Contribuições"
-                      : "Mais"}
+                  {TAB_LABELS[route.name]}
                 </Text>
               </CoachTarget>
             </Pressable>

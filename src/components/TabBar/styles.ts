@@ -2,9 +2,7 @@ import { useMemo } from "react";
 import { Dimensions, StyleSheet } from "react-native";
 import { useAppTheme } from "@/context/ThemeContext";
 
-const { width } = Dimensions.get("window");
-
-export const TAB_WIDTH = width / 3;
+export const SCREEN_WIDTH = Dimensions.get("window").width;
 
 export function useStyles() {
   const { colors } = useAppTheme();
@@ -26,7 +24,6 @@ export function useStyles() {
           position: "absolute",
           top: 0,
           height: 4,
-          width: TAB_WIDTH,
           backgroundColor: colors.primary,
         },
         row: {
@@ -34,7 +31,6 @@ export function useStyles() {
           height: 72,
         },
         tab: {
-          width: TAB_WIDTH,
           alignItems: "center",
           justifyContent: "center",
         },

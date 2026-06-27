@@ -22,6 +22,8 @@ interface Props {
   ttsState?: TTSState;
   onTTSPlay?: () => void;
   onTTSPause?: () => void;
+  /** Disparado quando a seção é expandida (abre o conteúdo). */
+  onExpand?: () => void;
 }
 
 function formatVerseText(text: string, textStyle: any, verseStyle: any) {
@@ -50,6 +52,7 @@ export function ReadingCard({
   ttsState,
   onTTSPlay,
   onTTSPause,
+  onExpand,
 }: Props) {
   const styles = useStyles();
   const [expanded, setExpanded] = useState(defaultExpanded);
@@ -89,7 +92,12 @@ export function ReadingCard({
     <Pressable
       testID={testID}
       style={styles.card}
-      onPress={() => setExpanded((v) => !v)}
+      onPress={() =>
+        setExpanded((v) => {
+          if (!v) onExpand?.();
+          return !v;
+        })
+      }
       accessibilityRole="button"
     >
       <View style={styles.cardHeader}>
