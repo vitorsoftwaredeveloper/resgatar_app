@@ -12,14 +12,18 @@ export function useStyles() {
           flex: 1,
           backgroundColor: colors.background,
         },
-        content: {
-          paddingLeft: SPACING.lg,
+        scroll: {
+          flex: 1,
           backgroundColor: colors.softBrown,
-          paddingRight: SPACING.lg,
-          paddingTop: SPACING.lg,
           borderTopLeftRadius: RADIUS.xl,
           borderTopRightRadius: RADIUS.xl,
-          minHeight: "100%",
+          overflow: "hidden",
+        },
+        content: {
+          paddingLeft: SPACING.lg,
+          paddingRight: SPACING.lg,
+          paddingTop: SPACING.lg,
+          flexGrow: 1,
         },
         menuCard: {
           backgroundColor: colors.card,

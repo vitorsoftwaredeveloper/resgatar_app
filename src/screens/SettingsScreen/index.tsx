@@ -14,7 +14,7 @@ import {
   UsersRound,
 } from "lucide-react-native";
 import React, { useContext, useState } from "react";
-import { View, Text } from "react-native";
+import { ScrollView, View, Text } from "react-native";
 import { AuthContext } from "../../context/AuthContext";
 import { ModalSendNotification } from "./ModalSendNotification";
 import { useStyles } from "./styles";
@@ -37,8 +37,13 @@ export const SettingsScreen = () => {
         onBack={() => navigation.goBack()}
       />
 
-      <View
-        style={[styles.content, { paddingBottom: insets.bottom + 16, gap: 16 }]}
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={[
+          styles.content,
+          { paddingBottom: insets.bottom + 16, gap: 16 },
+        ]}
+        showsVerticalScrollIndicator={false}
       >
           <View style={styles.sectionGroup}>
             <Text style={styles.sectionLabel}>Financeiro</Text>
@@ -89,13 +94,14 @@ export const SettingsScreen = () => {
               />
             </View>
           </View>
-          {openSendNotification && (
-            <ModalSendNotification
-              visible={openSendNotification}
-              onClose={() => setOpenSendNotification(false)}
-            />
-          )}
-        </View>
-      </View>
+      </ScrollView>
+
+      {openSendNotification && (
+        <ModalSendNotification
+          visible={openSendNotification}
+          onClose={() => setOpenSendNotification(false)}
+        />
+      )}
+    </View>
   );
 };

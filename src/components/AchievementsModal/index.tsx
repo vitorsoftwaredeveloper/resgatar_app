@@ -132,21 +132,6 @@ export function AchievementsModal({
           >
             {tab === "conquistas" && (
               <>
-                <View style={styles.statsRow}>
-                  <View style={styles.statBox}>
-                    <Text style={styles.statValue}>{streak.current}</Text>
-                    <Text style={styles.statLabel}>Sequência</Text>
-                  </View>
-                  <View style={styles.statBox}>
-                    <Text style={styles.statValue}>{streak.best}</Text>
-                    <Text style={styles.statLabel}>Recorde</Text>
-                  </View>
-                  <View style={styles.statBox}>
-                    <Text style={styles.statValue}>{streak.totalDays}</Text>
-                    <Text style={styles.statLabel}>Total de dias</Text>
-                  </View>
-                </View>
-
                 <View style={styles.graceCard}>
                   <View style={styles.graceIcon}>
                     <ShieldCheck size={24} color={STREAK_ACCENT} />
@@ -170,8 +155,9 @@ export function AchievementsModal({
                       ))}
                     </View>
                     <Text style={styles.graceText}>
-                      Cada 7 dias seguidos rende um save, que perdoa uma falta e
-                      mantém sua sequência viva.
+                      Ganhe saves a cada 7 dias de ofensiva de leitura da
+                      liturgia. Um save perdoa um dia sem a liturgia diária para
+                      manter sua ofensiva.
                     </Text>
                   </View>
                 </View>

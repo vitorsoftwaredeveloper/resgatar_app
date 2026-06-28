@@ -15,6 +15,7 @@ import { PersonalSettingsScreen } from "@/screens/PersonalSettingsScreen";
 import { MemberActionsScreen } from "@/screens/MemberActionsScreen";
 import { OnboardingScreen } from "@/screens/OnboardingScreen";
 import { SettingsScreen } from "@/screens/SettingsScreen";
+import { NoticeBoardScreen } from "@/screens/NoticeBoardScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -48,6 +49,7 @@ const AppNavigator = () => {
             {() => <BottomTabs />}
           </Stack.Screen>
           <Stack.Screen name="Videos" component={VideosScreen} />
+          <Stack.Screen name="NoticeBoard" component={NoticeBoardScreen} />
           <Stack.Screen name="Arrecadacao" component={ArrecadacaoScreen} />
           <Stack.Screen name="BalancoAnual" component={BalancoAnualScreen} />
           <Stack.Screen name="Expenses" component={ExpensesScreen} />

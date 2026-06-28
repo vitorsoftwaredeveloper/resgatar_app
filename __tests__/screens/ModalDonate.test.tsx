@@ -3,6 +3,16 @@ const mockRegisterCash = jest.fn();
 const mockConsult = jest.fn();
 const mockOnMessage = jest.fn();
 const mockOnMessageUnsubscribe = jest.fn();
+const mockSyncDonationYear = jest.fn().mockResolvedValue(undefined);
+
+jest.mock("@/context/AuthContext", () => {
+  const React = require("react");
+  return {
+    AuthContext: React.createContext({
+      syncDonationYear: (...args: any[]) => mockSyncDonationYear(...args),
+    }),
+  };
+});
 
 jest.mock("@react-native-firebase/messaging", () => () => ({
   onMessage: (...args: any[]) => {

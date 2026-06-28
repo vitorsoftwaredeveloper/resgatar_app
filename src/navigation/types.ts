@@ -4,6 +4,7 @@ export type RootStackParamList = {
   Onboarding: undefined;
   Home: undefined;
   Videos: undefined;
+  NoticeBoard: undefined;
   Arrecadacao: undefined;
   BalancoAnual: undefined;
   Expenses: undefined;

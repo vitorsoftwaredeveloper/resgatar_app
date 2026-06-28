@@ -93,30 +93,6 @@ export function useStyles() {
           paddingBottom: SPACING.lg,
         },
 
-        statsRow: {
-          flexDirection: "row",
-          gap: SPACING.sm,
-        },
-        statBox: {
-          flex: 1,
-          alignItems: "center",
-          backgroundColor: colors.background,
-          borderRadius: RADIUS.md,
-          paddingVertical: SPACING.md,
-        },
-        statValue: {
-          fontSize: TYPOGRAPHY.title,
-          fontWeight: "700",
-          color: colors.primary,
-        },
-        statLabel: {
-          fontSize: 10,
-          color: colors.textMuted,
-          marginTop: 4,
-          textTransform: "uppercase",
-          letterSpacing: 0.6,
-        },
-
         graceCard: {
           flexDirection: "row",
           gap: SPACING.sm,
