@@ -6,7 +6,6 @@ import React, {
   useState,
 } from "react";
 import { navigateToScreen, navigateToTab } from "@/navigation/navigationRef";
-import { AuthContext } from "@/context/AuthContext";
 
 export interface CoachRect {
   x: number;
@@ -127,8 +126,6 @@ export function CoachProvider({ children }: { children: React.ReactNode }) {
     actionRegistry.current.delete(id);
   }, []);
 
-  const { completeTutorial } = useContext(AuthContext);
-
   const [active, setActive] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [targetRect, setTargetRect] = useState<CoachRect | null>(null);
@@ -164,8 +161,7 @@ export function CoachProvider({ children }: { children: React.ReactNode }) {
       if (index < 0 || index >= COACH_STEPS.length) {
         setActive(false);
         setTargetRect(null);
-        // Avançar além do último passo = tutorial concluído (≠ pular via stop).
-        if (index >= COACH_STEPS.length) completeTutorial();
+        // Avançar além do último passo = tutorial concluído.
         return;
       }
 
@@ -199,7 +195,7 @@ export function CoachProvider({ children }: { children: React.ReactNode }) {
       setStepIndex(index);
       setTargetRect(rect);
     },
-    [measureWithRetry, completeTutorial],
+    [measureWithRetry],
   );
 
   const start = useCallback(() => {

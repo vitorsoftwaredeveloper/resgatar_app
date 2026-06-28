@@ -1,58 +1,99 @@
 import { CommunityGoalCard } from "@/components/CommunityGoalCard";
 import { Header } from "@/components/Header";
 import { NoticesCard } from "@/components/NoticesCard";
-import { SectionDivider } from "@/components/SectionDivider";
 import { StreakCard } from "@/components/StreakCard";
-import { SwipeableTab } from "@/components/SwipeableTab";
 import { AuthContext } from "@/context/AuthContext";
-import { StreakService } from "@/services/StreakService";
-import { IStreakData } from "@/storage/asyncStorage";
+import { getDashboardOrder, setDashboardOrder } from "@/storage/asyncStorage";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { useFocusEffect } from "@react-navigation/native";
-import React, { useCallback, useContext, useState } from "react";
-import { ScrollView, View } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { Pressable, View } from "react-native";
+import ReorderableList, {
+  ReorderableListReorderEvent,
+  reorderItems,
+  useIsActive,
+  useReorderableDrag,
+} from "react-native-reorderable-list";
 import { useStyles } from "./styles";
+
+type CardId = "streak" | "communityGoal" | "notices";
+
+interface CardDef {
+  id: CardId;
+  Component: React.ComponentType;
+}
+
+const CARD_REGISTRY: CardDef[] = [
+  { id: "streak", Component: StreakCard },
+  { id: "communityGoal", Component: CommunityGoalCard },
+  { id: "notices", Component: NoticesCard },
+];
+
+const DEFAULT_ORDER: CardId[] = ["streak", "communityGoal", "notices"];
+
+function DraggableCardRow({ item }: { item: CardDef }) {
+  const drag = useReorderableDrag();
+  const active = useIsActive();
+  const styles = useStyles();
+  const { Component } = item;
+
+  return (
+    <Pressable
+      onLongPress={drag}
+      delayLongPress={300}
+      style={[styles.cardWrapper, active && styles.cardWrapperActive]}
+    >
+      <Component />
+    </Pressable>
+  );
+}
 
 export function DashboardScreen() {
   const { member } = useContext(AuthContext);
   const tabBarHeight = useBottomTabBarHeight();
   const styles = useStyles();
 
-  const [streak, setStreak] = useState<IStreakData | null>(null);
+  const [order, setOrder] = useState<CardId[]>(DEFAULT_ORDER);
+  useEffect(() => {
+    if (!member?._id) return;
+    getDashboardOrder(member._id).then((saved) => {
+      if (!saved) return;
+      const merged = [
+        ...saved.filter((id) => DEFAULT_ORDER.includes(id as CardId)),
+        ...DEFAULT_ORDER.filter((id) => !saved.includes(id)),
+      ] as CardId[];
+      setOrder(merged);
+    });
+  }, [member?._id]);
 
-  const memberId = member?._id;
+  const sortedCards = order
+    .map((id) => CARD_REGISTRY.find((c) => c.id === id))
+    .filter(Boolean) as CardDef[];
 
-  // Início only displays progress — the read itself is recorded on the
-  // Leituras tab, so reaching this screen never advances the streak.
-  useFocusEffect(
-    useCallback(() => {
-      if (memberId) StreakService.getStatus(memberId).then(setStreak);
-    }, [memberId]),
-  );
+  function handleReorder({ from, to }: ReorderableListReorderEvent) {
+    setOrder((prev) => {
+      const next = reorderItems(prev, from, to);
+      if (member?._id) setDashboardOrder(member._id, next);
+      return next;
+    });
+  }
 
   return (
-    <SwipeableTab>
-      <View style={styles.container}>
-        <Header
-          name={`${member?.firstName} ${member?.lastName}`}
-          photo={member?.profileImage}
-        />
-
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={[
-            styles.content,
-            { paddingBottom: tabBarHeight + 70 },
-          ]}
-          showsVerticalScrollIndicator={false}
-        >
-          <CommunityGoalCard />
-
-          <StreakCard data={streak} />
-
-          <NoticesCard />
-        </ScrollView>
-      </View>
-    </SwipeableTab>
+    <View style={styles.container}>
+      <Header
+        name={`${member?.firstName} ${member?.lastName}`}
+        photo={member?.profileImage}
+      />
+      <ReorderableList
+        data={sortedCards}
+        keyExtractor={(item) => item.id}
+        onReorder={handleReorder}
+        contentContainerStyle={[
+          styles.content,
+          { paddingBottom: tabBarHeight + 70 },
+        ]}
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => <DraggableCardRow item={item} />}
+      />
+    </View>
   );
 }

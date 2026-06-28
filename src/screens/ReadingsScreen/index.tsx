@@ -1,5 +1,4 @@
 import { CalendarModal } from "@/components/CalendarModal";
-import { GraceEarnedModal } from "@/components/GraceEarnedModal";
 import { DateNavigator } from "@/components/DateNavigator";
 import { Header } from "@/components/Header";
 import { LiturgySeasonBanner } from "@/components/LiturgySeasonBanner";
@@ -7,17 +6,16 @@ import { PsalmCard } from "@/components/PsalmCard";
 import { ReadingCard } from "@/components/ReadingCard";
 import { LiturgySkeleton } from "@/components/Skeleton/LiturgySkeleton";
 import { SwipeableTab } from "@/components/SwipeableTab";
-import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";
 import { useAppTheme } from "@/context/ThemeContext";
 import { useLiturgyTTS } from "@/hooks/useLiturgyTTS";
 import { LiturgyService } from "@/services/LiturgyService";
-import { StreakService } from "@/services/StreakService";
+import { ReadingStreakService } from "@/services/ReadingStreakService";
 import { ILiturgia } from "@/types/Liturgy";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useFocusEffect } from "@react-navigation/native";
 import { RefreshCw } from "lucide-react-native";
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useStyles } from "./styles";
 
@@ -45,7 +43,7 @@ function buildSectionText(
 }
 
 export function ReadingsScreen() {
-  const { member, notifyUnlocks } = useContext(AuthContext);
+  const { member, reloadMemberData } = useContext(AuthContext);
   const { colors } = useAppTheme();
   const tabBarHeight = useBottomTabBarHeight();
   const styles = useStyles();
@@ -55,8 +53,6 @@ export function ReadingsScreen() {
   const [loading, setLoading] = useState(true);
   const [liturgy, setLiturgy] = useState<ILiturgia | null>(null);
   const [error, setError] = useState(false);
-  // Saves disponíveis após ganhar um (controla a modal de "novo save").
-  const [graceEarned, setGraceEarned] = useState<number | null>(null);
 
   const {
     activeId,
@@ -67,77 +63,6 @@ export function ReadingsScreen() {
   } = useLiturgyTTS();
 
   const memberId = member?._id;
-  const isToday = isSameDay(selectedDate, today());
-
-  // Seções abertas no dia atual — quando 1ª leitura + salmo + evangelho estão
-  // todas abertas, conta como "leitura completa". Reinicia ao trocar de data.
-  const expandedSections = useRef<Set<string>>(new Set());
-  useEffect(() => {
-    expandedSections.current = new Set();
-  }, [selectedDate]);
-
-  const handleAudioListen = useCallback(async () => {
-    if (!memberId) return;
-    const newBadges = await StreakService.recordAudioListen(memberId);
-    if (newBadges.length > 0) await notifyUnlocks(newBadges);
-  }, [memberId, notifyUnlocks]);
-
-  const handleSectionExpand = useCallback(
-    async (id: string) => {
-      // Só conta para a liturgia de hoje; navegar no passado não pontua.
-      if (!memberId || !isToday) return;
-      expandedSections.current.add(id);
-      const done = ["primeira-leitura", "salmo", "evangelho"].every((s) =>
-        expandedSections.current.has(s),
-      );
-      if (!done) return;
-      const beforeEight = new Date().getHours() < 8;
-      const newBadges = await StreakService.recordCompleteReading(
-        memberId,
-        beforeEight,
-      );
-      if (newBadges.length > 0) await notifyUnlocks(newBadges);
-    },
-    [memberId, isToday, notifyUnlocks],
-  );
-
-  // Reading TODAY's liturgy is the single event that advances the streak. It
-  // lives here (not on Início) so merely opening the app never counts as a read.
-  const markStreak = useCallback(async () => {
-    if (!memberId) return;
-    const result = await StreakService.recordRead(memberId);
-
-    if (result.newBadges.length > 0) {
-      // Conquistas viram modal de celebração (global, via contexto); isso
-      // também atualiza moldura/efeito e avisa cosméticos desbloqueados.
-      await notifyUnlocks(result.newBadges);
-    } else if (result.milestone) {
-      ToastMessage.success(
-        `🔥 ${result.milestone} dias de liturgia!`,
-        "Sua constância está acendendo.",
-      );
-    } else if (result.newRecord) {
-      ToastMessage.success(
-        `Novo recorde! 🔥 ${result.data.current} dias`,
-        "Você nunca chegou tão longe.",
-      );
-    } else if (result.graceUsed) {
-      ToastMessage.success(
-        "🕊️ Dia de graça usado",
-        "Você faltou um dia, mas sua sequência continua viva.",
-      );
-    } else if (result.graceEarned) {
-      // Um save conquistado ganha uma modal de celebração (≠ toast).
-      setGraceEarned(result.data.grace);
-    } else if (result.countedToday) {
-      // Ordinary day: still confirm the streak advanced. Fires only on the
-      // first read of the day (countedToday is false on re-opens).
-      ToastMessage.success(
-        `🔥 +1 dia de ofensiva!`,
-        `Você está há ${result.data.current} dias seguidos de leitura.`,
-      );
-    }
-  }, [memberId, notifyUnlocks]);
 
   const fetchLiturgy = useCallback(
     async (date: Date, force = false) => {
@@ -150,14 +75,22 @@ export function ReadingsScreen() {
           ? await LiturgyService.getToday(force)
           : await LiturgyService.getByDate(date);
         setLiturgy(data);
-        if (isToday) markStreak();
+        // Marca a leitura de hoje no backend (idempotente) e recarrega o
+        // membro para o StreakCard refletir a sequência atualizada.
+        if (isToday && memberId) {
+          ReadingStreakService.markToday()
+            .then((res) => {
+              if (!res.alreadyDoneToday) reloadMemberData();
+            })
+            .catch(() => {});
+        }
       } catch {
         setError(true);
       } finally {
         setLoading(false);
       }
     },
-    [markStreak],
+    [memberId],
   );
 
   useFocusEffect(
@@ -165,6 +98,10 @@ export function ReadingsScreen() {
       fetchLiturgy(selectedDate);
     }, [selectedDate]),
   );
+
+  useEffect(() => {
+    fetchLiturgy(selectedDate);
+  }, [selectedDate]);
 
   const handlePrev = useCallback(() => {
     setSelectedDate((d) => {
@@ -195,11 +132,10 @@ export function ReadingsScreen() {
       ttsState: activeId === id ? ttsState : ("idle" as const),
       onTTSPlay: () => {
         playSection(id, text);
-        handleAudioListen();
       },
       onTTSPause: pause,
     }),
-    [activeId, ttsState, playSection, pause, handleAudioListen],
+    [activeId, ttsState, playSection, pause],
   );
 
   return (
@@ -266,7 +202,6 @@ export function ReadingsScreen() {
                 titulo={liturgy.leituras.primeiraLeitura.titulo}
                 texto={liturgy.leituras.primeiraLeitura.texto}
                 formulaFinal="Palavra do Senhor."
-                onExpand={() => handleSectionExpand("primeira-leitura")}
                 {...sectionTTSProps(
                   "primeira-leitura",
                   buildSectionText(
@@ -283,7 +218,6 @@ export function ReadingsScreen() {
                 referencia={liturgy.leituras.salmo.referencia}
                 refrao={liturgy.leituras.salmo.refrao}
                 texto={liturgy.leituras.salmo.texto}
-                onExpand={() => handleSectionExpand("salmo")}
                 {...sectionTTSProps(
                   "salmo",
                   buildSectionText(
@@ -321,7 +255,6 @@ export function ReadingsScreen() {
                 titulo={liturgy.leituras.evangelho.titulo}
                 texto={liturgy.leituras.evangelho.texto}
                 formulaFinal="Palavra da Salvação."
-                onExpand={() => handleSectionExpand("evangelho")}
                 {...sectionTTSProps(
                   "evangelho",
                   buildSectionText(
@@ -350,11 +283,6 @@ export function ReadingsScreen() {
           selectedDate={selectedDate}
           onSelectDate={handleSelectDate}
           onClose={() => setCalendarVisible(false)}
-        />
-        <GraceEarnedModal
-          visible={graceEarned !== null}
-          graceCount={graceEarned ?? 0}
-          onClose={() => setGraceEarned(null)}
         />
       </View>
     </SwipeableTab>

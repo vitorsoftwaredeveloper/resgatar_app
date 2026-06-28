@@ -3,8 +3,6 @@ import { RADIUS, SPACING, TYPOGRAPHY } from "@/theme";
 import { useMemo } from "react";
 import { StyleSheet } from "react-native";
 
-// Warm flame tones, independent of the liturgical color so the streak reads as
-// its own distinct, gamified element.
 export const STREAK_ACCENT = "#E8862E";
 export const STREAK_ACCENT_DIM = "#C9BCAE";
 

@@ -1,15 +1,11 @@
-import { AchievementsModal } from "@/components/AchievementsModal";
-import { AchievementUnlockedModal } from "@/components/AchievementUnlockedModal";
 import { Avatar } from "@/components/Avatar";
-import { CosmeticUnlockedModal } from "@/components/CosmeticUnlockedModal";
 import { QuickActionsSheet } from "@/components/QuickActionsSheet";
-import { AuthContext } from "@/context/AuthContext";
 import { useAppTheme } from "@/context/ThemeContext";
 import { useBirthday } from "@/context/BirthdayContext";
 import { resolveAvatarUri } from "@/utils/image";
 import { useIsFocused } from "@react-navigation/native";
 import { ChevronLeft, EllipsisVertical } from "lucide-react-native";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { CoachTarget } from "../CoachTarget";
 import { LogoResgatar } from "../Svg/Logo";
@@ -25,27 +21,10 @@ export function Header({ name, photo, onBack }: Props) {
   const { colors } = useAppTheme();
   const styles = useStyles();
   const { todayBirthdays } = useBirthday();
-  const {
-    myStreak,
-    myTier,
-    myEffect,
-    selectedFrame,
-    setFrame,
-    selectedEffect,
-    setEffect,
-    cosmeticUnlock,
-    cosmeticRemaining,
-    dismissCosmetic,
-    badgeUnlock,
-    badgeRemaining,
-    dismissBadge,
-  } = useContext(AuthContext);
   const [sheetVisible, setSheetVisible] = useState(false);
-  const [achievementsVisible, setAchievementsVisible] = useState(false);
   const [anchorPosition, setAnchorPosition] = useState<{ top: number; right: number } | undefined>();
   const buttonRef = useRef<View>(null);
   const isFocused = useIsFocused();
-
 
   useEffect(() => {
     if (!isFocused) setSheetVisible(false);
@@ -76,13 +55,7 @@ export function Header({ name, photo, onBack }: Props) {
 
         <View style={styles.logo}>
           {avatarUri ? (
-            <Avatar
-              photo={photo}
-              size={50}
-              tier={myTier}
-              effect={myEffect}
-              onPress={() => setAchievementsVisible(true)}
-            />
+            <Avatar photo={photo} size={50} />
           ) : (
             <LogoResgatar size={100} color={colors.primary} />
           )}
@@ -116,33 +89,6 @@ export function Header({ name, photo, onBack }: Props) {
         onClose={() => setSheetVisible(false)}
         anchorPosition={anchorPosition}
         todayBirthdays={todayBirthdays}
-        onOpenAchievements={() => {
-          setSheetVisible(false);
-          setAchievementsVisible(true);
-        }}
-      />
-
-      <AchievementsModal
-        visible={achievementsVisible}
-        data={myStreak}
-        selectedFrame={selectedFrame}
-        onSelectFrame={setFrame}
-        selectedEffect={selectedEffect}
-        onSelectEffect={setEffect}
-        onClose={() => setAchievementsVisible(false)}
-      />
-
-      <AchievementUnlockedModal
-        badge={badgeUnlock}
-        remaining={badgeRemaining}
-        onClose={dismissBadge}
-      />
-
-      <CosmeticUnlockedModal
-        unlock={cosmeticUnlock}
-        previewTier={myTier}
-        remaining={cosmeticRemaining}
-        onClose={dismissCosmetic}
       />
     </View>
   );

@@ -3,7 +3,6 @@ import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";
 import { useAppTheme } from "@/context/ThemeContext";
 import { DonationServices } from "@/services/DonationService";
-import { StreakService } from "@/services/StreakService";
 import { TRANSACTION_STATUS, isReturnedTransaction } from "@/types/Charge";
 import { IDonation } from "@/types/Donation";
 import { formatMoneyBRL } from "@/utils/helper";
@@ -55,7 +54,7 @@ export function DonationsScreen() {
   const navigation = useNavigation();
   const styles = useStyles();
   const { colors } = useAppTheme();
-  const { member, notifyUnlocks } = useContext(AuthContext);
+  const { member } = useContext(AuthContext);
 
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
@@ -75,17 +74,6 @@ export function DonationsScreen() {
       // Doações estornadas/devolvidas saem da lista: o dinheiro voltou ao doador.
       const valid = data.filter((d) => !isReturnedTransaction(d.status));
       setDonations(valid);
-      if (member?._id) {
-        const myCount = valid.filter(
-          (d) => d.memberId === member._id && d.status === TRANSACTION_STATUS.APPROVED,
-        ).length;
-        const newBadges = await StreakService.syncDonations(
-          member._id,
-          year,
-          myCount,
-        );
-        await notifyUnlocks(newBadges);
-      }
     } catch {
       setDonations([]);
       ToastMessage.error("Erro", "Não foi possível carregar as doações.");

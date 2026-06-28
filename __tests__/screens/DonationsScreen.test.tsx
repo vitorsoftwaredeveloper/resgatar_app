@@ -81,10 +81,6 @@ jest.mock("@/services/DonationService", () => ({
   },
 }));
 
-jest.mock("@/services/StreakService", () => ({
-  StreakService: { syncDonations: jest.fn().mockResolvedValue([]) },
-}));
-
 jest.mock("@/utils/helper", () => ({
   formatMoneyBRL: (v: any) => `R$ ${v}`,
 }));
@@ -154,9 +150,7 @@ describe("DonationsScreen", () => {
     mockList.mockResolvedValue([]);
     const { getByText } = render(<DonationsScreen />);
     await waitFor(() =>
-      expect(
-        getByText("Nenhuma doação registrada neste mês."),
-      ).toBeTruthy(),
+      expect(getByText("Nenhuma doação registrada neste mês.")).toBeTruthy(),
     );
   });
 
@@ -164,14 +158,32 @@ describe("DonationsScreen", () => {
     mockList.mockRejectedValue(new Error("network"));
     render(<DonationsScreen />);
     await waitFor(() =>
-      expect(ToastMessage.error).toHaveBeenCalledWith("Erro", expect.any(String)),
+      expect(ToastMessage.error).toHaveBeenCalledWith(
+        "Erro",
+        expect.any(String),
+      ),
     );
   });
 
   describe("com doações no mês atual", () => {
-    const pix = makeDonation({ transactionId: "txn-pix", amount: "50,00", paymentMethodId: "pix", status: "approved" });
-    const cash = makeDonation({ transactionId: "txn-cash", amount: "20,00", paymentMethodId: "cash", status: "approved" });
-    const pending = makeDonation({ transactionId: "txn-pending", amount: "30,00", paymentMethodId: "pix", status: "pending" });
+    const pix = makeDonation({
+      transactionId: "txn-pix",
+      amount: "50,00",
+      paymentMethodId: "pix",
+      status: "approved",
+    });
+    const cash = makeDonation({
+      transactionId: "txn-cash",
+      amount: "20,00",
+      paymentMethodId: "cash",
+      status: "approved",
+    });
+    const pending = makeDonation({
+      transactionId: "txn-pending",
+      amount: "30,00",
+      paymentMethodId: "pix",
+      status: "pending",
+    });
 
     beforeEach(() => {
       mockList.mockResolvedValue([pix, cash, pending]);
@@ -185,7 +197,9 @@ describe("DonationsScreen", () => {
 
     it("exibe a contagem de doações confirmadas", async () => {
       const { getByText } = render(<DonationsScreen />);
-      await waitFor(() => expect(getByText("2 doações confirmadas")).toBeTruthy());
+      await waitFor(() =>
+        expect(getByText("2 doações confirmadas")).toBeTruthy(),
+      );
     });
 
     it("exibe os itens de doação na lista", async () => {
@@ -241,7 +255,10 @@ describe("DonationsScreen", () => {
     });
 
     it("filtra doações estornadas (refunded) fora da lista", async () => {
-      const refunded = makeDonation({ transactionId: "r1", status: "refunded" });
+      const refunded = makeDonation({
+        transactionId: "r1",
+        status: "refunded",
+      });
       mockList.mockResolvedValue([refunded]);
 
       const { getByText } = render(<DonationsScreen />);
@@ -251,7 +268,10 @@ describe("DonationsScreen", () => {
     });
 
     it("filtra doações estornadas (charged_back) fora da lista", async () => {
-      const chargedBack = makeDonation({ transactionId: "c1", status: "charged_back" });
+      const chargedBack = makeDonation({
+        transactionId: "c1",
+        status: "charged_back",
+      });
       mockList.mockResolvedValue([chargedBack]);
 
       const { getByText } = render(<DonationsScreen />);
@@ -296,30 +316,48 @@ describe("DonationsScreen", () => {
       // neste setup — verificamos apenas que o fetch inicial acontece com o ano correto.
       mockList.mockResolvedValue([]);
       render(<DonationsScreen />);
-      await waitFor(() =>
-        expect(mockList).toHaveBeenCalledWith(CURRENT_YEAR),
-      );
+      await waitFor(() => expect(mockList).toHaveBeenCalledWith(CURRENT_YEAR));
     });
   });
 
   describe("sumAmounts (lógica interna via UI)", () => {
     it("soma corretamente valores com vírgula decimal", async () => {
       mockList.mockResolvedValue([
-        makeDonation({ transactionId: "a", amount: "1.000,50", status: "approved" }),
-        makeDonation({ transactionId: "b", amount: "0,50", status: "approved" }),
+        makeDonation({
+          transactionId: "a",
+          amount: "1.000,50",
+          status: "approved",
+        }),
+        makeDonation({
+          transactionId: "b",
+          amount: "0,50",
+          status: "approved",
+        }),
       ]);
       const { getAllByText } = render(<DonationsScreen />);
       // 1000.50 + 0.50 = 1001.00; helper mock devolve "R$ 1001"
-      await waitFor(() => expect(getAllByText("R$ 1001").length).toBeGreaterThan(0));
+      await waitFor(() =>
+        expect(getAllByText("R$ 1001").length).toBeGreaterThan(0),
+      );
     });
 
     it("ignora valores NaN sem quebrar o total", async () => {
       mockList.mockResolvedValue([
-        makeDonation({ transactionId: "ok", amount: "100,00", status: "approved" }),
-        makeDonation({ transactionId: "bad", amount: "invalid", status: "approved" }),
+        makeDonation({
+          transactionId: "ok",
+          amount: "100,00",
+          status: "approved",
+        }),
+        makeDonation({
+          transactionId: "bad",
+          amount: "invalid",
+          status: "approved",
+        }),
       ]);
       const { getAllByText } = render(<DonationsScreen />);
-      await waitFor(() => expect(getAllByText("R$ 100").length).toBeGreaterThan(0));
+      await waitFor(() =>
+        expect(getAllByText("R$ 100").length).toBeGreaterThan(0),
+      );
     });
   });
 });

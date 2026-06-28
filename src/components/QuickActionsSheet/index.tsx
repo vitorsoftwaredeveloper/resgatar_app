@@ -2,7 +2,7 @@ import { BirthdayModal } from "@/components/BirthdayModal";
 import { CoachTarget } from "@/components/CoachTarget";
 import { useCoach } from "@/context/CoachContext";
 import { useAppTheme } from "@/context/ThemeContext";
-import { Award, Cake, Moon, Sun } from "lucide-react-native";
+import { Cake, Moon, Sun } from "lucide-react-native";
 import React, { useState } from "react";
 import { Modal, Text, TouchableOpacity, View } from "react-native";
 import { useStyles } from "./styles";
@@ -12,10 +12,9 @@ interface Props {
   onClose: () => void;
   anchorPosition?: { top: number; right: number };
   todayBirthdays?: number;
-  onOpenAchievements?: () => void;
 }
 
-export function QuickActionsSheet({ visible, onClose, anchorPosition, todayBirthdays = 0, onOpenAchievements }: Props) {
+export function QuickActionsSheet({ visible, onClose, anchorPosition, todayBirthdays = 0 }: Props) {
   const styles = useStyles();
   const { mode, toggleTheme, colors } = useAppTheme();
   const { active: tutorialActive } = useCoach();
@@ -78,17 +77,6 @@ export function QuickActionsSheet({ visible, onClose, anchorPosition, todayBirth
             </TouchableOpacity>
           </CoachTarget>
 
-          {onOpenAchievements && (
-            <>
-              <View style={styles.divider} />
-              <TouchableOpacity style={styles.item} onPress={onOpenAchievements} activeOpacity={0.7}>
-                <View style={styles.itemIcon}>
-                  <Award size={16} color={colors.primary} />
-                </View>
-                <Text style={styles.itemLabel}>Conquistas</Text>
-              </TouchableOpacity>
-            </>
-          )}
         </View>
       </Modal>
 

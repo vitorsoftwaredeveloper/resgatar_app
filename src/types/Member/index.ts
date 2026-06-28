@@ -43,6 +43,11 @@ interface IMember {
     numberType: string;
   };
   role?: "admin" | "user";
+  readingStreak?: {
+    currentStreak: number;
+    longestStreak: number;
+    lastReadAt: string | null;
+  };
 }
 
 type IMemberWithContribution = IMember & {

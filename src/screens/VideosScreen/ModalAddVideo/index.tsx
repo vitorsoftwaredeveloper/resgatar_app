@@ -3,10 +3,9 @@ import { Card } from "@/components/Card";
 import { Input } from "@/components/Input";
 import { ModalBase } from "@/components/ModalBase";
 import { ToastMessage } from "@/components/Toast";
-import { AuthContext } from "@/context/AuthContext";
 import { VideoService } from "@/services/VideoService";
 import { getApiErrorMessage } from "@/utils/apiError";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -42,7 +41,6 @@ function extractVideoId(url: string): string | null {
 
 export function ModalAddVideo({ visible, onClose, onSuccess }: IModalAddVideo) {
   const styles = useStyles();
-  const { recordVideoPosted } = useContext(AuthContext);
   const [url, setUrl] = useState("");
   const [urlError, setUrlError] = useState<string | false>(false);
   const [videoInfo, setVideoInfo] = useState<IVideoInfo | null>(null);
@@ -113,7 +111,6 @@ export function ModalAddVideo({ visible, onClose, onSuccess }: IModalAddVideo) {
       await VideoService.createVideo(trimmed, videoInfo?.title);
       ToastMessage.success("Vídeo cadastrado!", "Seu vídeo foi publicado.");
       setUrl("");
-      recordVideoPosted();
       setTimeout(onSuccess, 1000);
     } catch (error) {
       const message = getApiErrorMessage(error, "Falha ao cadastrar vídeo.");

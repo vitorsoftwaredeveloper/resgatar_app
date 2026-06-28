@@ -32,12 +32,7 @@ jest.mock("@/components/CoachTarget", () => {
 jest.mock("@/components/QuickActionsSheet", () => ({
   QuickActionsSheet: () => null,
 }));
-jest.mock("@/components/AchievementsModal", () => ({
-  AchievementsModal: () => null,
-}));
-jest.mock("@/components/CosmeticUnlockedModal", () => ({
-  CosmeticUnlockedModal: () => null,
-}));
+
 jest.mock("@/context/AuthContext", () => {
   const React = require("react");
   return {
