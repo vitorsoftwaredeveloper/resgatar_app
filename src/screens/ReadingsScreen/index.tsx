@@ -2,12 +2,14 @@ import { CalendarModal } from "@/components/CalendarModal";
 import { DateNavigator } from "@/components/DateNavigator";
 import { Header } from "@/components/Header";
 import { LiturgySeasonBanner } from "@/components/LiturgySeasonBanner";
+import { MarkReadingButton } from "@/components/MarkReadingButton";
 import { PsalmCard } from "@/components/PsalmCard";
 import { ReadingCard } from "@/components/ReadingCard";
 import { LiturgySkeleton } from "@/components/Skeleton/LiturgySkeleton";
 import { SwipeableTab } from "@/components/SwipeableTab";
 import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";
+import { getReadingMarkedDate, setReadingMarkedDate } from "@/storage/asyncStorage";
 import { useAppTheme } from "@/context/ThemeContext";
 import { useLiturgyTTS } from "@/hooks/useLiturgyTTS";
 import { LiturgyService } from "@/services/LiturgyService";
@@ -54,6 +56,8 @@ export function ReadingsScreen() {
   const [loading, setLoading] = useState(true);
   const [liturgy, setLiturgy] = useState<ILiturgia | null>(null);
   const [error, setError] = useState(false);
+  const [marking, setMarking] = useState(false);
+  const [markDismissed, setMarkDismissed] = useState(false);
 
   const {
     activeId,
@@ -64,6 +68,48 @@ export function ReadingsScreen() {
   } = useLiturgyTTS();
 
   const memberId = member?._id;
+
+  const isViewingToday = isSameDay(selectedDate, today());
+
+  // Deriva alreadyReadToday a partir do readingStreak do backend.
+  const lastReadAt = member?.readingStreak?.lastReadAt;
+  const alreadyReadToday = lastReadAt
+    ? isSameDay(new Date(lastReadAt), today())
+    : false;
+  const streakCount = member?.readingStreak?.currentStreak ?? 0;
+
+  // Checa storage ao iniciar sessão para não reaparecer o botão após logout/login.
+  useEffect(() => {
+    if (!memberId) return;
+    getReadingMarkedDate(memberId).then((storedDate) => {
+      if (storedDate) {
+        const d = new Date(storedDate);
+        if (isSameDay(d, today())) setMarkDismissed(true);
+      }
+    });
+  }, [memberId]);
+
+  const handleMarkRead = useCallback(async () => {
+    if (!memberId) return;
+    setMarkDismissed(true);
+    setMarking(true);
+    try {
+      await ReadingStreakService.markToday();
+      await setReadingMarkedDate(memberId, new Date().toISOString());
+      await reloadMemberData();
+      ToastMessage.success(
+        "Leitura de hoje realizada",
+        "Mais um dia somado à sua ofensiva.",
+      );
+    } catch {
+      ToastMessage.error(
+        "Não foi possível registrar",
+        "Verifique sua conexão e tente novamente.",
+      );
+    } finally {
+      setMarking(false);
+    }
+  }, [memberId, reloadMemberData]);
 
   const fetchLiturgy = useCallback(
     async (date: Date, force = false) => {
@@ -76,28 +122,13 @@ export function ReadingsScreen() {
           ? await LiturgyService.getToday(force)
           : await LiturgyService.getByDate(date);
         setLiturgy(data);
-        // Marca a leitura de hoje no backend (idempotente) e recarrega o
-        // membro para o StreakCard refletir a sequência atualizada.
-        if (isToday && memberId) {
-          ReadingStreakService.markToday()
-            .then((res) => {
-              if (!res.alreadyDoneToday) {
-                reloadMemberData();
-                ToastMessage.success(
-                  "Liturgia diária",
-                  "Continue assim e mantenha sua sequência.",
-                );
-              }
-            })
-            .catch(() => {});
-        }
       } catch {
         setError(true);
       } finally {
         setLoading(false);
       }
     },
-    [memberId],
+    [],
   );
 
   useFocusEffect(
@@ -108,7 +139,19 @@ export function ReadingsScreen() {
 
   useEffect(() => {
     fetchLiturgy(selectedDate);
-  }, [selectedDate]);
+    // Ao trocar de data, reavalia o dismissed contra o storage (só oculta se for hoje).
+    if (memberId) {
+      getReadingMarkedDate(memberId).then((storedDate) => {
+        if (storedDate && isSameDay(new Date(storedDate), today())) {
+          setMarkDismissed(true);
+        } else {
+          setMarkDismissed(false);
+        }
+      });
+    } else {
+      setMarkDismissed(false);
+    }
+  }, [selectedDate, memberId]);
 
   const handlePrev = useCallback(() => {
     setSelectedDate((d) => {
@@ -211,6 +254,14 @@ export function ReadingsScreen() {
                     : <RefreshCw size={14} color={colors.primary} />
                   }
                 </TouchableOpacity>
+              )}
+
+              {isViewingToday && !alreadyReadToday && !markDismissed && (
+                <MarkReadingButton
+                  streakCount={streakCount}
+                  loading={marking}
+                  onPress={handleMarkRead}
+                />
               )}
 
               <LiturgySeasonBanner
