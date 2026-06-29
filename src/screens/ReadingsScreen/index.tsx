@@ -6,6 +6,7 @@ import { PsalmCard } from "@/components/PsalmCard";
 import { ReadingCard } from "@/components/ReadingCard";
 import { LiturgySkeleton } from "@/components/Skeleton/LiturgySkeleton";
 import { SwipeableTab } from "@/components/SwipeableTab";
+import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";
 import { useAppTheme } from "@/context/ThemeContext";
 import { useLiturgyTTS } from "@/hooks/useLiturgyTTS";
@@ -80,7 +81,13 @@ export function ReadingsScreen() {
         if (isToday && memberId) {
           ReadingStreakService.markToday()
             .then((res) => {
-              if (!res.alreadyDoneToday) reloadMemberData();
+              if (!res.alreadyDoneToday) {
+                reloadMemberData();
+                ToastMessage.success(
+                  "Liturgia diária",
+                  "Continue assim e mantenha sua sequência.",
+                );
+              }
             })
             .catch(() => {});
         }
