@@ -216,23 +216,25 @@ export function ModalDonate({ visible, onClose, isAdmin }: Props) {
             />
             <Text style={styles.hint}>Deixe em branco se a doação é sua.</Text>
 
-            <Button
-              title="Doar via PIX"
-              loading={pixLoading}
-              disabled={cashLoading}
-              onPress={handlePix}
-            />
-
-            {isAdmin && (
+            <View style={styles.actions}>
+              {isAdmin && (
+                <Button
+                  title="Em dinheiro"
+                  variant="secondary"
+                  loading={cashLoading}
+                  disabled={pixLoading}
+                  onPress={handleCash}
+                  styleCustom={styles.actionButton}
+                />
+              )}
               <Button
-                title="Registrar em dinheiro"
-                variant="secondary"
-                loading={cashLoading}
-                disabled={pixLoading}
-                onPress={handleCash}
-                styleCustom={styles.cashButton}
+                title="Doar via PIX"
+                loading={pixLoading}
+                disabled={cashLoading}
+                onPress={handlePix}
+                styleCustom={isAdmin ? styles.actionButton : undefined}
               />
-            )}
+            </View>
           </ScrollView>
         </KeyboardAvoidingView>
       </ModalBase>

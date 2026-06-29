@@ -10,6 +10,7 @@ export function useStyles() {
       StyleSheet.create({
         container: {
           backgroundColor: colors.card,
+          paddingBottom: SPACING.lg,
         },
         errorText: {
           fontSize: TYPOGRAPHY.small,
@@ -105,9 +106,6 @@ export function useStyles() {
 
         // Preview da imagem
         previewWrapper: {
-          marginHorizontal: SPACING.md,
-          marginTop: SPACING.md,
-          marginBottom: SPACING.sm2,
           borderRadius: RADIUS.lg,
           overflow: "hidden",
           height: 120,
@@ -147,11 +145,6 @@ export function useStyles() {
           fontSize: TYPOGRAPHY.small,
           fontWeight: "600",
           color: "#FFFFFF",
-        },
-        fields: {
-          paddingHorizontal: SPACING.md,
-          gap: SPACING.sm2,
-          paddingBottom: SPACING.md,
         },
       }),
     [colors],

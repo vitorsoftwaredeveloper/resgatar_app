@@ -1,4 +1,5 @@
 import { Button } from "@/components/Button";
+import { Card } from "@/components/Card";
 import { Dialog } from "@/components/Dialog";
 import { Input } from "@/components/Input";
 import { ModalBase } from "@/components/ModalBase";
@@ -176,46 +177,45 @@ export function ModalBannerForm({ visible, banner, onClose, onSuccess }: Props) 
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          {/* Prévia tappable — abre galeria */}
-          <Pressable
-            style={styles.previewWrapper}
-            onPress={handlePickImage}
-            disabled={pickingImage}
-            accessibilityLabel="Selecionar imagem da galeria"
-          >
-            {pickingImage ? (
-              <View style={styles.previewPlaceholder}>
-                <ActivityIndicator color="#8C7A6B" />
-              </View>
-            ) : imageData ? (
-              <>
-                <Image
-                  source={{ uri: imageData }}
-                  style={styles.previewImage}
-                  resizeMode="cover"
-                />
-                <View style={styles.previewEditBadge}>
-                  <Camera size={14} color="#FFFFFF" />
-                  <Text style={styles.previewEditText}>Trocar</Text>
+          <Card title="Imagem" description="Proporção recomendada: 16:9. Tamanho máximo: 500 KB.">
+            <Pressable
+              style={styles.previewWrapper}
+              onPress={handlePickImage}
+              disabled={pickingImage}
+              accessibilityLabel="Selecionar imagem da galeria"
+            >
+              {pickingImage ? (
+                <View style={styles.previewPlaceholder}>
+                  <ActivityIndicator color="#8C7A6B" />
                 </View>
-              </>
-            ) : (
-              <View style={styles.previewPlaceholder}>
-                <ImageIcon size={28} color="#8C7A6B" />
-                <Text style={styles.previewPlaceholderText}>
-                  Toque para escolher uma imagem
-                </Text>
-              </View>
+              ) : imageData ? (
+                <>
+                  <Image
+                    source={{ uri: imageData }}
+                    style={styles.previewImage}
+                    resizeMode="cover"
+                  />
+                  <View style={styles.previewEditBadge}>
+                    <Camera size={14} color="#FFFFFF" />
+                    <Text style={styles.previewEditText}>Trocar</Text>
+                  </View>
+                </>
+              ) : (
+                <View style={styles.previewPlaceholder}>
+                  <ImageIcon size={28} color="#8C7A6B" />
+                  <Text style={styles.previewPlaceholderText}>
+                    Toque para escolher uma imagem
+                  </Text>
+                </View>
+              )}
+            </Pressable>
+
+            {errors.image && (
+              <Text style={styles.errorText}>{errors.image}</Text>
             )}
-          </Pressable>
+          </Card>
 
-          {errors.image && (
-            <Text style={[styles.errorText, { marginHorizontal: 16, marginTop: 4 }]}>
-              {errors.image}
-            </Text>
-          )}
-
-          <View style={styles.fields}>
+          <Card title="Configurações" style={{ marginTop: 0 }}>
             <Input
               label="Título *"
               placeholder="Ex: Campanha do Dízimo"
@@ -225,7 +225,6 @@ export function ModalBannerForm({ visible, banner, onClose, onSuccess }: Props) 
               error={errors.title}
             />
 
-            {/* Seletor de tipo de ação */}
             <View>
               <Text style={styles.fieldLabel}>Ao tocar no banner</Text>
               <View style={styles.segment}>
@@ -300,7 +299,7 @@ export function ModalBannerForm({ visible, banner, onClose, onSuccess }: Props) 
                 )}
               </View>
             )}
-          </View>
+          </Card>
         </ScrollView>
 
         <View style={styles.footer}>

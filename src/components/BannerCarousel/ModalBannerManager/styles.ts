@@ -84,6 +84,18 @@ export function useStyles() {
           color: colors.textMuted,
         },
 
+        savingBanner: {
+          flexDirection: "row",
+          alignItems: "center",
+          gap: SPACING.xs,
+          paddingHorizontal: SPACING.lg,
+          paddingVertical: SPACING.xs,
+        },
+        savingText: {
+          fontSize: TYPOGRAPHY.xsmall,
+          color: colors.textMuted,
+        },
+
         list: {
           paddingHorizontal: SPACING.lg,
           paddingTop: SPACING.xs,

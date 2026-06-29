@@ -49,8 +49,13 @@ export function useStyles() {
           color: colors.textMuted,
           marginBottom: 8,
         },
-        cashButton: {
-          marginTop: 10,
+        actions: {
+          flexDirection: "row",
+          gap: 8,
+          marginTop: 8,
+        },
+        actionButton: {
+          flex: 1,
           borderWidth: 1,
           borderColor: colors.primary,
         },

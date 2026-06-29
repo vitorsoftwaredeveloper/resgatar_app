@@ -104,6 +104,7 @@ export function ModalBannerManager({ visible, onClose, onSuccess }: Props) {
 
   const [banners, setBanners] = useState<IBanner[]>([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState(false);
   const [formVisible, setFormVisible] = useState(false);
   const [formTarget, setFormTarget] = useState<IBanner | null>(null);
@@ -140,17 +141,21 @@ export function ModalBannerManager({ visible, onClose, onSuccess }: Props) {
   };
 
   const handleReorder = useCallback(
-    ({ from, to }: ReorderableListReorderEvent) => {
-      setBanners((prev) => {
-        const next = reorderItems(prev, from, to);
-        BannerService.saveOrder(next).catch(() => {
-          ToastMessage.error("Erro", "Não foi possível salvar a nova ordem.");
-          load();
-        });
-        return next;
-      });
+    async ({ from, to }: ReorderableListReorderEvent) => {
+      const next = reorderItems(banners, from, to);
+      setBanners(next);
+      setSaving(true);
+      try {
+        await BannerService.saveOrder(next);
+        ToastMessage.success("Ordem salva", "A nova sequência foi publicada.");
+      } catch {
+        ToastMessage.error("Erro", "Não foi possível salvar a nova ordem.");
+        load();
+      } finally {
+        setSaving(false);
+      }
     },
-    [load],
+    [banners, load],
   );
 
   const subtitle = loading
@@ -201,6 +206,13 @@ export function ModalBannerManager({ visible, onClose, onSuccess }: Props) {
               </Text>
             </View>
           ) : editing ? (
+            <>
+              {saving && (
+                <View style={styles.savingBanner}>
+                  <ActivityIndicator size="small" color={colors.primary} />
+                  <Text style={styles.savingText}>Salvando ordem…</Text>
+                </View>
+              )}
             <ReorderableList
               data={banners}
               keyExtractor={(b) => b.id}
@@ -211,6 +223,7 @@ export function ModalBannerManager({ visible, onClose, onSuccess }: Props) {
                 <DraggableRow item={item} index={index} onEdit={() => openEdit(item)} />
               )}
             />
+            </>
           ) : (
             <FlatList
               data={banners}
