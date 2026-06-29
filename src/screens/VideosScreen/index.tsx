@@ -191,11 +191,15 @@ export function VideosScreen() {
                 return (
                   <TouchableOpacity
                     key={m.memberId}
-                    style={[styles.memberChip, active && styles.memberChipActive]}
+                    style={styles.memberItem}
                     onPress={() => setSelectedMemberId(active ? null : m.memberId)}
                     activeOpacity={0.75}
                   >
-                    <Avatar photo={m.profileImage} size={36} />
+                    <View style={[styles.memberRing, active && styles.memberRingActive]}>
+                      <View style={styles.memberRingInner}>
+                        <Avatar photo={m.profileImage} size={48} />
+                      </View>
+                    </View>
                   </TouchableOpacity>
                 );
               })}

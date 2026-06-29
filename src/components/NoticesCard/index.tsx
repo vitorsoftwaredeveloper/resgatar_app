@@ -1,3 +1,4 @@
+import { CoachTarget } from "@/components/CoachTarget";
 import { useAppTheme } from "@/context/ThemeContext";
 import { AuthContext } from "@/context/AuthContext";
 import { CommitmentService } from "@/services/CommitmentService";
@@ -35,6 +36,7 @@ export function NoticesCard() {
   );
 
   return (
+    <CoachTarget id="notices-card">
     <View style={styles.container}>
       <Pressable
         style={styles.header}
@@ -97,5 +99,6 @@ export function NoticesCard() {
         })
       )}
     </View>
+    </CoachTarget>
   );
 }

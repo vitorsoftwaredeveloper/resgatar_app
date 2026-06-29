@@ -1,9 +1,8 @@
 import { useAppTheme } from "@/context/ThemeContext";
 import { X } from "lucide-react-native";
-import { Modal, Text, View } from "react-native";
+import { Modal, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
-import { IconButton } from "../IconButton";
 import { toastConfig } from "../Toast/toastConfig";
 import { useStyles } from "./styles";
 
@@ -32,15 +31,21 @@ export const ModalBase: React.FC<IModalBase> = ({
       presentationStyle="overFullScreen"
     >
       <SafeAreaView style={styles.safeArea}>
-        {title && (
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>{title}</Text>
-
-            <IconButton color={colors.white} icon={X} onPress={onClose} />
-          </View>
-        )}
-        {children}
-        <Toast config={toastConfig} />
+        <View style={styles.sheet}>
+          {title && (
+            <View style={styles.header}>
+              <View style={styles.handle} />
+              <View style={styles.headerRow}>
+                <Text style={styles.headerTitle}>{title}</Text>
+                <TouchableOpacity style={styles.closeButton} onPress={onClose} hitSlop={8}>
+                  <X size={16} color={colors.textMuted} strokeWidth={2} />
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+          {children}
+          <Toast config={toastConfig} />
+        </View>
       </SafeAreaView>
     </Modal>
   );

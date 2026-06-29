@@ -83,7 +83,7 @@ export function useStyles() {
           textAlign: "center",
         },
         memberFilterWrapper: {
-          height: 52,
+          height: 68,
           justifyContent: "center",
         },
         memberArrow: {
@@ -103,19 +103,35 @@ export function useStyles() {
         },
         memberFilterRow: {
           paddingHorizontal: SPACING.md,
-          gap: SPACING.sm,
+          gap: SPACING.xxs,
           alignItems: "center",
         },
-        memberChip: {
-          width: 40,
-          height: 40,
-          borderRadius: 20,
-          borderWidth: 2,
-          borderColor: "transparent",
-          overflow: "hidden",
+        memberItem: {
+          alignItems: "center",
+          gap: 5,
         },
-        memberChipActive: {
-          borderColor: colors.primary,
+        memberRing: {
+          padding: 2,
+          borderRadius: 999,
+          backgroundColor: colors.border,
+        },
+        memberRingActive: {
+          backgroundColor: colors.primary,
+        },
+        memberRingInner: {
+          padding: 2,
+          borderRadius: 999,
+          backgroundColor: colors.softBrown,
+        },
+        memberName: {
+          fontSize: TYPOGRAPHY.xsmall,
+          color: colors.textMuted,
+          maxWidth: 58,
+          textAlign: "center",
+        },
+        memberNameActive: {
+          color: colors.text,
+          fontWeight: "500",
         },
         fab: {
           position: "absolute",

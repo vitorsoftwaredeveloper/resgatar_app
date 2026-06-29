@@ -1,3 +1,4 @@
+import { CoachTarget } from "@/components/CoachTarget";
 import { useAppTheme } from "@/context/ThemeContext";
 import { CommunityGoalCardSkeleton } from "@/components/Skeleton/CommunityGoalCardSkeleton";
 import { ChargeServices } from "@/services/ChargeService";
@@ -65,6 +66,7 @@ export function CommunityGoalCard() {
         : colors.error;
 
   return (
+    <CoachTarget id="community-goal-card">
     <View style={styles.card}>
       <View style={styles.header}>
         <UsersRound size={18} color={colors.primary} />
@@ -96,5 +98,6 @@ export function CommunityGoalCard() {
         </View>
       )}
     </View>
+    </CoachTarget>
   );
 }

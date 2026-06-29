@@ -1,3 +1,4 @@
+import { CoachTarget } from "@/components/CoachTarget";
 import { ContributionItem } from "@/components/ContributionItem";
 import { Header } from "@/components/Header";
 import { SwipeableTab } from "@/components/SwipeableTab";
@@ -106,6 +107,7 @@ export const BillsScreen = () => {
           data={contributions}
           keyExtractor={(item) => item.id}
           ListHeaderComponent={
+            <CoachTarget id="bills-donation">
             <TouchableOpacity
               onPress={() => setDonateModalVisible(true)}
               style={{
@@ -142,6 +144,7 @@ export const BillsScreen = () => {
                 </Text>
               </View>
             </TouchableOpacity>
+            </CoachTarget>
           }
           renderItem={({ item }) => (
             <ContributionItem

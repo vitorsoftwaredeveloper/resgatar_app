@@ -62,12 +62,14 @@ export const ProfileScreen = () => {
               />
             )}
 
-            <ItemActionList
-              title="Configurações pessoais"
-              description="Dados, senha e encerramento de conta"
-              onPress={() => navigation.navigate("PersonalSettings")}
-              icon={<Settings color={colors.primary} />}
-            />
+            <CoachTarget id="profile-personal-settings">
+              <ItemActionList
+                title="Configurações pessoais"
+                description="Dados, senha e encerramento de conta"
+                onPress={() => navigation.navigate("PersonalSettings")}
+                icon={<Settings color={colors.primary} />}
+              />
+            </CoachTarget>
 
             <CoachTarget id="profile-videos">
               <ItemActionList

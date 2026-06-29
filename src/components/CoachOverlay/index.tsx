@@ -30,7 +30,7 @@ export function CoachOverlay() {
         x: Math.max(targetRect.x - PADDING, 0),
         y: Math.max(targetRect.y, 0),
         width: targetRect.width + PADDING * 2,
-        height: targetRect.height * 2,
+        height: targetRect.height + PADDING * 2,
       }
     : null;
 

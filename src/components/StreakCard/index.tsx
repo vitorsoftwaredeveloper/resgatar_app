@@ -1,3 +1,4 @@
+import { CoachTarget } from "@/components/CoachTarget";
 import { AuthContext } from "@/context/AuthContext";
 import { IMember } from "@/types/Member";
 import { Flame } from "lucide-react-native";
@@ -73,6 +74,7 @@ export function StreakCard() {
       : "Abra a liturgia todo dia para evoluir";
 
   return (
+    <CoachTarget id="streak-card">
     <View
       style={styles.container}
       accessibilityLabel={`Ofensiva de leituras. ${headline}`}
@@ -112,5 +114,6 @@ export function StreakCard() {
         </View>
       </View>
     </View>
+    </CoachTarget>
   );
 }

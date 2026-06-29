@@ -1,3 +1,4 @@
+import { CoachTarget } from "@/components/CoachTarget";
 import { useAppTheme } from "@/context/ThemeContext";
 import { TTSState } from "@/hooks/useLiturgyTTS";
 import { ChevronDown, Pause, Play } from "lucide-react-native";
@@ -22,6 +23,7 @@ interface Props {
   ttsState?: TTSState;
   onTTSPlay?: () => void;
   onTTSPause?: () => void;
+  coachId?: string;
   /** Disparado quando a seção é expandida (abre o conteúdo). */
   onExpand?: () => void;
 }
@@ -52,6 +54,7 @@ export function ReadingCard({
   ttsState,
   onTTSPlay,
   onTTSPause,
+  coachId,
   onExpand,
 }: Props) {
   const styles = useStyles();
@@ -103,20 +106,22 @@ export function ReadingCard({
       <View style={styles.cardHeader}>
         <Text style={[styles.label]}>{label}</Text>
         {onTTSPlay && (
-          <TouchableOpacity
-            onPress={(e) => {
-              e.stopPropagation();
-              ttsState === "playing" ? onTTSPause?.() : onTTSPlay();
-            }}
-            style={[styles.ttsBtn, ttsState === "playing" && styles.ttsBtnActive]}
-            accessibilityLabel={ttsState === "playing" ? "Pausar leitura" : "Ouvir leitura"}
-          >
-            {ttsState === "playing" ? (
-              <Pause size={13} color={colors.primary} fill={colors.primary} />
-            ) : (
-              <Play size={13} color={colors.primary} fill={colors.primary} />
-            )}
-          </TouchableOpacity>
+          <CoachTarget id={coachId ?? "reading-tts-btn-unused"}>
+            <TouchableOpacity
+              onPress={(e) => {
+                e.stopPropagation();
+                ttsState === "playing" ? onTTSPause?.() : onTTSPlay();
+              }}
+              style={[styles.ttsBtn, ttsState === "playing" && styles.ttsBtnActive]}
+              accessibilityLabel={ttsState === "playing" ? "Pausar leitura" : "Ouvir leitura"}
+            >
+              {ttsState === "playing" ? (
+                <Pause size={13} color={colors.primary} fill={colors.primary} />
+              ) : (
+                <Play size={13} color={colors.primary} fill={colors.primary} />
+              )}
+            </TouchableOpacity>
+          </CoachTarget>
         )}
       </View>
 

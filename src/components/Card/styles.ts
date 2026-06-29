@@ -14,9 +14,11 @@ export function useStyles() {
           borderRadius: 24,
         },
         cardTitle: {
-          fontSize: 18,
-          fontWeight: "700",
-          color: colors.text,
+          fontSize: 12,
+          fontWeight: "500",
+          color: colors.textMuted,
+          textTransform: "uppercase",
+          letterSpacing: 0.7,
           marginBottom: 4,
         },
         cardDescription: {
