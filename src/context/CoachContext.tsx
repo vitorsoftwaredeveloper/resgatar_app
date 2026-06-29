@@ -33,6 +33,13 @@ export interface CoachStep {
 // Ordem do tour guiado entre as telas.
 export const COACH_STEPS: CoachStep[] = [
   {
+    id: "banner-carousel",
+    title: "Banners da comunidade",
+    text: "Aqui você vê os avisos e campanhas em destaque. Deslize para navegar entre os banners.",
+    tab: "Dashboard",
+    optional: true,
+  },
+  {
     id: "streak-card",
     title: "Ofensiva de leituras",
     text: "Acompanhe sua sequência diária de leituras. Cada dia que você lê conta para a ofensiva!",
@@ -48,6 +55,12 @@ export const COACH_STEPS: CoachStep[] = [
     id: "notices-card",
     title: "Compromissos da comunidade",
     text: "Fique por dentro dos compromissos e avisos importantes do grupo.",
+    tab: "Dashboard",
+  },
+  {
+    id: "streak-card",
+    title: "Reorganize os cards",
+    text: "Pressione e segure qualquer card para arrastá-lo e reorganizar a tela inicial do jeito que preferir.",
     tab: "Dashboard",
   },
   {

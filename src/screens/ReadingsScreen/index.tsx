@@ -6,7 +6,6 @@ import { MarkReadingButton } from "@/components/MarkReadingButton";
 import { PsalmCard } from "@/components/PsalmCard";
 import { ReadingCard } from "@/components/ReadingCard";
 import { LiturgySkeleton } from "@/components/Skeleton/LiturgySkeleton";
-import { SwipeableTab } from "@/components/SwipeableTab";
 import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";
 import { getReadingMarkedDate, setReadingMarkedDate } from "@/storage/asyncStorage";
@@ -190,8 +189,7 @@ export function ReadingsScreen() {
   );
 
   return (
-    <SwipeableTab>
-      <View style={styles.container}>
+    <View style={styles.container}>
         <Header
           name={`${member?.firstName} ${member?.lastName}`}
           photo={member?.profileImage}
@@ -361,7 +359,6 @@ export function ReadingsScreen() {
           onSelectDate={handleSelectDate}
           onClose={() => setCalendarVisible(false)}
         />
-      </View>
-    </SwipeableTab>
+    </View>
   );
 }

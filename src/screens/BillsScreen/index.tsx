@@ -1,7 +1,6 @@
 import { CoachTarget } from "@/components/CoachTarget";
 import { ContributionItem } from "@/components/ContributionItem";
 import { Header } from "@/components/Header";
-import { SwipeableTab } from "@/components/SwipeableTab";
 import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";
 import { ChargeContext } from "@/context/ChargeContext";
@@ -63,7 +62,6 @@ export const BillsScreen = () => {
       });
   };
 
-
   const contributions = useMemo(
     () =>
       Object.entries(member?.contributions.months || {}).map(
@@ -92,22 +90,21 @@ export const BillsScreen = () => {
   );
 
   return (
-    <SwipeableTab>
-      <View style={styles.container}>
-        <Header
-          name={member?.firstName + " " + member?.lastName}
-          photo={member?.profileImage}
-        />
+    <View style={styles.container}>
+      <Header
+        name={member?.firstName + " " + member?.lastName}
+        photo={member?.profileImage}
+      />
 
-        <FlatList
-          contentContainerStyle={[
-            styles.list,
-            { paddingBottom: tabBarHeight + 70 },
-          ]}
-          data={contributions}
-          keyExtractor={(item) => item.id}
-          ListHeaderComponent={
-            <CoachTarget id="bills-donation">
+      <FlatList
+        contentContainerStyle={[
+          styles.list,
+          { paddingBottom: tabBarHeight + 70 },
+        ]}
+        data={contributions}
+        keyExtractor={(item) => item.id}
+        ListHeaderComponent={
+          <CoachTarget id="bills-donation">
             <TouchableOpacity
               onPress={() => setDonateModalVisible(true)}
               style={{
@@ -144,53 +141,52 @@ export const BillsScreen = () => {
                 </Text>
               </View>
             </TouchableOpacity>
-            </CoachTarget>
-          }
-          renderItem={({ item }) => (
-            <ContributionItem
-              data={item}
-              onPay={() => handlePay(item)}
-              onShare={() =>
-                setComprovanteItem({
-                  ...item,
-                  cpf: member?.identification.numberType as string,
-                  docType: member?.identification.type,
-                  name: member?.firstName as string,
-                  email: member?.email as string,
-                })
-              }
-            />
-          )}
+          </CoachTarget>
+        }
+        renderItem={({ item }) => (
+          <ContributionItem
+            data={item}
+            onPay={() => handlePay(item)}
+            onShare={() =>
+              setComprovanteItem({
+                ...item,
+                cpf: member?.identification.numberType as string,
+                docType: member?.identification.type,
+                name: member?.firstName as string,
+                email: member?.email as string,
+              })
+            }
+          />
+        )}
+      />
+
+      {modalPayVisible && (
+        <PixPaymentModal
+          visible={modalPayVisible}
+          onClose={() => setModalPayVisible(false)}
+          payment={{
+            amountLabel: `${charge.transactionAmount ?? ""}`.replace(".", ","),
+            qrCode: charge.transactionData?.qrCode ?? "",
+            status: charge.status,
+          }}
         />
+      )}
 
-        {modalPayVisible && (
-          <PixPaymentModal
-            visible={modalPayVisible}
-            onClose={() => setModalPayVisible(false)}
-            payment={{
-              amountLabel: `${charge.transactionAmount ?? ""}`.replace(".", ","),
-              qrCode: charge.transactionData?.qrCode ?? "",
-              status: charge.status,
-            }}
-          />
-        )}
+      {comprovanteItem && (
+        <ModalComprovante
+          visible={!!comprovanteItem}
+          onClose={() => setComprovanteItem(null)}
+          data={comprovanteItem}
+        />
+      )}
 
-        {comprovanteItem && (
-          <ModalComprovante
-            visible={!!comprovanteItem}
-            onClose={() => setComprovanteItem(null)}
-            data={comprovanteItem}
-          />
-        )}
-
-        {donateModalVisible && (
-          <ModalDonate
-            visible={donateModalVisible}
-            onClose={() => setDonateModalVisible(false)}
-            isAdmin={member?.role === "admin"}
-          />
-        )}
-      </View>
-    </SwipeableTab>
+      {donateModalVisible && (
+        <ModalDonate
+          visible={donateModalVisible}
+          onClose={() => setDonateModalVisible(false)}
+          isAdmin={member?.role === "admin"}
+        />
+      )}
+    </View>
   );
 };

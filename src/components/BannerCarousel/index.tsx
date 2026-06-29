@@ -1,3 +1,4 @@
+import { CoachTarget } from "@/components/CoachTarget";
 import { AuthContext } from "@/context/AuthContext";
 import { BannerService } from "@/services/BannerService";
 import { IBanner } from "@/types/Banner";
@@ -144,7 +145,7 @@ export function BannerCarousel() {
   }
 
   return (
-    <View style={styles.wrapper}>
+    <CoachTarget id="banner-carousel" style={styles.wrapper}>
       <View style={styles.scroll}>
         <ScrollView
           ref={scrollRef}
@@ -192,6 +193,6 @@ export function BannerCarousel() {
           onSuccess={load}
         />
       )}
-    </View>
+    </CoachTarget>
   );
 }
