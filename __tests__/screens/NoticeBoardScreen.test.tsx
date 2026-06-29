@@ -113,7 +113,7 @@ import React from "react";
 import { ActivityIndicator } from "react-native";
 import { render, fireEvent, waitFor, act } from "@testing-library/react-native";
 import { AuthContext } from "@/context/AuthContext";
-import { NoticeBoardScreen } from "@/screens/NoticeBoardScreen";
+import { NoticeBoardModal } from "@/screens/NoticeBoardScreen";
 import { ICommitment } from "@/types/Commitment";
 
 // Nome dos dias da semana (mesmo array interno de commitment.ts)
@@ -151,12 +151,12 @@ function renderAs(member: any) {
   return render(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     <AuthContext.Provider value={{ member } as any}>
-      <NoticeBoardScreen />
+      <NoticeBoardModal visible={true} onClose={jest.fn()} />
     </AuthContext.Provider>,
   );
 }
 
-describe("NoticeBoardScreen", () => {
+describe("NoticeBoardModal", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockSaveOrder.mockResolvedValue(undefined);

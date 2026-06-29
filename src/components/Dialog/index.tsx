@@ -1,8 +1,8 @@
 import React from "react";
-import { View, Text, Pressable } from "react-native";
+import { Modal, View, Text, Pressable } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useStyles } from "./styles";
 import { Button } from "../Button";
-import { ModalBase } from "../ModalBase";
 
 type DialogAction = {
   label: string;
@@ -28,28 +28,36 @@ export function Dialog({
   const styles = useStyles();
 
   return (
-    <ModalBase onClose={onClose} visible={visible} title="">
-      <Pressable style={styles.overlay} onPress={onClose}>
-        <Pressable style={styles.container} onPress={() => {}}>
-          {title && <Text style={styles.title}>{title}</Text>}
-          {description && <Text style={styles.description}>{description}</Text>}
+    <Modal
+      visible={visible}
+      onRequestClose={onClose}
+      animationType="fade"
+      transparent
+      presentationStyle="overFullScreen"
+    >
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <Pressable style={styles.overlay} onPress={onClose}>
+          <Pressable style={styles.container} onPress={() => {}}>
+            {title && <Text style={styles.title}>{title}</Text>}
+            {description && <Text style={styles.description}>{description}</Text>}
 
-          <View style={styles.actions}>
-            {actions.map((action, index) => (
-              <Button
-                key={index}
-                title={action.label}
-                onPress={action.onPress}
-                styleCustom={[
-                  styles.button,
-                  action.variant === "primary" && styles.primaryButton,
-                  action.variant === "secondary" && styles.secondaryButton,
-                ]}
-              />
-            ))}
-          </View>
+            <View style={styles.actions}>
+              {actions.map((action, index) => (
+                <Button
+                  key={index}
+                  title={action.label}
+                  onPress={action.onPress}
+                  styleCustom={[
+                    styles.button,
+                    action.variant === "primary" && styles.primaryButton,
+                    action.variant === "secondary" && styles.secondaryButton,
+                  ]}
+                />
+              ))}
+            </View>
+          </Pressable>
         </Pressable>
-      </Pressable>
-    </ModalBase>
+      </GestureHandlerRootView>
+    </Modal>
   );
 }

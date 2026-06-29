@@ -46,7 +46,7 @@ function buildSectionText(
 }
 
 export function ReadingsScreen() {
-  const { member, reloadMemberData } = useContext(AuthContext);
+  const { member, updateMemberStreak } = useContext(AuthContext);
   const { colors } = useAppTheme();
   const tabBarHeight = useBottomTabBarHeight();
   const styles = useStyles();
@@ -94,14 +94,15 @@ export function ReadingsScreen() {
     setMarkDismissed(true);
     setMarking(true);
     try {
-      await ReadingStreakService.markToday();
+      const streak = await ReadingStreakService.markToday();
       await setReadingMarkedDate(memberId, new Date().toISOString());
-      await reloadMemberData();
+      updateMemberStreak(streak);
       ToastMessage.success(
         "Leitura de hoje realizada",
         "Mais um dia somado à sua ofensiva.",
       );
     } catch {
+      setMarkDismissed(false);
       ToastMessage.error(
         "Não foi possível registrar",
         "Verifique sua conexão e tente novamente.",
@@ -109,7 +110,7 @@ export function ReadingsScreen() {
     } finally {
       setMarking(false);
     }
-  }, [memberId, reloadMemberData]);
+  }, [memberId, updateMemberStreak]);
 
   const fetchLiturgy = useCallback(
     async (date: Date, force = false) => {

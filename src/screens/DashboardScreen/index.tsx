@@ -1,3 +1,4 @@
+import { BannerCarousel } from "@/components/BannerCarousel";
 import { CommunityGoalCard } from "@/components/CommunityGoalCard";
 import { Header } from "@/components/Header";
 import { NoticesCard } from "@/components/NoticesCard";
@@ -15,7 +16,7 @@ import ReorderableList, {
 } from "react-native-reorderable-list";
 import { useStyles } from "./styles";
 
-type CardId = "streak" | "communityGoal" | "notices";
+type CardId = "banners" | "streak" | "communityGoal" | "notices";
 
 interface CardDef {
   id: CardId;
@@ -23,12 +24,13 @@ interface CardDef {
 }
 
 const CARD_REGISTRY: CardDef[] = [
+  { id: "banners", Component: BannerCarousel },
   { id: "streak", Component: StreakCard },
   { id: "communityGoal", Component: CommunityGoalCard },
   { id: "notices", Component: NoticesCard },
 ];
 
-const DEFAULT_ORDER: CardId[] = ["streak", "communityGoal", "notices"];
+const DEFAULT_ORDER: CardId[] = ["banners", "streak", "communityGoal", "notices"];
 
 function DraggableCardRow({ item }: { item: CardDef }) {
   const drag = useReorderableDrag();

@@ -3,7 +3,6 @@ import { RADIUS, SPACING, TYPOGRAPHY } from "@/theme";
 import { useMemo } from "react";
 import { StyleSheet } from "react-native";
 
-// Largura da "calha" à esquerda onde corre o fio do mural e ficam os nós.
 export const RAIL_WIDTH = 36;
 
 export function useStyles() {
@@ -13,27 +12,16 @@ export function useStyles() {
       StyleSheet.create({
         container: {
           flex: 1,
-          backgroundColor: colors.background,
-        },
-        modalContainer: {
-          flex: 1,
           backgroundColor: colors.card,
         },
-        content: {
-          flex: 1,
-          backgroundColor: colors.softBrown,
-          borderTopLeftRadius: RADIUS.xl,
-          borderTopRightRadius: RADIUS.xl,
-          overflow: "hidden",
-        },
 
-        // Cabeçalho da tela: eyebrow + título + ação de editar (admin).
+        // --- Intro: mesmo padrão do NoticeBoardScreen ---
         intro: {
           flexDirection: "row",
           alignItems: "flex-end",
           justifyContent: "space-between",
           paddingHorizontal: SPACING.lg,
-          paddingTop: SPACING.lg,
+          paddingTop: SPACING.md,
           paddingBottom: SPACING.sm,
           gap: SPACING.sm,
         },
@@ -47,19 +35,11 @@ export function useStyles() {
           color: colors.textMuted,
           textTransform: "uppercase",
         },
-        title: {
-          fontSize: TYPOGRAPHY.title,
-          fontWeight: "800",
-          color: colors.textStrong,
-          marginTop: 2,
-        },
         subtitle: {
           fontSize: TYPOGRAPHY.small,
           color: colors.textMuted,
           marginTop: 2,
         },
-
-        // Botão de alternar o modo de edição (somente admin).
         editToggle: {
           flexDirection: "row",
           alignItems: "center",
@@ -84,7 +64,7 @@ export function useStyles() {
           color: colors.white,
         },
 
-        // Faixa de instrução exibida durante a edição.
+        // --- Hint: mesmo padrão do NoticeBoardScreen ---
         hint: {
           flexDirection: "row",
           alignItems: "center",
@@ -104,26 +84,13 @@ export function useStyles() {
           color: colors.textMuted,
         },
 
-        savingBanner: {
-          flexDirection: "row",
-          alignItems: "center",
-          gap: SPACING.xs,
-          paddingHorizontal: SPACING.lg,
-          paddingVertical: SPACING.xs,
-        },
-        savingText: {
-          fontSize: TYPOGRAPHY.xsmall,
-          color: colors.textMuted,
-        },
-
         list: {
           paddingHorizontal: SPACING.lg,
           paddingTop: SPACING.xs,
-          paddingBottom: 120,
+          paddingBottom: 100,
         },
 
-        // Uma linha = calha (fio + nó) + cartão. Rows encostam para o fio
-        // ficar contínuo; o respiro vem do paddingBottom da própria row.
+        // --- Rail: fio + nó (idêntico ao NoticeBoardScreen) ---
         row: {
           flexDirection: "row",
           paddingBottom: SPACING.md,
@@ -131,14 +98,6 @@ export function useStyles() {
         rail: {
           width: RAIL_WIDTH,
           alignItems: "center",
-        },
-        threadSolid: {
-          position: "absolute",
-          top: 0,
-          bottom: 0,
-          width: 2,
-          backgroundColor: colors.border,
-          borderRadius: 1,
         },
         threadDashed: {
           position: "absolute",
@@ -148,17 +107,6 @@ export function useStyles() {
           borderStyle: "dashed",
           borderColor: colors.primary,
         },
-        // Nó na altura do título do cartão. O anel cor-de-fundo "fura" o fio.
-        node: {
-          position: "absolute",
-          top: 20,
-          width: 12,
-          height: 12,
-          borderRadius: 6,
-          backgroundColor: colors.primary,
-          borderWidth: 3,
-          borderColor: colors.softBrown,
-        },
         nodeEdit: {
           position: "absolute",
           top: 12,
@@ -167,7 +115,7 @@ export function useStyles() {
           borderRadius: 13,
           backgroundColor: colors.primary,
           borderWidth: 3,
-          borderColor: colors.softBrown,
+          borderColor: colors.card,
           alignItems: "center",
           justifyContent: "center",
         },
@@ -176,48 +124,18 @@ export function useStyles() {
           fontSize: TYPOGRAPHY.xsmall,
           fontWeight: "800",
         },
-        // Compromisso de hoje: nó "aceso" em âmbar (maior, com anel de fundo).
-        nodeToday: {
-          position: "absolute",
-          top: 18,
-          width: 16,
-          height: 16,
-          borderRadius: 8,
-          backgroundColor: colors.waiting,
-          borderWidth: 3,
-          borderColor: colors.softBrown,
-        },
-        nodeEditToday: {
-          backgroundColor: colors.waiting,
-        },
 
+        // --- Card: idêntico ao NoticeBoardScreen ---
         card: {
           flex: 1,
           backgroundColor: colors.card,
           borderRadius: RADIUS.md,
           borderWidth: 1,
           borderColor: colors.border,
-          paddingVertical: SPACING.sm2,
-          paddingHorizontal: SPACING.sm2,
           marginLeft: SPACING.xs,
-        },
-        cardEditing: {
-          paddingRight: RAIL_WIDTH + SPACING.sm,
-        },
-        cardToday: {
-          borderColor: colors.waiting,
-        },
-        todayTag: {
-          paddingHorizontal: SPACING.xs,
-          paddingVertical: 2,
-          borderRadius: RADIUS.sm,
-          backgroundColor: colors.waiting,
-        },
-        todayTagText: {
-          fontSize: TYPOGRAPHY.xsmall,
-          fontWeight: "800",
-          letterSpacing: 0.5,
-          color: "#3E2C1C",
+          overflow: "hidden",
+          flexDirection: "row",
+          alignItems: "center",
         },
         cardActive: {
           borderColor: colors.primary,
@@ -227,75 +145,59 @@ export function useStyles() {
           shadowRadius: 12,
           elevation: 8,
         },
-        cardTopRow: {
-          flexDirection: "row",
-          alignItems: "center",
-          gap: SPACING.sm,
+        thumb: {
+          width: 72,
+          height: 56,
+          backgroundColor: colors.softBrown,
+        },
+        cardBody: {
+          flex: 1,
+          paddingHorizontal: SPACING.sm2,
+          paddingVertical: SPACING.sm2,
+          gap: 2,
         },
         cardTitle: {
-          flex: 1,
           fontSize: TYPOGRAPHY.subtitle,
           fontWeight: "700",
           color: colors.textStrong,
-        },
-        timePill: {
-          paddingHorizontal: SPACING.sm,
-          paddingVertical: 3,
-          borderRadius: RADIUS.sm,
-          backgroundColor: colors.primary,
-        },
-        timeText: {
-          color: colors.white,
-          fontSize: TYPOGRAPHY.small,
-          fontWeight: "700",
-        },
-        cardMetaRow: {
-          flexDirection: "row",
-          alignItems: "center",
-          marginTop: 4,
         },
         cardMeta: {
           fontSize: TYPOGRAPHY.small,
           color: colors.textMuted,
         },
-
-        // Alça de arraste: faixa na borda direita do cartão, só na edição.
         grip: {
-          position: "absolute",
-          right: 0,
-          top: 0,
-          bottom: 0,
           width: RAIL_WIDTH,
           alignItems: "center",
           justifyContent: "center",
+          alignSelf: "stretch",
           borderLeftWidth: 1,
           borderColor: colors.border,
         },
 
-        // Estado vazio.
+        // --- Estado vazio ---
         centered: {
           flex: 1,
           alignItems: "center",
           justifyContent: "center",
-          paddingHorizontal: SPACING.xxl,
-          paddingTop: SPACING.xxl,
-          gap: SPACING.sm,
+          gap: SPACING.xs,
+          paddingHorizontal: SPACING.xl,
+          paddingBottom: 60,
         },
         emptyTitle: {
           fontSize: TYPOGRAPHY.subtitle,
           fontWeight: "700",
           color: colors.text,
-          textAlign: "center",
         },
         emptyText: {
-          fontSize: TYPOGRAPHY.body,
+          fontSize: TYPOGRAPHY.small,
           color: colors.textMuted,
           textAlign: "center",
         },
 
+        // --- FAB: idêntico ao NoticeBoardScreen ---
         fab: {
           position: "absolute",
-          right: 20,
+          right: SPACING.lg,
           width: 56,
           height: 56,
           borderRadius: 28,

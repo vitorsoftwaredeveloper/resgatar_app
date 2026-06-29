@@ -36,6 +36,7 @@ interface AuthContextData {
   updateMember: (member: IMemberState) => Promise<void>;
   updateMemberPhoto: (profileImage: string) => Promise<void>;
   reloadMemberData: () => Promise<void>;
+  updateMemberStreak: (streak: { currentStreak: number; longestStreak: number; lastReadAt: string | null }) => void;
   register: (payload: RegisterPayload) => Promise<void>;
   listMembers: () => Promise<void>;
   removeMember: (memberId: string) => Promise<void>;
@@ -244,6 +245,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     await saveMember(memberData);
   }
 
+  function updateMemberStreak(streak: { currentStreak: number; longestStreak: number; lastReadAt: string | null }) {
+    setMember((prev) => {
+      if (!prev) return prev;
+      return { ...prev, readingStreak: { ...streak, alreadyDoneToday: true } };
+    });
+  }
+
   async function changePassword(memberId: string, newPassword: string) {
     try {
       await MemberServices.updatePassword(memberId, newPassword);
@@ -289,6 +297,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         updateMember,
         updateMemberPhoto,
         reloadMemberData,
+        updateMemberStreak,
         register,
         listMembers,
         removeMember,

@@ -1,13 +1,12 @@
-import { Header } from "@/components/Header";
+import { ModalBase } from "@/components/ModalBase";
 import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";
 import { useAppTheme, ThemeColors } from "@/context/ThemeContext";
 import { CommitmentService } from "@/services/CommitmentService";
 import { ICommitment } from "@/types/Commitment";
 import { commitmentScheduleLabel, isCommitmentToday } from "@/utils/commitment";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { GripVertical, MoveVertical, Pencil, Plus } from "lucide-react-native";
-import React, { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, FlatList, Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ReorderableList, {
@@ -18,6 +17,11 @@ import ReorderableList, {
 } from "react-native-reorderable-list";
 import { ModalCommitmentForm } from "./ModalCommitmentForm";
 import { useStyles } from "./styles";
+
+interface Props {
+  visible: boolean;
+  onClose: (finalItems: ICommitment[]) => void;
+}
 
 type Styles = ReturnType<typeof useStyles>;
 
@@ -32,8 +36,6 @@ interface RowProps {
   colors: ThemeColors;
 }
 
-// Uma linha do mural: a calha com o fio + nó à esquerda, e o cartão à direita.
-// É compartilhada pelos dois modos; o que muda é `editing`/`active`/`drag`.
 function CommitmentRow({ item, index, editing, active, drag, onEdit, styles, colors }: RowProps) {
   const today = isCommitmentToday(item);
   return (
@@ -97,16 +99,14 @@ function CommitmentRow({ item, index, editing, active, drag, onEdit, styles, col
   );
 }
 
-// Wrapper que liga a linha aos gestos da ReorderableList. Os hooks só podem
-// ser chamados dentro do renderItem da lista, por isso ficam aqui.
 function DraggableRow(props: Omit<RowProps, "editing" | "active" | "drag">) {
   const drag = useReorderableDrag();
   const active = useIsActive();
   return <CommitmentRow {...props} editing active={active} drag={drag} />;
 }
 
-export function NoticeBoardScreen() {
-  const navigation = useNavigation();
+export function NoticeBoardModal({ visible, onClose }: Props) {
+  const handleClose = () => onClose(itemsRef.current);
   const styles = useStyles();
   const { colors } = useAppTheme();
   const insets = useSafeAreaInsets();
@@ -114,21 +114,14 @@ export function NoticeBoardScreen() {
   const isAdmin = member?.role === "admin";
 
   const [items, setItems] = useState<ICommitment[]>([]);
+  const itemsRef = useRef<ICommitment[]>([]);
+  useEffect(() => { itemsRef.current = items; }, [items]);
+
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState(false);
-  // Form de criar/editar: `formTarget` null = criar; com item = editar.
   const [formVisible, setFormVisible] = useState(false);
   const [formTarget, setFormTarget] = useState<ICommitment | null>(null);
-
-  const openCreate = useCallback(() => {
-    setFormTarget(null);
-    setFormVisible(true);
-  }, []);
-
-  const openEdit = useCallback((commitment: ICommitment) => {
-    setFormTarget(commitment);
-    setFormVisible(true);
-  }, []);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -141,26 +134,30 @@ export function NoticeBoardScreen() {
     }
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
+  useEffect(() => {
+    if (visible) {
+      setEditing(false);
       load();
-    }, [load]),
-  );
+    }
+  }, [visible, load]);
 
-  // Atualização otimista: reposiciona na hora e persiste em seguida. Se o
-  // backend recusar, avisamos e recarregamos para não divergir da verdade.
   const handleReorder = useCallback(
-    ({ from, to }: ReorderableListReorderEvent) => {
-      setItems((prev) => {
-        const next = reorderItems(prev, from, to);
-        CommitmentService.saveOrder(next).catch(() => {
-          ToastMessage.error("Erro", "Não foi possível salvar a nova ordem.");
-          load();
-        });
-        return next;
-      });
+    async ({ from, to }: ReorderableListReorderEvent) => {
+      const prev = itemsRef.current;
+      const next = reorderItems(prev, from, to);
+      setItems(next);
+      setSaving(true);
+      try {
+        await CommitmentService.saveOrder(next);
+        ToastMessage.success("Ordem salva", "A nova sequência foi publicada.");
+      } catch {
+        setItems(prev);
+        ToastMessage.error("Erro", "Não foi possível salvar a nova ordem.");
+      } finally {
+        setSaving(false);
+      }
     },
-    [load],
+    [],
   );
 
   const subtitle = loading
@@ -168,104 +165,114 @@ export function NoticeBoardScreen() {
     : `${items.length} ${items.length === 1 ? "compromisso" : "compromissos"}`;
 
   return (
-    <View style={styles.container}>
-      <Header
-        name={`${member?.firstName ?? ""} ${member?.lastName ?? ""}`.trim()}
-        photo={member?.profileImage}
-        onBack={() => navigation.goBack()}
-      />
+    <ModalBase visible={visible} title="Quadro de avisos" onClose={handleClose}>
+      <View style={styles.modalContainer}>
 
-      <View style={styles.content}>
-        <View style={styles.intro}>
-          <View style={styles.introText}>
-            <Text style={styles.eyebrow}>Quadro de avisos</Text>
-            <Text style={styles.title}>Compromissos da comunidade</Text>
-            <Text style={styles.subtitle}>{subtitle}</Text>
-          </View>
+          {/* Intro: mesmo padrão do ModalBannerManager */}
+          {!loading && (items.length > 0 || isAdmin) && (
+            <View style={styles.intro}>
+              <View style={styles.introText}>
+                <Text style={styles.eyebrow}>Quadro de avisos</Text>
+                <Text style={styles.title}>Compromissos da comunidade</Text>
+                <Text style={styles.subtitle}>{subtitle}</Text>
+              </View>
 
-          {isAdmin && items.length > 0 && (
-            <Pressable
-              style={[styles.editToggle, editing && styles.editToggleActive]}
-              onPress={() => setEditing((e) => !e)}
-              accessibilityLabel={editing ? "Concluir edição da ordem" : "Editar ordem dos compromissos"}
-            >
-              <Pencil size={15} color={editing ? colors.white : colors.text} />
-              <Text style={[styles.editToggleText, editing && styles.editToggleTextActive]}>
-                {editing ? "Concluir" : "Editar"}
+              {isAdmin && items.length > 0 && (
+                <Pressable
+                  style={[styles.editToggle, editing && styles.editToggleActive]}
+                  onPress={() => setEditing((e) => !e)}
+                  accessibilityLabel={editing ? "Concluir edição" : "Editar compromissos"}
+                >
+                  <Pencil size={15} color={editing ? colors.white : colors.text} />
+                  <Text style={[styles.editToggleText, editing && styles.editToggleTextActive]}>
+                    {editing ? "Concluir" : "Editar"}
+                  </Text>
+                </Pressable>
+              )}
+            </View>
+          )}
+
+          {editing && (
+            <View style={styles.hint}>
+              <MoveVertical size={14} color={colors.textMuted} />
+              <Text style={styles.hintText}>
+                Toque em um compromisso para editar · arraste pela alça para reordenar.
               </Text>
+            </View>
+          )}
+
+          {loading ? (
+            <View style={styles.centered}>
+              <ActivityIndicator size="large" color={colors.primary} />
+            </View>
+          ) : items.length === 0 ? (
+            <View style={styles.centered}>
+              <Text style={styles.emptyTitle}>Mural vazio</Text>
+              <Text style={styles.emptyText}>
+                {isAdmin
+                  ? "Toque em + para publicar o primeiro compromisso da comunidade."
+                  : "Nenhum compromisso publicado ainda."}
+              </Text>
+            </View>
+          ) : editing ? (
+            <>
+              {saving && (
+                <View style={styles.savingBanner}>
+                  <ActivityIndicator size="small" color={colors.primary} />
+                  <Text style={styles.savingText}>Salvando ordem…</Text>
+                </View>
+              )}
+            <ReorderableList
+              data={items}
+              onReorder={handleReorder}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={styles.list}
+              showsVerticalScrollIndicator={false}
+              renderItem={({ item, index }) => (
+                <DraggableRow
+                  item={item}
+                  index={index}
+                  onEdit={() => {
+                    setFormTarget(item);
+                    setFormVisible(true);
+                  }}
+                  styles={styles}
+                  colors={colors}
+                />
+              )}
+            />
+            </>
+          ) : (
+            <FlatList
+              data={items}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={styles.list}
+              showsVerticalScrollIndicator={false}
+              renderItem={({ item, index }) => (
+                <CommitmentRow
+                  item={item}
+                  index={index}
+                  editing={false}
+                  styles={styles}
+                  colors={colors}
+                />
+              )}
+            />
+          )}
+
+          {isAdmin && !editing && (
+            <Pressable
+              style={[styles.fab, { bottom: insets.bottom + 20 }]}
+              onPress={() => {
+                setFormTarget(null);
+                setFormVisible(true);
+              }}
+              accessibilityLabel="Publicar compromisso"
+            >
+              <Plus size={28} color={colors.white} strokeWidth={2.5} />
             </Pressable>
           )}
-        </View>
-
-        {editing && (
-          <View style={styles.hint}>
-            <MoveVertical size={14} color={colors.textMuted} />
-            <Text style={styles.hintText}>
-              Toque em um compromisso para editar · arraste pela alça para reordenar.
-            </Text>
-          </View>
-        )}
-
-        {loading ? (
-          <ActivityIndicator
-            size="large"
-            color={colors.primary}
-            style={{ marginTop: 32 }}
-          />
-        ) : items.length === 0 ? (
-          <View style={styles.centered}>
-            <Text style={styles.emptyTitle}>Mural vazio</Text>
-            <Text style={styles.emptyText}>
-              {isAdmin
-                ? "Toque em + para publicar o primeiro compromisso da comunidade."
-                : "Nenhum compromisso publicado ainda."}
-            </Text>
-          </View>
-        ) : editing ? (
-          <ReorderableList
-            data={items}
-            onReorder={handleReorder}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.list}
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item, index }) => (
-              <DraggableRow
-                item={item}
-                index={index}
-                onEdit={() => openEdit(item)}
-                styles={styles}
-                colors={colors}
-              />
-            )}
-          />
-        ) : (
-          <FlatList
-            data={items}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.list}
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item, index }) => (
-              <CommitmentRow
-                item={item}
-                index={index}
-                editing={false}
-                styles={styles}
-                colors={colors}
-              />
-            )}
-          />
-        )}
       </View>
-
-      {isAdmin && !editing && (
-        <Pressable
-          style={[styles.fab, { bottom: insets.bottom + 20 }]}
-          onPress={openCreate}
-          accessibilityLabel="Publicar compromisso"
-        >
-          <Plus size={28} color={colors.white} strokeWidth={2.5} />
-        </Pressable>
-      )}
 
       {formVisible && (
         <ModalCommitmentForm
@@ -279,6 +286,6 @@ export function NoticeBoardScreen() {
           }}
         />
       )}
-    </View>
+    </ModalBase>
   );
 }
