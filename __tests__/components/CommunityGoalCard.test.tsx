@@ -1,5 +1,10 @@
 const mockGetGoalProgress = jest.fn();
 
+jest.mock("@/components/CoachTarget", () => {
+  const React = require("react");
+  return { CoachTarget: ({ children }: any) => React.createElement(React.Fragment, null, children) };
+});
+
 jest.mock("@react-navigation/native", () => {
   const React = require("react");
   return {

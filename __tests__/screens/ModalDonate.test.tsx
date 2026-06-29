@@ -180,14 +180,14 @@ describe("ModalDonate", () => {
       const { queryByTestId } = render(
         <ModalDonate {...defaultProps} isAdmin={false} />,
       );
-      expect(queryByTestId("btn-Registrar em dinheiro")).toBeNull();
+      expect(queryByTestId("btn-Em dinheiro")).toBeNull();
     });
 
     it("exibe o botão de dinheiro para admin", () => {
       const { getByTestId } = render(
         <ModalDonate {...defaultProps} isAdmin={true} />,
       );
-      expect(getByTestId("btn-Registrar em dinheiro")).toBeTruthy();
+      expect(getByTestId("btn-Em dinheiro")).toBeTruthy();
     });
 
     it("exibe os chips de valor rápido", () => {
@@ -296,7 +296,7 @@ describe("ModalDonate", () => {
         fireEvent.changeText(getByTestId("input-Valor"), "2000");
       });
       await act(async () => {
-        fireEvent.press(getByTestId("btn-Registrar em dinheiro"));
+        fireEvent.press(getByTestId("btn-Em dinheiro"));
       });
 
       await waitFor(() =>
@@ -320,7 +320,7 @@ describe("ModalDonate", () => {
         );
       });
       await act(async () => {
-        fireEvent.press(getByTestId("btn-Registrar em dinheiro"));
+        fireEvent.press(getByTestId("btn-Em dinheiro"));
       });
 
       await waitFor(() =>
@@ -334,7 +334,7 @@ describe("ModalDonate", () => {
 
       await act(async () => {
         fireEvent.changeText(getByTestId("input-Valor"), "2000");
-        fireEvent.press(getByTestId("btn-Registrar em dinheiro"));
+        fireEvent.press(getByTestId("btn-Em dinheiro"));
       });
 
       await waitFor(() =>
@@ -351,7 +351,7 @@ describe("ModalDonate", () => {
         fireEvent.changeText(getByTestId("input-Valor"), "");
       });
       await act(async () => {
-        fireEvent.press(getByTestId("btn-Registrar em dinheiro"));
+        fireEvent.press(getByTestId("btn-Em dinheiro"));
       });
 
       await waitFor(() =>

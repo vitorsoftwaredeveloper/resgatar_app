@@ -8,9 +8,14 @@ const config: Config = {
     "<rootDir>/__tests__/**/*.test.tsx",
   ],
   moduleNameMapper: {
+    // entradas específicas antes do wildcard @/(.*)
+    "^@/navigation/navigationRef$": "<rootDir>/__tests__/__mocks__/navigationRef.ts",
     "^@/(.*)$": "<rootDir>/src/$1",
     "^@env$": "<rootDir>/__tests__/__mocks__/env.ts",
     "^react-native$": "<rootDir>/__tests__/__mocks__/react-native.ts",
+    "^@dev-mode-detector$": "<rootDir>/__tests__/__mocks__/dev-mode-detector.ts",
+    "^react-native-gesture-handler$": "<rootDir>/__tests__/__mocks__/react-native-gesture-handler.ts",
+    "^react-native-toast-message$": "<rootDir>/__tests__/__mocks__/react-native-toast-message.ts",
     "^react-native-reanimated$":
       "<rootDir>/__tests__/__mocks__/react-native-reanimated.tsx",
     "^react-native-svg$": "<rootDir>/__tests__/__mocks__/react-native-svg.tsx",

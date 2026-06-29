@@ -1,16 +1,10 @@
-jest.mock("react-native-toast-message", () => {
-  const React = require("react");
-  return {
-    BaseToast: (props: any) => React.createElement("BaseToast", props),
-  };
-});
-
+import React from "react";
 import { render } from "@testing-library/react-native";
 import { toastConfig } from "@/components/Toast/toastConfig";
 
-function renderType(type: "success" | "error" | "warning" | "info") {
-  const element = toastConfig[type]!({ text1: "Título" } as any);
-  return render(element as any).UNSAFE_getByType("BaseToast" as any);
+function renderType(type: "success" | "error" | "warning" | "info", text1 = "Título", text2?: string) {
+  const element = toastConfig[type]!({ text1, text2 } as any);
+  return render(element as any);
 }
 
 describe("toastConfig", () => {
@@ -21,30 +15,33 @@ describe("toastConfig", () => {
     expect(typeof toastConfig.info).toBe("function");
   });
 
-  it("permite múltiplas linhas (numberOfLines = 0)", () => {
-    const toast = renderType("error");
-    expect(toast.props.text1NumberOfLines).toBe(0);
-    expect(toast.props.text2NumberOfLines).toBe(0);
+  it("exibe o text1 quando fornecido", () => {
+    const { getByText } = renderType("success", "Mensagem de sucesso");
+    expect(getByText("Mensagem de sucesso")).toBeTruthy();
   });
 
-  it("usa altura automática (não fixa)", () => {
-    const toast = renderType("success");
-    expect(toast.props.style.height).toBe("auto");
-    expect(toast.props.style.minHeight).toBe(60);
+  it("exibe o text2 quando fornecido", () => {
+    const { getByText } = renderType("error", "Título", "Detalhe do erro");
+    expect(getByText("Detalhe do erro")).toBeTruthy();
   });
 
-  it("repassa os props recebidos (text1)", () => {
-    const toast = renderType("info");
-    expect(toast.props.text1).toBe("Título");
+  it("não exibe text2 quando não fornecido", () => {
+    const { queryByText } = renderType("info", "Só título");
+    expect(queryByText("Detalhe do erro")).toBeNull();
+  });
+
+  it("exibe o nome do app 'Resgatar' no cabeçalho", () => {
+    const { getByText } = renderType("warning");
+    expect(getByText("Resgatar")).toBeTruthy();
   });
 
   it.each([
-    ["success", "#69C779"],
-    ["error", "#FE6301"],
-    ["warning", "#FFC107"],
-    ["info", "#87CEFA"],
-  ] as const)("aplica a borda colorida do tipo %s", (type, color) => {
-    const toast = renderType(type);
-    expect(toast.props.style.borderLeftColor).toBe(color);
+    ["success", "✓"],
+    ["error",   "✕"],
+    ["warning", "!"],
+    ["info",    "i"],
+  ] as const)("exibe o símbolo correto para o tipo %s", (type, symbol) => {
+    const { getByText } = renderType(type);
+    expect(getByText(symbol)).toBeTruthy();
   });
 });

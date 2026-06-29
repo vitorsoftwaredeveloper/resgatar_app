@@ -1,3 +1,8 @@
+jest.mock("@/components/CoachTarget", () => {
+  const React = require("react");
+  return { CoachTarget: ({ children }: any) => React.createElement(React.Fragment, null, children) };
+});
+
 jest.mock("react-native-reanimated", () => {
   const React = require("react");
   const AnimatedView = ({ children, style }: any) =>

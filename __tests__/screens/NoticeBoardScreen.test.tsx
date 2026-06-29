@@ -20,9 +20,14 @@ jest.mock("react-native-reorderable-list", () => {
   };
 });
 
-jest.mock("react-native-safe-area-context", () => ({
-  useSafeAreaInsets: () => ({ bottom: 0, top: 0, left: 0, right: 0 }),
-}));
+jest.mock("react-native-safe-area-context", () => {
+  const React = require("react");
+  return {
+    useSafeAreaInsets: () => ({ bottom: 0, top: 0, left: 0, right: 0 }),
+    SafeAreaView: ({ children, style }: any) =>
+      React.createElement("View", { style }, children),
+  };
+});
 
 jest.mock("@react-navigation/native", () => {
   const React = require("react");
@@ -107,6 +112,9 @@ jest.mock("lucide-react-native", () => ({
   MoveVertical: () => null,
   Pencil: () => null,
   Plus: () => null,
+  X: () => null,
+  ChevronRight: () => null,
+  Trash2: () => null,
 }));
 
 import React from "react";
@@ -173,7 +181,7 @@ describe("NoticeBoardModal", () => {
     const { getByText, queryByLabelText } = renderAs(memberUser);
     await waitFor(() => getByText("Nenhum compromisso publicado ainda."));
     expect(queryByLabelText("Publicar compromisso")).toBeNull();
-    expect(queryByLabelText("Editar ordem dos compromissos")).toBeNull();
+    expect(queryByLabelText("Editar compromissos")).toBeNull();
   });
 
   it("estado vazio — admin vê sugestão de publicar", async () => {
@@ -199,7 +207,7 @@ describe("NoticeBoardModal", () => {
   it("admin vê botão Editar e FAB após carregar", async () => {
     mockList.mockResolvedValueOnce([commitment1]);
     const { getByLabelText } = renderAs(adminMember);
-    await waitFor(() => getByLabelText("Editar ordem dos compromissos"));
+    await waitFor(() => getByLabelText("Editar compromissos"));
     expect(getByLabelText("Publicar compromisso")).toBeTruthy();
   });
 
@@ -207,7 +215,7 @@ describe("NoticeBoardModal", () => {
     mockList.mockResolvedValueOnce([commitment1]);
     const { queryByLabelText } = renderAs(memberUser);
     await waitFor(() => expect(mockList).toHaveBeenCalledTimes(1));
-    expect(queryByLabelText("Editar ordem dos compromissos")).toBeNull();
+    expect(queryByLabelText("Editar compromissos")).toBeNull();
     expect(queryByLabelText("Publicar compromisso")).toBeNull();
   });
 
@@ -218,7 +226,7 @@ describe("NoticeBoardModal", () => {
     await waitFor(() => getByText("Grupo de oração"));
 
     await act(async () => {
-      fireEvent.press(getByLabelText("Editar ordem dos compromissos"));
+      fireEvent.press(getByLabelText("Editar compromissos"));
     });
 
     expect(getByText(/Toque em um compromisso para editar/)).toBeTruthy();
@@ -245,7 +253,7 @@ describe("NoticeBoardModal", () => {
 
     // Entrar em modo edição
     await act(async () => {
-      fireEvent.press(getByLabelText("Editar ordem dos compromissos"));
+      fireEvent.press(getByLabelText("Editar compromissos"));
     });
 
     // Pressionar o item (evento sobe até o Pressable da row)

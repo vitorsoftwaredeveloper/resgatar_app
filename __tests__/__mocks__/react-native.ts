@@ -92,3 +92,8 @@ export const Switch = ({ value, onValueChange }: any) =>
     value,
     onValueChange,
   });
+
+export const AppState = {
+  addEventListener: jest.fn(() => ({ remove: jest.fn() })),
+  currentState: "active",
+};
