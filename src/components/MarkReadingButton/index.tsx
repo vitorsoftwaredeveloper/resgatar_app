@@ -21,14 +21,14 @@ export function MarkReadingButton({ loading = false, onPress }: Props) {
       activeOpacity={0.85}
       disabled={loading}
       accessibilityRole="button"
-      accessibilityLabel="Marcar leitura como feita"
+      accessibilityLabel="Marcar como lida?"
     >
       {loading ? (
         <ActivityIndicator size="small" color="#FFFFFF" />
       ) : (
         <Flame size={15} color="#FFFFFF" />
       )}
-      <Text style={styles.ctaTitle}>Marcar leitura como feita?</Text>
+      <Text style={styles.ctaTitle}>Marcar como lida?</Text>
     </TouchableOpacity>
   );
 }

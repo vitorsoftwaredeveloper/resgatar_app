@@ -13,19 +13,21 @@ import { MarkReadingButton } from "@/components/MarkReadingButton";
 describe("MarkReadingButton", () => {
   it("renderiza o texto do botão", () => {
     const { getByText } = render(<MarkReadingButton onPress={jest.fn()} />);
-    expect(getByText("Marcar leitura como feita?")).toBeTruthy();
+    expect(getByText("Marcar como lida?")).toBeTruthy();
   });
 
   it("chama onPress ao ser pressionado", () => {
     const onPress = jest.fn();
     const { getByLabelText } = render(<MarkReadingButton onPress={onPress} />);
-    fireEvent.press(getByLabelText("Marcar leitura como feita"));
+    fireEvent.press(getByLabelText("Marcar como lida?"));
     expect(onPress).toHaveBeenCalledTimes(1);
   });
 
   it("fica desabilitado quando loading=true", () => {
-    const { getByLabelText } = render(<MarkReadingButton onPress={jest.fn()} loading />);
-    const btn = getByLabelText("Marcar leitura como feita");
+    const { getByLabelText } = render(
+      <MarkReadingButton onPress={jest.fn()} loading />,
+    );
+    const btn = getByLabelText("Marcar como lida?");
     // O mock de TouchableOpacity expõe accessibilityState: { disabled: true }
     expect(btn.props.accessibilityState?.disabled).toBe(true);
   });
@@ -38,12 +40,16 @@ describe("MarkReadingButton", () => {
   });
 
   it("o texto é sempre visível (mesmo durante loading)", () => {
-    const { getByText } = render(<MarkReadingButton onPress={jest.fn()} loading />);
-    expect(getByText("Marcar leitura como feita?")).toBeTruthy();
+    const { getByText } = render(
+      <MarkReadingButton onPress={jest.fn()} loading />,
+    );
+    expect(getByText("Marcar como lida?")).toBeTruthy();
   });
 
   it("tem accessibilityLabel correto", () => {
-    const { getByLabelText } = render(<MarkReadingButton onPress={jest.fn()} />);
-    expect(getByLabelText("Marcar leitura como feita")).toBeTruthy();
+    const { getByLabelText } = render(
+      <MarkReadingButton onPress={jest.fn()} />,
+    );
+    expect(getByLabelText("Marcar como lida?")).toBeTruthy();
   });
 });

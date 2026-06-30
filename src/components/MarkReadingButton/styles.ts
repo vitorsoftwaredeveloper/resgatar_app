@@ -16,7 +16,7 @@ export function useStyles() {
           alignItems: "center",
           justifyContent: "center",
           gap: SPACING.xs,
-          alignSelf: "center",
+          // alignSelf: "center",
           backgroundColor: colors.primary,
           borderRadius: RADIUS.lg,
           paddingHorizontal: SPACING.md,
