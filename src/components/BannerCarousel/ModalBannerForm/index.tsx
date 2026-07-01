@@ -8,7 +8,6 @@ import { BannerService } from "@/services/BannerService";
 import {
   BANNER_SCREEN_OPTIONS,
   BannerActionType,
-  BannerScreen,
   IBanner,
   IBannerInput,
   MAX_BANNER_SIZE_BYTES,
@@ -50,11 +49,18 @@ const PICKER_OPTIONS: ImagePicker.ImagePickerOptions = {
   base64: true,
 };
 
-export function ModalBannerForm({ visible, banner, onClose, onSuccess }: Props) {
+export function ModalBannerForm({
+  visible,
+  banner,
+  onClose,
+  onSuccess,
+}: Props) {
   const styles = useStyles();
   const isEdit = Boolean(banner);
 
-  const [imageData, setImageData] = useState<string | null>(banner?.banner ?? null);
+  const [imageData, setImageData] = useState<string | null>(
+    banner?.banner ?? null,
+  );
   const [pickingImage, setPickingImage] = useState(false);
   const [title, setTitle] = useState(banner?.title ?? "");
   const [actionType, setActionType] = useState<BannerActionType>(
@@ -76,9 +82,13 @@ export function ModalBannerForm({ visible, banner, onClose, onSuccess }: Props) 
   async function handlePickImage() {
     setPickingImage(true);
     try {
-      const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const permission =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!permission.granted) {
-        ToastMessage.error("Permissão negada", "Autorize o acesso à galeria para escolher uma imagem.");
+        ToastMessage.error(
+          "Permissão negada",
+          "Autorize o acesso à galeria para escolher uma imagem.",
+        );
         return;
       }
       const result = await ImagePicker.launchImageLibraryAsync(PICKER_OPTIONS);
@@ -114,7 +124,8 @@ export function ModalBannerForm({ visible, banner, onClose, onSuccess }: Props) 
     if (actionType === "external") {
       if (!actionValue.trim()) next.actionValue = "Informe a URL de destino.";
       else if (!/^https?:\/\/.+/.test(actionValue.trim()))
-        next.actionValue = "URL inválida (deve começar com http:// ou https://).";
+        next.actionValue =
+          "URL inválida (deve começar com http:// ou https://).";
     }
     if (actionType === "internal" && !actionValue) {
       next.actionValue = "Selecione uma tela de destino.";
@@ -144,7 +155,10 @@ export function ModalBannerForm({ visible, banner, onClose, onSuccess }: Props) 
       }
       onSuccess();
     } catch (err) {
-      ToastMessage.error("Erro", getApiErrorMessage(err, "Não foi possível salvar o banner."));
+      ToastMessage.error(
+        "Erro",
+        getApiErrorMessage(err, "Não foi possível salvar o banner."),
+      );
     } finally {
       setSaving(false);
     }
@@ -158,7 +172,10 @@ export function ModalBannerForm({ visible, banner, onClose, onSuccess }: Props) 
       ToastMessage.success("Removido", "Banner excluído do carrossel.");
       onSuccess();
     } catch (err) {
-      ToastMessage.error("Erro", getApiErrorMessage(err, "Não foi possível remover o banner."));
+      ToastMessage.error(
+        "Erro",
+        getApiErrorMessage(err, "Não foi possível remover o banner."),
+      );
     } finally {
       setDeleting(false);
       setConfirmDelete(false);
@@ -177,7 +194,10 @@ export function ModalBannerForm({ visible, banner, onClose, onSuccess }: Props) 
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <Card title="Imagem" description="Proporção recomendada: 16:9. Tamanho máximo: 500 KB.">
+          <Card
+            title="Imagem"
+            description="Proporção recomendada: 16:9. Tamanho máximo: 500 KB."
+          >
             <Pressable
               style={styles.previewWrapper}
               onPress={handlePickImage}
@@ -220,7 +240,10 @@ export function ModalBannerForm({ visible, banner, onClose, onSuccess }: Props) 
               label="Título *"
               placeholder="Ex: Campanha do Dízimo"
               value={title}
-              onChangeText={(t) => { setTitle(t); clearError("title"); }}
+              onChangeText={(t) => {
+                setTitle(t);
+                clearError("title");
+              }}
               maxLength={80}
               error={errors.title}
             />
@@ -259,7 +282,10 @@ export function ModalBannerForm({ visible, banner, onClose, onSuccess }: Props) 
                 label="URL de destino"
                 placeholder="https://..."
                 value={actionValue}
-                onChangeText={(t) => { setActionValue(t); clearError("actionValue"); }}
+                onChangeText={(t) => {
+                  setActionValue(t);
+                  clearError("actionValue");
+                }}
                 autoCapitalize="none"
                 keyboardType="url"
                 leftIcon={<ExternalLink size={16} color="#8C7A6B" />}

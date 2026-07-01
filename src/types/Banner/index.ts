@@ -15,12 +15,7 @@ export type BannerScreen = Extract<
 
 export const BANNER_SCREEN_OPTIONS: { label: string; value: BannerScreen }[] = [
   { label: "Vídeos", value: "Videos" },
-  { label: "Arrecadação", value: "Arrecadacao" },
-  { label: "Balanço Anual", value: "BalancoAnual" },
-  { label: "Despesas", value: "Expenses" },
-  { label: "Doações", value: "Donations" },
   { label: "Configurações pessoais", value: "PersonalSettings" },
-  { label: "Configurações", value: "Settings" },
 ];
 
 // Tamanho máximo do data URI em bytes — espelha MAX_CAMPAIGN_BANNER_SIZE do backend.
