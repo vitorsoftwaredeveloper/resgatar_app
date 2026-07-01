@@ -31,31 +31,6 @@ export function useStyles() {
           width: "100%",
           height: "100%",
         },
-        overlay: {
-          ...StyleSheet.absoluteFillObject,
-          borderRadius: RADIUS.lg,
-          padding: SPACING.md,
-          justifyContent: "flex-end",
-          backgroundColor: "rgba(0,0,0,0.3)",
-        },
-        caption: {
-          gap: 2,
-        },
-        captionTitle: {
-          fontSize: TYPOGRAPHY.subtitle,
-          fontWeight: "700",
-          color: "#FFFFFF",
-          textShadowColor: "rgba(0,0,0,0.5)",
-          textShadowOffset: { width: 0, height: 1 },
-          textShadowRadius: 4,
-        },
-        captionSubtitle: {
-          fontSize: TYPOGRAPHY.small,
-          color: "rgba(255,255,255,0.85)",
-          textShadowColor: "rgba(0,0,0,0.4)",
-          textShadowOffset: { width: 0, height: 1 },
-          textShadowRadius: 3,
-        },
 
         // Botão de gerenciar (admin)
         manageButton: {

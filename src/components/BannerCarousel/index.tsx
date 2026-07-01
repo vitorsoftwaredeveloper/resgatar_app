@@ -5,7 +5,13 @@ import { IBanner } from "@/types/Banner";
 import { useNavigation } from "@react-navigation/native";
 import { useFocusEffect } from "@react-navigation/native";
 import { Settings2 } from "lucide-react-native";
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   Image,
   Linking,
@@ -33,7 +39,13 @@ function useBannerTap(banner: IBanner) {
   }, [banner, navigation]);
 }
 
-function BannerSlide({ banner, styles }: { banner: IBanner; styles: ReturnType<typeof useStyles> }) {
+function BannerSlide({
+  banner,
+  styles,
+}: {
+  banner: IBanner;
+  styles: ReturnType<typeof useStyles>;
+}) {
   const handleTap = useBannerTap(banner);
   const tappable = banner.action.type !== "none";
 
@@ -43,14 +55,11 @@ function BannerSlide({ banner, styles }: { banner: IBanner; styles: ReturnType<t
       onPress={tappable ? handleTap : undefined}
       disabled={!tappable}
     >
-      <Image source={{ uri: banner.banner }} style={styles.image} resizeMode="cover" />
-      {banner.title && (
-        <View style={styles.overlay}>
-          <View style={styles.caption}>
-            <Text style={styles.captionTitle}>{banner.title}</Text>
-          </View>
-        </View>
-      )}
+      <Image
+        source={{ uri: banner.banner }}
+        style={styles.image}
+        resizeMode="cover"
+      />
     </Pressable>
   );
 }
