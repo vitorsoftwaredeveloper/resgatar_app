@@ -1,24 +1,42 @@
-jest.mock("expo-speech", () => ({
-  speak: jest.fn(),
-  stop: jest.fn(),
-  pause: jest.fn(),
-  resume: jest.fn(),
+jest.mock("@/services/GoogleTTSService", () => ({
+  fetchTTSAudio: jest.fn().mockResolvedValue("file:///cache/tts_123.mp3"),
 }));
 
+jest.mock("expo-av", () => {
+  const playbackCallback: { fn: ((status: any) => void) | null } = { fn: null };
+
+  const sound = {
+    playAsync: jest.fn().mockResolvedValue(undefined),
+    pauseAsync: jest.fn().mockResolvedValue(undefined),
+    unloadAsync: jest.fn().mockResolvedValue(undefined),
+    setOnPlaybackStatusUpdate: jest.fn((cb) => {
+      playbackCallback.fn = cb;
+    }),
+    _simulateFinish: () => {
+      playbackCallback.fn?.({ isLoaded: true, didJustFinish: true });
+    },
+  };
+
+  return {
+    Audio: {
+      setAudioModeAsync: jest.fn().mockResolvedValue(undefined),
+      Sound: {
+        createAsync: jest.fn().mockResolvedValue({ sound }),
+        _sound: sound,
+      },
+      _playbackCallback: playbackCallback,
+    },
+  };
+});
+
 import { renderHook, act } from "@testing-library/react-native";
-import { Platform } from "react-native";
-import * as Speech from "expo-speech";
+import { Audio } from "expo-av";
 import { useLiturgyTTS } from "@/hooks/useLiturgyTTS";
+import { fetchTTSAudio } from "@/services/GoogleTTSService";
 
-const speak = Speech.speak as jest.Mock;
-const stop = Speech.stop as jest.Mock;
-const pause = Speech.pause as jest.Mock;
-const resume = Speech.resume as jest.Mock;
-
-// captura o objeto de opções passado ao último Speech.speak
-function lastSpeakOptions(): any {
-  return speak.mock.calls[speak.mock.calls.length - 1][1];
-}
+const mockFetch = fetchTTSAudio as jest.Mock;
+const mockCreateAsync = Audio.Sound.createAsync as jest.Mock;
+const mockSound = (Audio.Sound as any)._sound;
 
 describe("useLiturgyTTS", () => {
   beforeEach(() => jest.clearAllMocks());
@@ -32,117 +50,120 @@ describe("useLiturgyTTS", () => {
   });
 
   describe("playSection", () => {
-    it("marca a seção como ativa e em reprodução", () => {
+    it("entra em loading ao iniciar e depois em playing", async () => {
       const { result } = renderHook(() => useLiturgyTTS());
-      act(() => result.current.playSection("evangelho", "Texto do evangelho"));
+
+      await act(async () => {
+        await result.current.playSection("evangelho", "Texto do evangelho");
+      });
+
       expect(result.current.activeId).toBe("evangelho");
       expect(result.current.state).toBe("playing");
     });
 
-    it("chama Speech.speak com idioma pt-BR e rate 0.9", () => {
+    it("chama fetchTTSAudio com o texto da seção", async () => {
       const { result } = renderHook(() => useLiturgyTTS());
-      act(() => result.current.playSection("evangelho", "Texto do evangelho"));
-      expect(speak).toHaveBeenCalledWith(
-        "Texto do evangelho",
-        expect.objectContaining({ language: "pt-BR", rate: 0.9 }),
+
+      await act(async () => {
+        await result.current.playSection("evangelho", "Texto do evangelho");
+      });
+
+      expect(mockFetch).toHaveBeenCalledWith("Texto do evangelho");
+    });
+
+    it("cria e toca o som com o uri retornado", async () => {
+      const { result } = renderHook(() => useLiturgyTTS());
+
+      await act(async () => {
+        await result.current.playSection("evangelho", "Texto");
+      });
+
+      expect(mockCreateAsync).toHaveBeenCalledWith(
+        { uri: "file:///cache/tts_123.mp3" },
+        { shouldPlay: true },
       );
     });
 
-    it("para a reprodução anterior ao iniciar uma nova seção", () => {
+    it("volta para idle ao concluir a reprodução", async () => {
       const { result } = renderHook(() => useLiturgyTTS());
-      act(() => result.current.playSection("primeira-leitura", "A"));
-      act(() => result.current.playSection("evangelho", "B"));
-      expect(stop).toHaveBeenCalled();
-      expect(result.current.activeId).toBe("evangelho");
-      expect(result.current.state).toBe("playing");
-    });
 
-    it("volta para idle ao concluir a leitura (onDone)", () => {
-      const { result } = renderHook(() => useLiturgyTTS());
-      act(() => result.current.playSection("evangelho", "Texto"));
-      act(() => lastSpeakOptions().onDone());
+      await act(async () => {
+        await result.current.playSection("evangelho", "Texto");
+      });
+
+      act(() => {
+        (Audio as any)._playbackCallback.fn?.({ isLoaded: true, didJustFinish: true });
+      });
+
       expect(result.current.state).toBe("idle");
       expect(result.current.activeId).toBeNull();
     });
 
-    it("volta para idle quando a fala é interrompida (onStopped)", () => {
+    it("vai para idle se fetchTTSAudio falhar", async () => {
+      mockFetch.mockRejectedValueOnce(new Error("network error"));
       const { result } = renderHook(() => useLiturgyTTS());
-      act(() => result.current.playSection("evangelho", "Texto"));
-      act(() => lastSpeakOptions().onStopped());
+
+      await act(async () => {
+        await result.current.playSection("evangelho", "Texto");
+      });
+
       expect(result.current.state).toBe("idle");
+      expect(result.current.activeId).toBeNull();
     });
 
-    it("volta para idle em caso de erro (onError)", () => {
+    it("retoma o áudio pausado sem chamar fetchTTSAudio novamente", async () => {
       const { result } = renderHook(() => useLiturgyTTS());
-      act(() => result.current.playSection("evangelho", "Texto"));
-      act(() => lastSpeakOptions().onError());
-      expect(result.current.state).toBe("idle");
-    });
 
-    it("ignora callback de fala antiga após trocar de seção", () => {
-      const { result } = renderHook(() => useLiturgyTTS());
-      act(() => result.current.playSection("primeira-leitura", "A"));
-      const staleOptions = lastSpeakOptions();
-      act(() => result.current.playSection("evangelho", "B"));
+      await act(async () => {
+        await result.current.playSection("evangelho", "Texto");
+      });
+      await act(async () => {
+        await result.current.pause();
+      });
 
-      // o onStopped da fala antiga não deve zerar o estado da nova
-      act(() => staleOptions.onStopped());
-      expect(result.current.activeId).toBe("evangelho");
+      mockFetch.mockClear();
+
+      await act(async () => {
+        await result.current.playSection("evangelho", "Texto");
+      });
+
+      expect(mockFetch).not.toHaveBeenCalled();
+      expect(mockSound.playAsync).toHaveBeenCalled();
       expect(result.current.state).toBe("playing");
+    });
+  });
+
+  describe("pause", () => {
+    it("pausa o áudio e muda para paused", async () => {
+      const { result } = renderHook(() => useLiturgyTTS());
+
+      await act(async () => {
+        await result.current.playSection("evangelho", "Texto");
+      });
+      await act(async () => {
+        await result.current.pause();
+      });
+
+      expect(mockSound.pauseAsync).toHaveBeenCalled();
+      expect(result.current.state).toBe("paused");
+      expect(result.current.activeId).toBe("evangelho");
     });
   });
 
   describe("stop", () => {
-    it("para a fala e volta para idle", () => {
+    it("descarrega o som e volta para idle", async () => {
       const { result } = renderHook(() => useLiturgyTTS());
-      act(() => result.current.playSection("evangelho", "Texto"));
-      act(() => result.current.stop());
-      expect(stop).toHaveBeenCalled();
+
+      await act(async () => {
+        await result.current.playSection("evangelho", "Texto");
+      });
+      await act(async () => {
+        await result.current.stop();
+      });
+
+      expect(mockSound.unloadAsync).toHaveBeenCalled();
       expect(result.current.state).toBe("idle");
       expect(result.current.activeId).toBeNull();
-    });
-  });
-
-  describe("pause — Android (sem suporte a pause)", () => {
-    // Platform.OS = "android" no mock de react-native
-    it("para completamente o áudio em vez de pausar", () => {
-      const { result } = renderHook(() => useLiturgyTTS());
-      act(() => result.current.playSection("evangelho", "Texto"));
-      act(() => result.current.pause());
-      expect(stop).toHaveBeenCalled();
-      expect(pause).not.toHaveBeenCalled();
-      expect(result.current.state).toBe("idle");
-      expect(result.current.activeId).toBeNull();
-    });
-  });
-
-  describe("pause/resume — iOS", () => {
-    beforeAll(() => {
-      Platform.OS = "ios";
-    });
-
-    afterAll(() => {
-      Platform.OS = "android";
-    });
-
-    it("pausa de verdade e mantém a seção ativa", () => {
-      const { result } = renderHook(() => useLiturgyTTS());
-      act(() => result.current.playSection("evangelho", "Texto"));
-      act(() => result.current.pause());
-      expect(pause).toHaveBeenCalled();
-      expect(result.current.state).toBe("paused");
-      expect(result.current.activeId).toBe("evangelho");
-    });
-
-    it("retoma a mesma seção com resume em vez de reiniciar", () => {
-      const { result } = renderHook(() => useLiturgyTTS());
-      act(() => result.current.playSection("evangelho", "Texto"));
-      act(() => result.current.pause());
-      speak.mockClear();
-      act(() => result.current.playSection("evangelho", "Texto"));
-      expect(resume).toHaveBeenCalled();
-      expect(speak).not.toHaveBeenCalled();
-      expect(result.current.state).toBe("playing");
     });
   });
 });

@@ -20,12 +20,14 @@ const config: Config = {
       "<rootDir>/__tests__/__mocks__/react-native-reanimated.tsx",
     "^react-native-svg$": "<rootDir>/__tests__/__mocks__/react-native-svg.tsx",
     "^expo-secure-store$": "<rootDir>/__tests__/__mocks__/expo-secure-store.ts",
+    "^expo-av$": "<rootDir>/__tests__/__mocks__/expo-av.ts",
+    "^expo-file-system/legacy$": "<rootDir>/__tests__/__mocks__/expo-file-system-legacy.ts",
   },
   transform: {
     "^.+\\.tsx?$": ["ts-jest", { tsconfig: { strict: true, jsx: "react-jsx" } }],
   },
   transformIgnorePatterns: [
-    "node_modules/(?!(react-native|@react-native|expo|@expo|@unimodules|unimodules|@react-native-firebase|@react-native-community)/)",
+    "node_modules/(?!(react-native|@react-native|expo|@expo|expo-av|@unimodules|unimodules|@react-native-firebase|@react-native-community)/)",
   ],
   silent: true,
   collectCoverageFrom: [
