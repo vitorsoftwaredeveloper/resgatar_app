@@ -242,10 +242,15 @@ export function ReadingsScreen() {
                   onPress={ttsState === "playing" ? pause : stop}
                   style={styles.ttsIndicator}
                   activeOpacity={0.8}
+                  disabled={ttsState === "loading"}
                 >
                   <Volume2 size={14} color={colors.primary} />
                   <Text style={styles.ttsIndicatorText}>
-                    {ttsState === "playing" ? "Reproduzindo áudio" : "Áudio pausado"}
+                    {ttsState === "loading"
+                      ? "Gerando áudio..."
+                      : ttsState === "playing"
+                      ? "Reproduzindo áudio"
+                      : "Áudio pausado"}
                   </Text>
                   {ttsState === "playing"
                     ? <Pause size={14} color={colors.primary} />

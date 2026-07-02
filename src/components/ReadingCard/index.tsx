@@ -114,6 +114,7 @@ export function ReadingCard({
               }}
               style={[styles.ttsBtn, ttsState === "playing" && styles.ttsBtnActive]}
               accessibilityLabel={ttsState === "playing" ? "Pausar leitura" : "Ouvir leitura"}
+              disabled={ttsState === "loading"}
             >
               {ttsState === "playing" ? (
                 <Pause size={13} color={colors.primary} fill={colors.primary} />

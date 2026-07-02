@@ -81,6 +81,7 @@ export function PsalmCard({ referencia, refrao, texto, testID, ttsState, onTTSPl
               }}
               style={[styles.ttsBtn, ttsState === "playing" && styles.ttsBtnActive]}
               accessibilityLabel={ttsState === "playing" ? "Pausar leitura" : "Ouvir salmo"}
+              disabled={ttsState === "loading"}
             >
               {ttsState === "playing" ? (
                 <Pause size={13} color={colors.primary} fill={colors.primary} />

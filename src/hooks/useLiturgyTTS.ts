@@ -1,82 +1,91 @@
-import * as Speech from "expo-speech";
+import { Audio } from "expo-av";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Platform } from "react-native";
+import { fetchTTSAudio } from "@/services/GoogleTTSService";
 
-export type TTSState = "idle" | "playing" | "paused";
-
-// Speech.pause/resume only work on iOS. On Android we stop instead.
-const supportsPause = () => Platform.OS === "ios";
+export type TTSState = "idle" | "loading" | "playing" | "paused";
 
 export function useLiturgyTTS() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [state, setState] = useState<TTSState>("idle");
-  // each spoken utterance gets a token; stale callbacks (from a stopped or
-  // replaced utterance) are ignored so they don't reset the current state.
+  const soundRef = useRef<Audio.Sound | null>(null);
   const tokenRef = useRef(0);
-  // pausing must not be treated as "finished"
-  const pausedRef = useRef(false);
 
   useEffect(() => {
+    Audio.setAudioModeAsync({
+      playsInSilentModeIOS: true,
+      staysActiveInBackground: false,
+    });
     return () => {
-      Speech.stop();
+      soundRef.current?.unloadAsync();
     };
   }, []);
 
+  const unloadCurrent = useCallback(async () => {
+    if (soundRef.current) {
+      await soundRef.current.unloadAsync();
+      soundRef.current = null;
+    }
+  }, []);
+
   const playSection = useCallback(
-    (id: string, text: string) => {
-      // resume a paused section (iOS only)
-      if (activeId === id && state === "paused" && supportsPause()) {
-        pausedRef.current = false;
-        Speech.resume();
+    async (id: string, text: string) => {
+      if (activeId === id && state === "paused") {
+        await soundRef.current?.playAsync();
         setState("playing");
         return;
       }
 
-      // starting a (new) section — invalidate previous utterance callbacks
       const token = ++tokenRef.current;
-      pausedRef.current = false;
-      Speech.stop();
-
+      await unloadCurrent();
       setActiveId(id);
-      setState("playing");
+      setState("loading");
 
-      const finish = () => {
-        if (tokenRef.current !== token || pausedRef.current) return;
+      try {
+        const uri = await fetchTTSAudio(text);
+        if (tokenRef.current !== token) return;
+
+        const { sound } = await Audio.Sound.createAsync(
+          { uri },
+          { shouldPlay: true },
+        );
+        if (tokenRef.current !== token) {
+          sound.unloadAsync();
+          return;
+        }
+
+        soundRef.current = sound;
+        setState("playing");
+
+        sound.setOnPlaybackStatusUpdate((status) => {
+          if (tokenRef.current !== token) return;
+          if (!status.isLoaded) return;
+          if (status.didJustFinish) {
+            setActiveId(null);
+            setState("idle");
+            sound.unloadAsync();
+          }
+        });
+      } catch (err) {
+        console.error("[TTS] error:", err);
+        if (tokenRef.current !== token) return;
         setActiveId(null);
         setState("idle");
-      };
-
-      Speech.speak(text, {
-        language: "pt-BR",
-        rate: 0.9,
-        onDone: finish,
-        onStopped: finish,
-        onError: finish,
-      });
+      }
     },
-    [activeId, state],
+    [activeId, state, unloadCurrent],
   );
 
-  const pause = useCallback(() => {
-    if (supportsPause()) {
-      pausedRef.current = true;
-      Speech.pause();
-      setState("paused");
-    } else {
-      // Android: no pause support, so stop completely
-      tokenRef.current++;
-      Speech.stop();
-      setActiveId(null);
-      setState("idle");
-    }
+  const pause = useCallback(async () => {
+    await soundRef.current?.pauseAsync();
+    setState("paused");
   }, []);
 
-  const stop = useCallback(() => {
+  const stop = useCallback(async () => {
     tokenRef.current++;
-    Speech.stop();
+    await unloadCurrent();
     setActiveId(null);
     setState("idle");
-  }, []);
+  }, [unloadCurrent]);
 
   return { activeId, state, playSection, pause, stop };
 }
