@@ -5,45 +5,62 @@ jest.mock("@/services/api", () => ({
 import { api } from "@/services/api";
 import { VideoService } from "@/services/VideoService";
 
-const mockFeed = [
-  {
-    _id: "v1",
-    memberId: "m1",
-    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    videoId: "dQw4w9WgXcQ",
-    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
-    title: "Never Gonna Give You Up",
-    firstName: "Ana",
-    lastName: "Silva",
-    profileImage: null,
-  },
-];
+const mockFeedItem = {
+  _id: "v1",
+  memberId: "m1",
+  url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+  videoId: "dQw4w9WgXcQ",
+  thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
+  title: "Never Gonna Give You Up",
+  firstName: "Ana",
+  lastName: "Silva",
+  profileImage: null,
+};
+
+const mockPaginatedFeed = {
+  items: [mockFeedItem],
+  page: 1,
+  limit: 10,
+  total: 1,
+  totalPages: 1,
+};
 
 describe("VideoService", () => {
   beforeEach(() => jest.clearAllMocks());
 
   describe("listAllVideos", () => {
-    it("faz GET /videos e retorna feed de vídeos", async () => {
-      (api.get as jest.Mock).mockResolvedValue({ data: { data: mockFeed } });
+    it("faz GET /videos com page e limit e retorna feed paginado", async () => {
+      (api.get as jest.Mock).mockResolvedValue({ data: { data: mockPaginatedFeed } });
 
-      const result = await VideoService.listAllVideos();
+      const result = await VideoService.listAllVideos(1, 10);
 
-      expect(api.get).toHaveBeenCalledWith("/videos");
-      expect(result).toEqual(mockFeed);
+      expect(api.get).toHaveBeenCalledWith("/videos", { params: { page: 1, limit: 10 } });
+      expect(result).toEqual(mockPaginatedFeed);
     });
 
     it("retorna lista vazia quando não há vídeos", async () => {
-      (api.get as jest.Mock).mockResolvedValue({ data: { data: [] } });
+      const emptyFeed = { items: [], page: 1, limit: 10, total: 0, totalPages: 0 };
+      (api.get as jest.Mock).mockResolvedValue({ data: { data: emptyFeed } });
 
-      const result = await VideoService.listAllVideos();
+      const result = await VideoService.listAllVideos(1, 10);
 
-      expect(result).toEqual([]);
+      expect(result).toEqual(emptyFeed);
     });
 
     it("propaga erro quando a requisição falha", async () => {
       (api.get as jest.Mock).mockRejectedValue(new Error("network error"));
 
-      await expect(VideoService.listAllVideos()).rejects.toThrow("network error");
+      await expect(VideoService.listAllVideos(1, 10)).rejects.toThrow("network error");
+    });
+
+    it("envia title e memberId quando filtros são informados", async () => {
+      (api.get as jest.Mock).mockResolvedValue({ data: { data: mockPaginatedFeed } });
+
+      await VideoService.listAllVideos(1, 10, { title: "missa", memberId: "m1" });
+
+      expect(api.get).toHaveBeenCalledWith("/videos", {
+        params: { page: 1, limit: 10, title: "missa", memberId: "m1" },
+      });
     });
   });
 

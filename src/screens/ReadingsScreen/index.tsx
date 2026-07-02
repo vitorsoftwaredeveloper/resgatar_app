@@ -90,18 +90,17 @@ export function ReadingsScreen() {
 
   const handleMarkRead = useCallback(async () => {
     if (!memberId) return;
-    setMarkDismissed(true);
     setMarking(true);
     try {
       const streak = await ReadingStreakService.markToday();
       await setReadingMarkedDate(memberId, new Date().toISOString());
       updateMemberStreak(streak);
+      setMarkDismissed(true);
       ToastMessage.success(
         "Leitura de hoje realizada",
         "Mais um dia somado à sua ofensiva.",
       );
     } catch {
-      setMarkDismissed(false);
       ToastMessage.error(
         "Não foi possível registrar",
         "Verifique sua conexão e tente novamente.",

@@ -1,11 +1,24 @@
 import { api } from "./api";
-import { IVideoFeedItem } from "@/types/Video";
+import { IPaginatedVideos, IVideoListFilters } from "@/types/Video";
 
 export const VideoService = {
-  listAllVideos: async (): Promise<IVideoFeedItem[]> => {
+  listAllVideos: async (
+    page: number,
+    limit: number,
+    filters?: IVideoListFilters,
+  ): Promise<IPaginatedVideos> => {
     try {
-      const response = await api.get("/videos");
+      const response = await api.get("/videos", {
+        params: {
+          page,
+          limit,
+          title: filters?.title,
+          memberId: filters?.memberId,
+        },
+      });
+
       const { data } = response.data;
+
       return data;
     } catch (error) {
       console.error("Erro ao listar feed de vídeos", error);

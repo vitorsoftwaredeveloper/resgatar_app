@@ -21,7 +21,15 @@ export function useStyles() {
         },
         searchBar: {
           paddingHorizontal: SPACING.md,
-          paddingVertical: SPACING.md,
+          paddingTop: SPACING.md,
+        },
+        searchButton: {
+          width: 28,
+          height: 28,
+          borderRadius: 14,
+          backgroundColor: colors.primary,
+          alignItems: "center",
+          justifyContent: "center",
         },
         body: {
           flex: 1,
@@ -74,16 +82,48 @@ export function useStyles() {
         centered: {
           flex: 1,
           alignItems: "center",
-          justifyContent: "center",
           paddingHorizontal: SPACING.xxl,
+          paddingTop: SPACING.xxl * 2,
+        },
+        emptyIconWrap: {
+          width: 72,
+          height: 72,
+          borderRadius: 36,
+          backgroundColor: colors.card,
+          borderWidth: 1,
+          borderColor: colors.border,
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: SPACING.lg,
+        },
+        emptyTitle: {
+          fontSize: TYPOGRAPHY.subtitle,
+          fontWeight: "700",
+          color: colors.text,
+          textAlign: "center",
+          marginBottom: SPACING.xs,
         },
         emptyText: {
           fontSize: TYPOGRAPHY.body,
           color: colors.textMuted,
           textAlign: "center",
+          lineHeight: 20,
+        },
+        clearFiltersButton: {
+          marginTop: SPACING.lg,
+          paddingVertical: SPACING.xs,
+          paddingHorizontal: SPACING.md,
+          borderRadius: RADIUS.sm,
+          borderWidth: 1,
+          borderColor: colors.border,
+        },
+        clearFiltersText: {
+          fontSize: TYPOGRAPHY.small,
+          fontWeight: "600",
+          color: colors.primary,
         },
         memberFilterWrapper: {
-          height: 68,
+          height: 92,
           justifyContent: "center",
         },
         memberArrow: {

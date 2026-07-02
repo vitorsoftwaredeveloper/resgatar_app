@@ -13,3 +13,16 @@ export interface IVideoFeedItem extends IVideoResponse {
   lastName: string;
   profileImage: string | null;
 }
+
+export interface IPaginatedVideos {
+  items: IVideoFeedItem[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface IVideoListFilters {
+  title?: string;
+  memberId?: string;
+}
