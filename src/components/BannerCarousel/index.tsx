@@ -1,7 +1,7 @@
 import { CoachTarget } from "@/components/CoachTarget";
 import { AuthContext } from "@/context/AuthContext";
 import { BannerService } from "@/services/BannerService";
-import { IBanner } from "@/types/Banner";
+import { BANNER_TAB_SCREENS, BannerScreen, IBanner } from "@/types/Banner";
 import { useNavigation } from "@react-navigation/native";
 import { useFocusEffect } from "@react-navigation/native";
 import { Settings2 } from "lucide-react-native";
@@ -34,7 +34,12 @@ function useBannerTap(banner: IBanner) {
     if (banner.action.type === "external" && banner.action.value) {
       Linking.openURL(banner.action.value).catch(() => {});
     } else if (banner.action.type === "internal" && banner.action.value) {
-      navigation.navigate(banner.action.value);
+      const target = banner.action.value as BannerScreen;
+      if (BANNER_TAB_SCREENS.includes(target)) {
+        navigation.navigate("Home", { screen: target });
+      } else {
+        navigation.navigate(target);
+      }
     }
   }, [banner, navigation]);
 }

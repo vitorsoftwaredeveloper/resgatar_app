@@ -2,18 +2,20 @@ import { RootStackParamList } from "@/navigation/types";
 
 export type BannerActionType = "external" | "internal" | "none";
 
-export type BannerScreen = Extract<
-  keyof RootStackParamList,
-  | "Videos"
-  | "Arrecadacao"
-  | "BalancoAnual"
-  | "Expenses"
-  | "Donations"
-  | "PersonalSettings"
-  | "Settings"
->;
+export type BannerScreen =
+  | Extract<keyof RootStackParamList, "Videos" | "PersonalSettings">
+  | "Bills"
+  | "Readings"
+  | "Profile";
+
+// Telas que vivem dentro do BottomTabs (rota "Home"), navegadas via
+// navigation.navigate("Home", { screen: value }) em vez de navigate(value) direto.
+export const BANNER_TAB_SCREENS: BannerScreen[] = ["Bills", "Readings", "Profile"];
 
 export const BANNER_SCREEN_OPTIONS: { label: string; value: BannerScreen }[] = [
+  { label: "Contribuições", value: "Bills" },
+  { label: "Leituras", value: "Readings" },
+  { label: "Mais", value: "Profile" },
   { label: "Vídeos", value: "Videos" },
   { label: "Configurações pessoais", value: "PersonalSettings" },
 ];
