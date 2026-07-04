@@ -28,6 +28,7 @@ interface AuthContextData {
   loading: boolean;
   needsOnboarding: boolean;
   onboardingChecked: boolean;
+  sessionVersion: number;
   completeOnboarding: () => Promise<void>;
   restartOnboarding: () => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
@@ -54,6 +55,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [loading, setLoading] = useState<boolean>(true);
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
   const [onboardingChecked, setOnboardingChecked] = useState(false);
+  const [sessionVersion, setSessionVersion] = useState(0);
   const isLoggedIn = !!member;
 
   useEffect(() => {
@@ -111,6 +113,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setMember(memberData);
         await saveMember(memberData);
       }
+      setSessionVersion((v) => v + 1);
     } catch {
       setMember(null);
     }
@@ -137,6 +140,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const memberData = await MemberServices.getMember();
       setMember(memberData);
       await saveMember(memberData);
+      setSessionVersion((v) => v + 1);
     } catch (error) {
       setMember(null);
       throw error;
@@ -289,6 +293,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         loading,
         needsOnboarding,
         onboardingChecked,
+        sessionVersion,
         completeOnboarding,
         restartOnboarding,
         login,

@@ -15,13 +15,14 @@ import { useStyles } from "./styles";
 export function NoticesCard() {
   const styles = useStyles();
   const { colors } = useAppTheme();
-  const { member } = useContext(AuthContext);
+  const { member, sessionVersion } = useContext(AuthContext);
   const isAdmin = member?.role === "admin";
 
   const [items, setItems] = useState<ICommitment[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const skipNextFetch = useRef(false);
+  const fetchedSessionVersion = useRef<number | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -29,11 +30,13 @@ export function NoticesCard() {
         skipNextFetch.current = false;
         return;
       }
+      if (fetchedSessionVersion.current === sessionVersion) return;
+      fetchedSessionVersion.current = sessionVersion;
       CommitmentService.list()
         .then(setItems)
         .catch(() => setItems([]))
         .finally(() => setLoaded(true));
-    }, []),
+    }, [sessionVersion]),
   );
 
   return (

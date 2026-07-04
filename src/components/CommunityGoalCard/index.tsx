@@ -1,11 +1,12 @@
 import { CoachTarget } from "@/components/CoachTarget";
+import { AuthContext } from "@/context/AuthContext";
 import { useAppTheme } from "@/context/ThemeContext";
 import { CommunityGoalCardSkeleton } from "@/components/Skeleton/CommunityGoalCardSkeleton";
 import { ChargeServices } from "@/services/ChargeService";
 import { IGoalProgress } from "@/types/Charge";
 import { useFocusEffect } from "@react-navigation/native";
 import { CircleCheck, UsersRound } from "lucide-react-native";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useContext, useRef, useState } from "react";
 import { Text, View } from "react-native";
 import { useStyles } from "./styles";
 
@@ -27,8 +28,10 @@ const MONTH_LABELS = [
 export function CommunityGoalCard() {
   const styles = useStyles();
   const { colors } = useAppTheme();
+  const { sessionVersion } = useContext(AuthContext);
   const [progress, setProgress] = useState<IGoalProgress | null>(null);
   const [loading, setLoading] = useState(true);
+  const fetchedSessionVersion = useRef<number | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -44,8 +47,10 @@ export function CommunityGoalCard() {
 
   useFocusEffect(
     useCallback(() => {
+      if (fetchedSessionVersion.current === sessionVersion) return;
+      fetchedSessionVersion.current = sessionVersion;
       load();
-    }, [load]),
+    }, [load, sessionVersion]),
   );
 
   // Skeleton apenas no primeiro carregamento; ao voltar à tela com dados já

@@ -71,7 +71,7 @@ function BannerSlide({
 
 export function BannerCarousel() {
   const styles = useStyles();
-  const { member } = useContext(AuthContext);
+  const { member, sessionVersion } = useContext(AuthContext);
   const isAdmin = member?.role === "admin";
 
   const [banners, setBanners] = useState<IBanner[]>([]);
@@ -82,6 +82,7 @@ export function BannerCarousel() {
   const scrollRef = useRef<ScrollView>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const currentIndex = useRef(0);
+  const fetchedSessionVersion = useRef<number | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -96,8 +97,10 @@ export function BannerCarousel() {
 
   useFocusEffect(
     useCallback(() => {
+      if (fetchedSessionVersion.current === sessionVersion) return;
+      fetchedSessionVersion.current = sessionVersion;
       load();
-    }, [load]),
+    }, [load, sessionVersion]),
   );
 
   useEffect(() => {
