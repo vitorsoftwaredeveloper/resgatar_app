@@ -215,8 +215,12 @@ describe("ModalRegisterCashPayment", () => {
     });
 
     await waitFor(() => {
-      // fevereiro = índice 1
-      expect(mockRegisterCashPayment).toHaveBeenCalledWith("user-1", 1);
+      // fevereiro = índice 1, valor pré-preenchido com o padrão do membro
+      expect(mockRegisterCashPayment).toHaveBeenCalledWith(
+        "user-1",
+        1,
+        "10,00",
+      );
       expect(mockToastSuccess).toHaveBeenCalled();
     });
   });

@@ -16,6 +16,7 @@ type DialogProps = {
   description?: string;
   onClose: () => void;
   actions?: DialogAction[];
+  children?: React.ReactNode;
 };
 
 export function Dialog({
@@ -24,6 +25,7 @@ export function Dialog({
   description,
   onClose,
   actions = [],
+  children,
 }: DialogProps) {
   const styles = useStyles();
 
@@ -40,6 +42,7 @@ export function Dialog({
           <Pressable style={styles.container} onPress={() => {}}>
             {title && <Text style={styles.title}>{title}</Text>}
             {description && <Text style={styles.description}>{description}</Text>}
+            {children}
 
             <View style={styles.actions}>
               {actions.map((action, index) => (

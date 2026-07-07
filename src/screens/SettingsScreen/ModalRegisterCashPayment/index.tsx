@@ -1,6 +1,7 @@
 import { Avatar } from "@/components/Avatar";
 import { Button } from "@/components/Button";
 import { Dialog } from "@/components/Dialog";
+import { Input } from "@/components/Input";
 import { MemberListWithSkeleton } from "@/components/Skeleton/MemberListWithSkeleton";
 import { ModalBase } from "@/components/ModalBase";
 import { ToastMessage } from "@/components/Toast";
@@ -10,6 +11,11 @@ import { MemberServices } from "@/services/MemberService";
 import { COLORS } from "@/theme";
 import { IMember, IMemberWithContribution } from "@/types/Member";
 import { formatDateFromTimestamp, formatMoneyBRL } from "@/utils/helper";
+import {
+  currencyToBackendBRL,
+  maskCurrencyBRL,
+  onlyNumbers,
+} from "@/utils/mask";
 import { HandCoins } from "lucide-react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
@@ -49,6 +55,9 @@ export function ModalRegisterCashPayment({ visible, onClose }: Props) {
     index: number;
     label: string;
   }>(null);
+  // Valor a registrar, editável no diálogo de confirmação. Guardado como
+  // dígitos de centavos (mesmo formato usado pelo maskCurrencyBRL/ModalDonate).
+  const [confirmValue, setConfirmValue] = useState("");
 
   useEffect(() => {
     if (!visible) return;
@@ -90,9 +99,17 @@ export function ModalRegisterCashPayment({ visible, onClose }: Props) {
 
   async function handleConfirm() {
     if (!confirm || !detail) return;
+    if (Number(onlyNumbers(confirmValue)) <= 0) {
+      ToastMessage.error("Informe um valor válido para o pagamento.");
+      return;
+    }
     setRegistering(confirm.index);
     try {
-      await ChargeServices.registerCashPayment(detail._id, confirm.index);
+      await ChargeServices.registerCashPayment(
+        detail._id,
+        confirm.index,
+        currencyToBackendBRL(confirmValue),
+      );
       ToastMessage.success(
         "Pagamento registrado",
         `${confirm.label} de ${detail.firstName} marcado como pago.`,
@@ -198,9 +215,12 @@ export function ModalRegisterCashPayment({ visible, onClose }: Props) {
                       title="Registrar"
                       variant="secondary"
                       styleCustom={styles.registerButton}
-                      onPress={() =>
-                        setConfirm({ index: item.index, label: item.label })
-                      }
+                      onPress={() => {
+                        setConfirm({ index: item.index, label: item.label });
+                        setConfirmValue(
+                          onlyNumbers(detail.paymentInfo?.amount || ""),
+                        );
+                      }}
                     />
                   )}
                 </View>
@@ -214,9 +234,7 @@ export function ModalRegisterCashPayment({ visible, onClose }: Props) {
         <Dialog
           visible={!!confirm}
           title="Pagamento em dinheiro"
-          description={`Confirmar recebimento de ${formatMoneyBRL(
-            detail.paymentInfo?.amount ?? 0,
-          )} em dinheiro de ${detail.firstName}, referente a ${confirm.label}?`}
+          description={`Confirmar recebimento em dinheiro de ${detail.firstName}, referente a ${confirm.label}?`}
           onClose={() => registering === null && setConfirm(null)}
           actions={[
             {
@@ -230,7 +248,16 @@ export function ModalRegisterCashPayment({ visible, onClose }: Props) {
               onPress: handleConfirm,
             },
           ]}
-        />
+        >
+          <Input
+            label="Valor recebido"
+            placeholder="R$ 0,00"
+            keyboardType="numeric"
+            flex={0}
+            value={confirmValue ? maskCurrencyBRL(confirmValue) : ""}
+            onChangeText={setConfirmValue}
+          />
+        </Dialog>
       )}
     </ModalBase>
   );
