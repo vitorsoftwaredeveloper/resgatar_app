@@ -3,7 +3,7 @@ import { RADIUS, SPACING, TYPOGRAPHY } from "@/theme";
 import { useMemo } from "react";
 import { StyleSheet } from "react-native";
 
-export const RAIL_WIDTH = 36;
+const RAIL_WIDTH = 36;
 
 export function useStyles() {
   const { colors } = useAppTheme();

@@ -4,7 +4,12 @@ import { AuthContext } from "@/context/AuthContext";
 import { useAppTheme } from "@/context/ThemeContext";
 import { RootStackParamList } from "@/navigation/types";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { HandCoins, ShieldCheck, UserRoundMinus, UserRoundPen } from "lucide-react-native";
+import {
+  HandCoins,
+  ShieldCheck,
+  UserRoundMinus,
+  UserRoundPen,
+} from "lucide-react-native";
 import React, { useContext, useState } from "react";
 import { Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";

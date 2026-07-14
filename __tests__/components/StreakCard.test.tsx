@@ -1,13 +1,22 @@
 jest.mock("lucide-react-native", () => ({ Flame: () => null }));
 jest.mock("@/context/ThemeContext", () => ({
   useAppTheme: () => ({
-    colors: { primary: "#6B4F3A", text: "#3E2F23", textMuted: "#8C7A6B", card: "#FFF", border: "#DED6CC" },
+    colors: {
+      primary: "#6B4F3A",
+      text: "#3E2F23",
+      textMuted: "#8C7A6B",
+      card: "#FFF",
+      border: "#DED6CC",
+    },
     mode: "light",
   }),
 }));
 jest.mock("@/components/CoachTarget", () => {
   const React = require("react");
-  return { CoachTarget: ({ children }: any) => React.createElement(React.Fragment, null, children) };
+  return {
+    CoachTarget: ({ children }: any) =>
+      React.createElement(React.Fragment, null, children),
+  };
 });
 
 const mockAuthContext = {
@@ -33,7 +42,12 @@ describe("StreakCard", () => {
 
   it("exibe 'Retome sua sequência' quando streak é 0", () => {
     mockAuthContext.member = {
-      readingStreak: { currentStreak: 0, longestStreak: 5, lastReadAt: "2026-06-10", alreadyDoneToday: false },
+      readingStreak: {
+        currentStreak: 0,
+        longestStreak: 5,
+        lastReadAt: "2026-06-10",
+        alreadyDoneToday: false,
+      },
     };
     const { getByText } = render(<StreakCard />);
     expect(getByText("Retome sua sequência")).toBeTruthy();
@@ -41,7 +55,12 @@ describe("StreakCard", () => {
 
   it("exibe contagem singular 'dia seguido' para streak 1", () => {
     mockAuthContext.member = {
-      readingStreak: { currentStreak: 1, longestStreak: 1, lastReadAt: "2026-06-29", alreadyDoneToday: true },
+      readingStreak: {
+        currentStreak: 1,
+        longestStreak: 1,
+        lastReadAt: "2026-06-29",
+        alreadyDoneToday: true,
+      },
     };
     const { getByText } = render(<StreakCard />);
     expect(getByText("1 dia seguido")).toBeTruthy();
@@ -49,31 +68,51 @@ describe("StreakCard", () => {
 
   it("exibe contagem plural 'dias seguidos' para streak > 1", () => {
     mockAuthContext.member = {
-      readingStreak: { currentStreak: 7, longestStreak: 10, lastReadAt: "2026-06-29", alreadyDoneToday: true },
+      readingStreak: {
+        currentStreak: 7,
+        longestStreak: 10,
+        lastReadAt: "2026-06-29",
+        alreadyDoneToday: true,
+      },
     };
     const { getByText } = render(<StreakCard />);
     expect(getByText("7 dias seguidos")).toBeTruthy();
   });
 
-  it("exibe recorde quando longestStreak > 0", () => {
+  it("exibe quanto falta para o recorde quando a ofensiva está ativa e abaixo dele", () => {
     mockAuthContext.member = {
-      readingStreak: { currentStreak: 3, longestStreak: 14, lastReadAt: "2026-06-29", alreadyDoneToday: true },
+      readingStreak: {
+        currentStreak: 3,
+        longestStreak: 14,
+        lastReadAt: "2026-06-29",
+        alreadyDoneToday: true,
+      },
     };
     const { getByText } = render(<StreakCard />);
-    expect(getByText("Recorde: 14 dias")).toBeTruthy();
+    expect(getByText("Faltam 11 dias para o recorde de 14")).toBeTruthy();
   });
 
-  it("exibe recorde singular para longestStreak = 1", () => {
+  it("exibe 'Você está no seu recorde!' quando a ofensiva atinge o recorde", () => {
     mockAuthContext.member = {
-      readingStreak: { currentStreak: 1, longestStreak: 1, lastReadAt: "2026-06-29", alreadyDoneToday: true },
+      readingStreak: {
+        currentStreak: 1,
+        longestStreak: 1,
+        lastReadAt: "2026-06-29",
+        alreadyDoneToday: true,
+      },
     };
     const { getByText } = render(<StreakCard />);
-    expect(getByText("Recorde: 1 dia")).toBeTruthy();
+    expect(getByText("Você está no seu recorde!")).toBeTruthy();
   });
 
   it("exibe mensagem motivacional quando longestStreak é 0", () => {
     mockAuthContext.member = {
-      readingStreak: { currentStreak: 0, longestStreak: 0, lastReadAt: null, alreadyDoneToday: false },
+      readingStreak: {
+        currentStreak: 0,
+        longestStreak: 0,
+        lastReadAt: null,
+        alreadyDoneToday: false,
+      },
     };
     const { getByText } = render(<StreakCard />);
     expect(getByText("Abra a liturgia todo dia para evoluir")).toBeTruthy();

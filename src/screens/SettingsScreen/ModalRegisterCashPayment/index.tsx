@@ -6,9 +6,9 @@ import { MemberListWithSkeleton } from "@/components/Skeleton/MemberListWithSkel
 import { ModalBase } from "@/components/ModalBase";
 import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";
+import { useAppTheme } from "@/context/ThemeContext";
 import { ChargeServices } from "@/services/ChargeService";
 import { MemberServices } from "@/services/MemberService";
-import { COLORS } from "@/theme";
 import { IMember, IMemberWithContribution } from "@/types/Member";
 import { formatDateFromTimestamp, formatMoneyBRL } from "@/utils/helper";
 import {
@@ -43,6 +43,7 @@ const MONTHS: { key: string; label: string }[] = [
 
 export function ModalRegisterCashPayment({ visible, onClose }: Props) {
   const { listMembers, reloadMemberData } = useContext(AuthContext);
+  const { colors } = useAppTheme();
   const styles = useStyles();
 
   const [members, setMembers] = useState<IMember[]>([]);
@@ -126,8 +127,7 @@ export function ModalRegisterCashPayment({ visible, onClose }: Props) {
   const months = detail
     ? MONTHS.map((m, index) => {
         const data = detail.contributions?.months?.[m.key as never] as
-          | { paid: boolean; value: number; paidAt: string }
-          | undefined;
+          { paid: boolean; value: number; paidAt: string } | undefined;
         return { month: m, index, data };
       })
         // Mostra apenas os meses que o endpoint fornece para o membro.
@@ -164,13 +164,13 @@ export function ModalRegisterCashPayment({ visible, onClose }: Props) {
               members={members}
               loading={loadingMembers}
               onAction={handleSelectMember}
-              iconAction={<HandCoins size={20} color={COLORS.primary} />}
+              iconAction={<HandCoins size={20} color={colors.primary} />}
               variant="edit"
               loadingMemberId={loadingMemberId ?? undefined}
             />
           ) : loadingDetail ? (
             <ActivityIndicator
-              color={COLORS.primary}
+              color={colors.primary}
               style={{ marginTop: 32 }}
             />
           ) : (
@@ -209,7 +209,7 @@ export function ModalRegisterCashPayment({ visible, onClose }: Props) {
                       </Text>
                     </View>
                   ) : registering === item.index ? (
-                    <ActivityIndicator size="small" color={COLORS.primary} />
+                    <ActivityIndicator size="small" color={colors.primary} />
                   ) : (
                     <Button
                       title="Registrar"

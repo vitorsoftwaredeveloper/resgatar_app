@@ -55,13 +55,44 @@ interface IChargeSummary {
 
 // Progresso da meta do mês, exposto a todos os membros (sem dados por membro).
 // `percent` é 0–100; `month` é 1-indexado.
+// Doação avulsa que compõe a meta do mês (subconjunto de IDonation devolvido
+// pelo endpoint de meta mensal).
+interface IGoalDonationItem {
+  transactionId: string;
+  donorName?: string;
+  amount: string | number;
+  paymentMethodId: "pix" | "cash";
+  dateApproved?: string;
+}
+
+// Despesa que abate a meta do mês (subconjunto de IExpense).
+interface IGoalExpenseItem {
+  _id: string;
+  description: string;
+  amount: string | number;
+  category: string;
+  referenceMonth: number;
+  referenceYear: number;
+  date: number;
+  note?: string;
+  receiptKey?: string;
+  adminId: string;
+}
+
 interface IGoalProgress {
   year: number;
   month: number;
+  // goal = dues + donations − expenses (mensalidades previstas + doações do mês
+  // menos as despesas).
   goal: number;
+  dues: number;
   collected: number;
+  donations: number; // total de doações do mês (número)
+  expenses: number; // total de despesas do mês (número)
   remaining: number;
   percent: number;
+  donationItems: IGoalDonationItem[];
+  expenseItems: IGoalExpenseItem[];
 }
 
 // Balanço anual (year-to-date) consumido pelo painel de admin via

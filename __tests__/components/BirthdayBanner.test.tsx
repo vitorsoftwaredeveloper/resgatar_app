@@ -6,7 +6,10 @@ const mockListMembers = jest.fn();
 jest.mock("@/services/MemberService", () => ({
   MemberServices: { listMembers: (...args: any[]) => mockListMembers(...args) },
 }));
-jest.mock("lucide-react-native", () => ({ Cake: () => null }));
+jest.mock("lucide-react-native", () => ({
+  Cake: () => null,
+  PartyPopper: () => null,
+}));
 jest.mock("@/context/ThemeContext", () => ({
   useAppTheme: () => ({
     colors: { primary: "#6B4F3A", text: "#3E2F23", textMuted: "#8C7A6B" },
@@ -38,12 +41,12 @@ function makeMember(id: string, firstName: string, month: number, day: number) {
 describe("BirthdayBanner", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it("não renderiza nada quando não há aniversariantes no mês", async () => {
-    // Mês 11 (dezembro) não tem ninguém neste mês (testes rodam com data mockada)
+  it("mostra estado vazio quando não há aniversariantes no mês", async () => {
     mockListMembers.mockResolvedValue([]);
-    const { queryByText } = render(<BirthdayBanner />);
-    await waitFor(() => expect(mockListMembers).toHaveBeenCalled());
-    expect(queryByText("ANIVERSARIANTES DO MÊS")).toBeNull();
+    const { getByText } = render(<BirthdayBanner />);
+    await waitFor(() =>
+      expect(getByText("Nenhum aniversariante este mês")).toBeTruthy(),
+    );
   });
 
   it("exibe o cabeçalho quando há aniversariantes", async () => {
@@ -51,7 +54,9 @@ describe("BirthdayBanner", () => {
     const member = makeMember("m1", "Ana", now.getMonth(), now.getDate());
     mockListMembers.mockResolvedValue([member]);
     const { getByText } = render(<BirthdayBanner />);
-    await waitFor(() => expect(getByText("ANIVERSARIANTES DO MÊS")).toBeTruthy());
+    await waitFor(() =>
+      expect(getByText("ANIVERSARIANTES DO MÊS")).toBeTruthy(),
+    );
   });
 
   it("exibe o nome do aniversariante", async () => {
@@ -80,11 +85,11 @@ describe("BirthdayBanner", () => {
     await waitFor(() => expect(getByText(`dia ${day}`)).toBeTruthy());
   });
 
-  it("não renderiza nada em caso de erro na API", async () => {
+  it("mostra estado vazio em caso de erro na API", async () => {
     mockListMembers.mockRejectedValue(new Error("network"));
-    const { queryByText } = render(<BirthdayBanner />);
-    await waitFor(() => expect(mockListMembers).toHaveBeenCalled());
-    // Sem dados reais e sem DEV_MOCK (testEnvironment=node => __DEV__ undefined/false)
-    expect(queryByText("ANIVERSARIANTES DO MÊS")).toBeNull();
+    const { getByText } = render(<BirthdayBanner />);
+    await waitFor(() =>
+      expect(getByText("Nenhum aniversariante este mês")).toBeTruthy(),
+    );
   });
 });

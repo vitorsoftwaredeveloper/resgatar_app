@@ -1,11 +1,8 @@
 import { Avatar } from "@/components/Avatar";
-import { QuickActionsSheet } from "@/components/QuickActionsSheet";
 import { useAppTheme } from "@/context/ThemeContext";
-import { useBirthday } from "@/context/BirthdayContext";
 import { resolveAvatarUri } from "@/utils/image";
-import { useIsFocused } from "@react-navigation/native";
-import { ChevronLeft, EllipsisVertical } from "lucide-react-native";
-import React, { useEffect, useRef, useState } from "react";
+import { ChevronLeft, Moon, Sun } from "lucide-react-native";
+import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { CoachTarget } from "../CoachTarget";
 import { LogoResgatar } from "../Svg/Logo";
@@ -18,26 +15,10 @@ interface Props {
 }
 
 export function Header({ name, photo, onBack }: Props) {
-  const { colors } = useAppTheme();
+  const { colors, mode, toggleTheme } = useAppTheme();
   const styles = useStyles();
-  const { todayBirthdays } = useBirthday();
-  const [sheetVisible, setSheetVisible] = useState(false);
-  const [anchorPosition, setAnchorPosition] = useState<{ top: number; right: number } | undefined>();
-  const buttonRef = useRef<View>(null);
-  const isFocused = useIsFocused();
-
-  useEffect(() => {
-    if (!isFocused) setSheetVisible(false);
-  }, [isFocused]);
 
   const avatarUri = resolveAvatarUri(photo);
-
-  function handleOpenSheet() {
-    buttonRef.current?.measure((_x, _y, width, height, pageX, pageY) => {
-      setAnchorPosition({ top: pageY + height + 4, right: 16 });
-      setSheetVisible(true);
-    });
-  }
 
   return (
     <View style={styles.container}>
@@ -68,28 +49,21 @@ export function Header({ name, photo, onBack }: Props) {
         </View>
         <CoachTarget id="header-quickactions">
           <TouchableOpacity
-            ref={buttonRef}
             testID="theme-toggle"
-            accessibilityLabel="Ações rápidas"
-            onPress={handleOpenSheet}
+            accessibilityLabel={
+              mode === "dark" ? "Ativar modo claro" : "Ativar modo escuro"
+            }
+            onPress={toggleTheme}
             style={styles.themeToggle}
           >
-            <EllipsisVertical size={18} color={colors.primary} />
-            {todayBirthdays > 0 && (
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>{todayBirthdays}</Text>
-              </View>
+            {mode === "dark" ? (
+              <Sun size={18} color={colors.primary} />
+            ) : (
+              <Moon size={18} color={colors.primary} />
             )}
           </TouchableOpacity>
         </CoachTarget>
       </View>
-
-      <QuickActionsSheet
-        visible={sheetVisible}
-        onClose={() => setSheetVisible(false)}
-        anchorPosition={anchorPosition}
-        todayBirthdays={todayBirthdays}
-      />
     </View>
   );
 }

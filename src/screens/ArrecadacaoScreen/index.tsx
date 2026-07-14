@@ -1,5 +1,6 @@
 import { Avatar } from "@/components/Avatar";
 import { Header } from "@/components/Header";
+import { AdminScreenTitle } from "@/components/AdminScreenTitle";
 import { AuthContext } from "@/context/AuthContext";
 import { useAppTheme } from "@/context/ThemeContext";
 import { ChargeServices } from "@/services/ChargeService";
@@ -18,7 +19,7 @@ import {
 import React, { useCallback, useContext, useMemo, useState } from "react";
 import {
   ActivityIndicator,
-  FlatList,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -111,7 +112,7 @@ export function ArrecadacaoScreen() {
   function renderMember({ item }: { item: IChargeSummaryMember }) {
     const methodLabel = item.method === "cash" ? "Dinheiro" : "PIX";
     return (
-      <View style={styles.memberCard}>
+      <View style={styles.memberRow}>
         <Avatar photo={item.photo} size={40} />
         <View style={styles.memberInfo}>
           <Text style={styles.memberName} numberOfLines={1}>
@@ -139,7 +140,7 @@ export function ArrecadacaoScreen() {
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           accessibilityLabel="Mês anterior"
         >
-          <ChevronLeft size={22} color={colors.primary} />
+          <ChevronLeft size={22} color={colors.text} />
         </TouchableOpacity>
         <Text style={styles.monthLabel}>
           {MONTH_LABELS[month]} {year}
@@ -151,13 +152,13 @@ export function ArrecadacaoScreen() {
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           accessibilityLabel="Próximo mês"
         >
-          <ChevronRight size={22} color={colors.primary} />
+          <ChevronRight size={22} color={colors.text} />
         </TouchableOpacity>
       </View>
 
       <View style={styles.card}>
         <View style={styles.cardHeaderRow}>
-          <Text style={styles.metaLabel}>Meta do mês</Text>
+          <Text style={styles.metaCap}>Meta do mês</Text>
           <Text style={styles.metaPercent}>{Math.round(progress * 100)}%</Text>
         </View>
         <View style={styles.metaValueRow}>
@@ -202,7 +203,9 @@ export function ArrecadacaoScreen() {
       <View style={styles.metricGrid}>
         <View style={styles.metricCard}>
           <View style={styles.metricHeader}>
-            <QrCode size={16} color={colors.info} />
+            <View style={styles.metricIcon}>
+              <QrCode size={16} color={colors.info} />
+            </View>
             <Text style={styles.metricLabel}>PIX</Text>
           </View>
           <Text style={styles.metricValue}>
@@ -211,7 +214,9 @@ export function ArrecadacaoScreen() {
         </View>
         <View style={styles.metricCard}>
           <View style={styles.metricHeader}>
-            <Banknote size={16} color={colors.success} />
+            <View style={styles.metricIcon}>
+              <Banknote size={16} color={colors.success} />
+            </View>
             <Text style={styles.metricLabel}>Dinheiro</Text>
           </View>
           <Text style={styles.metricValue}>
@@ -220,7 +225,9 @@ export function ArrecadacaoScreen() {
         </View>
         <View style={styles.metricCard}>
           <View style={styles.metricHeader}>
-            <CircleCheck size={16} color={colors.success} />
+            <View style={styles.metricIcon}>
+              <CircleCheck size={16} color={colors.success} />
+            </View>
             <Text style={styles.metricLabel}>Pagaram</Text>
           </View>
           <Text style={styles.metricValue}>
@@ -232,7 +239,9 @@ export function ArrecadacaoScreen() {
         </View>
         <View style={styles.metricCard}>
           <View style={styles.metricHeader}>
-            <CircleAlert size={16} color={colors.error} />
+            <View style={styles.metricIcon}>
+              <CircleAlert size={16} color={colors.error} />
+            </View>
             <Text style={styles.metricLabel}>Inadimplentes</Text>
           </View>
           <Text style={styles.metricValue}>{summary.counts.pending}</Text>
@@ -275,7 +284,7 @@ export function ArrecadacaoScreen() {
       />
 
       <View style={styles.content}>
-        <Text style={styles.screenTitle}>Entrada mensal</Text>
+        <AdminScreenTitle title="Entrada mensal" />
         {loading ? (
           <ActivityIndicator
             size="large"
@@ -289,14 +298,12 @@ export function ArrecadacaoScreen() {
             </Text>
           </View>
         ) : (
-          <FlatList
-            data={members}
-            keyExtractor={(item) => item.id}
-            renderItem={renderMember}
-            ListHeaderComponent={header}
+          <ScrollView
             contentContainerStyle={styles.list}
             showsVerticalScrollIndicator={false}
-            ListEmptyComponent={
+          >
+            {header}
+            {members.length === 0 ? (
               <View style={styles.centered}>
                 <Text style={styles.emptyText}>
                   {tab === "paid"
@@ -304,8 +311,17 @@ export function ArrecadacaoScreen() {
                     : "Nenhum inadimplente neste mês."}
                 </Text>
               </View>
-            }
-          />
+            ) : (
+              <View style={styles.listCard}>
+                {members.map((item, i) => (
+                  <React.Fragment key={item.id}>
+                    {i > 0 && <View style={styles.rowDivider} />}
+                    {renderMember({ item })}
+                  </React.Fragment>
+                ))}
+              </View>
+            )}
+          </ScrollView>
         )}
       </View>
     </View>

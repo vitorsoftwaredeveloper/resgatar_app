@@ -37,38 +37,14 @@ export function useStyles() {
           color: colors.muted,
           marginBottom: 6,
         },
-        inputBox: {
-          backgroundColor: colors.inputBg,
-          borderWidth: 1,
-          borderColor: colors.border,
-          borderRadius: 20,
-          paddingVertical: 14,
-          paddingHorizontal: 16,
-        },
         inputHighlighted: {
           borderColor: colors.waiting,
           borderWidth: 2,
-        },
-        inputText: {
-          fontSize: 16,
-          color: colors.text,
         },
 
         row: {
           flexDirection: "row",
           gap: 12,
-        },
-
-        dateBox: {
-          backgroundColor: colors.softBrown,
-          borderRadius: 20,
-          paddingVertical: 16,
-          alignItems: "center",
-        },
-        dateText: {
-          fontSize: 18,
-          fontWeight: "700",
-          color: colors.text,
         },
 
         subLabel: {
@@ -106,17 +82,6 @@ export function useStyles() {
         footer: {
           padding: 16,
           backgroundColor: colors.background,
-        },
-        saveButton: {
-          backgroundColor: colors.primary,
-          borderRadius: 28,
-          paddingVertical: 18,
-          alignItems: "center",
-        },
-        saveText: {
-          color: colors.white,
-          fontSize: 18,
-          fontWeight: "700",
         },
       }),
     [colors],

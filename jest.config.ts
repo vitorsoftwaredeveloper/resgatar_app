@@ -7,24 +7,35 @@ const config: Config = {
     "<rootDir>/__tests__/**/*.test.ts",
     "<rootDir>/__tests__/**/*.test.tsx",
   ],
+  // Ignora worktrees de sessões/agentes (cópias do repo que colidem os
+  // __mocks__ no jest-haste-map).
+  modulePathIgnorePatterns: ["<rootDir>/.claude/worktrees/"],
   moduleNameMapper: {
     // entradas específicas antes do wildcard @/(.*)
-    "^@/navigation/navigationRef$": "<rootDir>/__tests__/__mocks__/navigationRef.ts",
+    "^@/navigation/navigationRef$":
+      "<rootDir>/__tests__/__mocks__/navigationRef.ts",
     "^@/(.*)$": "<rootDir>/src/$1",
     "^@env$": "<rootDir>/__tests__/__mocks__/env.ts",
     "^react-native$": "<rootDir>/__tests__/__mocks__/react-native.ts",
-    "^@dev-mode-detector$": "<rootDir>/__tests__/__mocks__/dev-mode-detector.ts",
-    "^react-native-gesture-handler$": "<rootDir>/__tests__/__mocks__/react-native-gesture-handler.ts",
-    "^react-native-toast-message$": "<rootDir>/__tests__/__mocks__/react-native-toast-message.ts",
+    "^@dev-mode-detector$":
+      "<rootDir>/__tests__/__mocks__/dev-mode-detector.ts",
+    "^react-native-gesture-handler$":
+      "<rootDir>/__tests__/__mocks__/react-native-gesture-handler.ts",
+    "^react-native-toast-message$":
+      "<rootDir>/__tests__/__mocks__/react-native-toast-message.ts",
     "^react-native-reanimated$":
       "<rootDir>/__tests__/__mocks__/react-native-reanimated.tsx",
     "^react-native-svg$": "<rootDir>/__tests__/__mocks__/react-native-svg.tsx",
     "^expo-secure-store$": "<rootDir>/__tests__/__mocks__/expo-secure-store.ts",
     "^expo-av$": "<rootDir>/__tests__/__mocks__/expo-av.ts",
-    "^expo-file-system/legacy$": "<rootDir>/__tests__/__mocks__/expo-file-system-legacy.ts",
+    "^expo-file-system/legacy$":
+      "<rootDir>/__tests__/__mocks__/expo-file-system-legacy.ts",
   },
   transform: {
-    "^.+\\.tsx?$": ["ts-jest", { tsconfig: { strict: true, jsx: "react-jsx" } }],
+    "^.+\\.tsx?$": [
+      "ts-jest",
+      { tsconfig: { strict: true, jsx: "react-jsx" } },
+    ],
   },
   transformIgnorePatterns: [
     "node_modules/(?!(react-native|@react-native|expo|@expo|expo-av|@unimodules|unimodules|@react-native-firebase|@react-native-community)/)",

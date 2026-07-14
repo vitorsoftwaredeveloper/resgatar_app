@@ -1,7 +1,10 @@
 import { BannerCarousel } from "@/components/BannerCarousel";
+import { BirthdayBanner } from "@/components/BirthdayBanner";
 import { CommunityGoalCard } from "@/components/CommunityGoalCard";
 import { Header } from "@/components/Header";
 import { NoticesCard } from "@/components/NoticesCard";
+import { RecentDonationsCard } from "@/components/RecentDonationsCard";
+import { RecentVideosCard } from "@/components/RecentVideosCard";
 import { StreakCard } from "@/components/StreakCard";
 import { AuthContext } from "@/context/AuthContext";
 import { getDashboardOrder, setDashboardOrder } from "@/storage/asyncStorage";
@@ -16,7 +19,14 @@ import ReorderableList, {
 } from "react-native-reorderable-list";
 import { useStyles } from "./styles";
 
-type CardId = "banners" | "streak" | "communityGoal" | "notices";
+type CardId =
+  | "banners"
+  | "notices"
+  | "birthdays"
+  | "streak"
+  | "communityGoal"
+  | "recentVideos"
+  | "recentDonations";
 
 interface CardDef {
   id: CardId;
@@ -25,12 +35,23 @@ interface CardDef {
 
 const CARD_REGISTRY: CardDef[] = [
   { id: "banners", Component: BannerCarousel },
+  { id: "notices", Component: NoticesCard },
+  { id: "birthdays", Component: BirthdayBanner },
   { id: "streak", Component: StreakCard },
   { id: "communityGoal", Component: CommunityGoalCard },
-  { id: "notices", Component: NoticesCard },
+  { id: "recentVideos", Component: RecentVideosCard },
+  { id: "recentDonations", Component: RecentDonationsCard },
 ];
 
-const DEFAULT_ORDER: CardId[] = ["banners", "streak", "communityGoal", "notices"];
+const DEFAULT_ORDER: CardId[] = [
+  "banners",
+  "notices",
+  "birthdays",
+  "streak",
+  "communityGoal",
+  "recentVideos",
+  "recentDonations",
+];
 
 function DraggableCardRow({ item }: { item: CardDef }) {
   const drag = useReorderableDrag();

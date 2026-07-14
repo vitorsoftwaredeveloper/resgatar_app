@@ -27,61 +27,64 @@ export type ThemeColors = {
   white: string;
   error: string;
   waiting: string;
+  gold: string;
   softBrown: string;
   skeletonBg: string;
   success: string;
   info: string;
   successBackground: string;
   tabBarBg: string;
-  headerGlass: string;
 };
 
+// Paleta editorial "Missal" do resgatar-browser (light + dark). Cards em creme
+// quente, acento sépia + dourado litúrgico. Ambos os modos têm cores de texto
+// próprias, então a tipografia fica legível no claro e no escuro.
 const LIGHT: ThemeColors = {
   background: "#F6F1EB",
-  card: "#FFFFFF",
+  card: "#FCF9F1",
   primary: "#6B4F3A",
-  text: "#3E2F23",
-  textStrong: "#3E2C1C",
-  textMuted: "#8C7A6B",
-  muted: "#9E8E80",
+  text: "#2C2015",
+  textStrong: "#2C2015",
+  textMuted: "#6B5A49",
+  muted: "#9C8C78",
   mutedBackground: "#ffffff40",
-  border: "#DED6CC",
-  inputBg: "#FBF8F4",
+  border: "#E4D9C6",
+  inputBg: "#F6F0E3",
   black: "#000000",
   white: "#FFFFFF",
-  error: "#E53935",
-  waiting: "#E0B96A",
+  error: "#A5462F",
+  waiting: "#9C7A35",
+  gold: "#A8761F",
   softBrown: "#EDE6DE",
   skeletonBg: "#c0bcb6",
-  success: "#1E7F43",
+  success: "#3D7A57",
   info: "#3B6DF6",
-  successBackground: "#E6F4EA",
-  tabBarBg: "rgba(255, 255, 255, 0.9)",
-  headerGlass: "rgba(255, 255, 255, 0.8)",
+  successBackground: "#E2EEE3",
+  tabBarBg: "rgba(252, 249, 241, 0.9)",
 };
 
 const DARK: ThemeColors = {
   background: "#1A1812",
-  card: "#252118",
+  card: "#1F1810",
   primary: "#C9A055",
-  text: "#EDE0B8",
-  textStrong: "#F5EDD5",
-  textMuted: "#8A7D5A",
-  muted: "#4A3F28",
+  text: "#F1E7D5",
+  textStrong: "#F1E7D5",
+  textMuted: "#C1AF98",
+  muted: "#897862",
   mutedBackground: "rgba(30,28,18,0.5)",
-  border: "rgba(255,255,255,0.08)",
-  inputBg: "#2C2820",
+  border: "#352A1C",
+  inputBg: "#271E13",
   black: "#000000",
   white: "#FFFFFF",
-  error: "#E57373",
-  waiting: "#C9902A",
+  error: "#DF8468",
+  waiting: "#C7A052",
+  gold: "#D7A957",
   softBrown: "#2E2A1C",
   skeletonBg: "#4b452d",
-  success: "#4CAF6B",
+  success: "#6FB089",
   info: "#3B6DF6",
-  successBackground: "#182E20",
-  tabBarBg: "rgba(26, 24, 18, 0.95)",
-  headerGlass: "rgba(26, 24, 18, 0.88)",
+  successBackground: "#1E2A20",
+  tabBarBg: "rgba(31, 24, 16, 0.92)",
 };
 
 type ThemeContextValue = {

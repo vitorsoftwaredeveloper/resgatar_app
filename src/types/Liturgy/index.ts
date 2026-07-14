@@ -46,11 +46,3 @@ export const LITURGICAL_ACCENT: Record<LiturgicalColor, string> = {
   Vermelho: "#C62828",
   Rosa: "#AD1457",
 };
-
-export const LITURGICAL_BG: Record<LiturgicalColor, string> = {
-  Verde: "#E8F5E9",
-  Roxo: "#F3E5F5",
-  Branco: "#FFF8E1",
-  Vermelho: "#FFEBEE",
-  Rosa: "#FCE4EC",
-};

@@ -19,21 +19,18 @@ export function useStyles() {
         header: {
           flexDirection: "row",
           alignItems: "center",
-          gap: SPACING.xs,
+          justifyContent: "space-between",
+          gap: SPACING.sm,
           paddingVertical: SPACING.sm2,
           borderBottomWidth: 1,
           borderBottomColor: colors.border,
         },
-        label: {
+        headerTitle: {
           fontSize: TYPOGRAPHY.xsmall,
           fontWeight: "600",
           color: colors.textMuted,
           letterSpacing: 0.8,
-        },
-        list: {
-          gap: SPACING.md,
-          paddingVertical: SPACING.sm2,
-          alignItems: "center",
+          textTransform: "uppercase",
         },
         emptyState: {
           alignItems: "center",
@@ -50,53 +47,51 @@ export function useStyles() {
           fontSize: TYPOGRAPHY.small,
           color: colors.textMuted,
         },
-        item: {
+        row: {
+          flexDirection: "row",
           alignItems: "center",
-          width: 56,
-          gap: SPACING.xs,
+          gap: SPACING.sm2,
+          paddingVertical: SPACING.sm2,
         },
-        name: {
-          fontSize: TYPOGRAPHY.xsmall,
-          fontWeight: "600",
-          color: colors.text,
-          textAlign: "center",
+        rowBorder: {
+          borderBottomWidth: 1,
+          borderBottomColor: colors.border,
         },
-        day: {
-          fontSize: TYPOGRAPHY.xsmall,
-          color: colors.textMuted,
-          textAlign: "center",
-        },
-        dayToday: {
-          color: colors.primary,
-          fontWeight: "700",
-        },
-        nameToday: {
-          color: colors.primary,
-        },
-        avatarRing: {
-          borderRadius: 999,
-          borderWidth: 2,
-          borderColor: colors.primary,
-          padding: 2,
-          shadowColor: colors.primary,
-          shadowOpacity: 0.5,
-          shadowRadius: 6,
-          shadowOffset: { width: 0, height: 0 },
-          elevation: 4,
-        },
-        todayBadge: {
-          position: "absolute",
-          bottom: -2,
-          right: -2,
-          backgroundColor: colors.card,
-          borderRadius: 999,
-          width: 18,
-          height: 18,
+        methodIcon: {
+          width: 32,
+          height: 32,
+          borderRadius: RADIUS.sm,
+          backgroundColor: colors.softBrown,
           alignItems: "center",
           justifyContent: "center",
         },
-        todayBadgeText: {
-          fontSize: 10,
+        texts: {
+          flex: 1,
+          minWidth: 0,
+          gap: 2,
+        },
+        name: {
+          fontSize: TYPOGRAPHY.body,
+          color: colors.text,
+          fontWeight: "600",
+        },
+        meta: {
+          fontSize: TYPOGRAPHY.small,
+          color: colors.textMuted,
+        },
+        values: {
+          alignItems: "flex-end",
+          gap: 2,
+        },
+        value: {
+          fontSize: TYPOGRAPHY.body,
+          color: colors.textStrong,
+          fontWeight: "700",
+          fontVariant: ["tabular-nums"],
+        },
+        status: {
+          fontSize: TYPOGRAPHY.small,
+          color: colors.textMuted,
         },
       }),
     [colors],

@@ -1,18 +1,26 @@
 import { useAppTheme } from "@/context/ThemeContext";
-import { RADIUS, SPACING, TYPOGRAPHY } from "@/theme";
+import { RADIUS, SHADOW, SPACING, TYPOGRAPHY } from "@/theme";
+import { FONTS } from "@/theme/fonts";
 import { useMemo } from "react";
 import { StyleSheet } from "react-native";
 
+// Visual editorial "card" do navegador de datas — portado do resgatar-browser
+// (mesmo estilo do desktop, agora também no mobile). O card inteiro tem fundo,
+// borda e sombra; a semana são células com borda e números serifados.
 export function useStyles() {
   const { colors } = useAppTheme();
   return useMemo(
     () =>
       StyleSheet.create({
         wrapper: {
-          // paddingHorizontal: SPACING.lg,
-          paddingTop: SPACING.sm2,
-          paddingBottom: SPACING.xxl,
-          gap: SPACING.sm2,
+          padding: SPACING.lg,
+          marginBottom: SPACING.md,
+          gap: 14,
+          backgroundColor: colors.card,
+          borderWidth: 1,
+          borderColor: colors.border,
+          borderRadius: RADIUS.lg,
+          ...SHADOW.card,
         },
         navRow: {
           flexDirection: "row",
@@ -20,17 +28,15 @@ export function useStyles() {
           gap: SPACING.xs,
         },
         arrowBtn: {
-          width: 36,
-          height: 36,
-          borderRadius: RADIUS.sm,
-          borderWidth: 1,
-          borderColor: colors.border,
-          backgroundColor: colors.card,
+          width: 38,
+          height: 38,
+          borderRadius: RADIUS.md,
+          backgroundColor: colors.inputBg,
           alignItems: "center",
           justifyContent: "center",
         },
         arrowIcon: {
-          color: colors.text,
+          color: colors.textMuted,
         },
         centerTarget: {
           flex: 1,
@@ -41,59 +47,57 @@ export function useStyles() {
           alignItems: "center",
           justifyContent: "center",
           gap: SPACING.xs,
-          borderWidth: 1,
-          borderColor: colors.border,
-          backgroundColor: colors.card,
-          borderRadius: RADIUS.sm,
-          paddingVertical: SPACING.xs,
-          paddingHorizontal: SPACING.sm,
         },
         centerText: {
-          fontSize: TYPOGRAPHY.body,
-          fontWeight: "600",
+          fontFamily: FONTS.displaySemiBold,
+          fontSize: 17,
           color: colors.textStrong,
           textAlign: "center",
         },
         weekRow: {
           flexDirection: "row",
-          justifyContent: "space-between",
+          gap: 6,
         },
         dayCell: {
           flex: 1,
           alignItems: "center",
-          paddingVertical: SPACING.xs,
-          borderRadius: RADIUS.sm,
-          gap: 2,
+          paddingVertical: 10,
+          borderRadius: RADIUS.md,
+          borderWidth: 1,
+          borderColor: colors.border,
+          gap: 4,
         },
         dayCellSelected: {
           backgroundColor: colors.primary,
+          borderColor: "transparent",
+          ...SHADOW.card,
         },
         dayAbbr: {
-          fontSize: 9,
+          fontSize: 10,
           fontWeight: "600",
           color: colors.textMuted,
-          letterSpacing: 0.3,
+          letterSpacing: 0.6,
         },
         dayAbbrSelected: {
           color: colors.white,
         },
         dayNum: {
-          fontSize: TYPOGRAPHY.body,
-          fontWeight: "600",
+          fontFamily: FONTS.displaySemiBold,
+          fontSize: 19,
           color: colors.text,
         },
         dayNumSelected: {
           color: colors.white,
         },
         dayNumToday: {
-          color: colors.primary,
+          color: colors.waiting,
         },
         backToToday: {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
           gap: 4,
-          paddingVertical: 2,
+          paddingTop: 2,
         },
         backToTodayText: {
           fontSize: TYPOGRAPHY.small,

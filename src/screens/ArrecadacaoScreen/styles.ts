@@ -1,5 +1,6 @@
 import { useAppTheme } from "@/context/ThemeContext";
-import { RADIUS, SPACING, TYPOGRAPHY } from "@/theme";
+import { RADIUS, SHADOW, SPACING, TYPOGRAPHY } from "@/theme";
+import { FONTS } from "@/theme/fonts";
 import { useMemo } from "react";
 import { StyleSheet } from "react-native";
 
@@ -19,15 +20,6 @@ export function useStyles() {
           borderTopRightRadius: RADIUS.xl,
           overflow: "hidden",
         },
-        screenTitle: {
-          fontSize: TYPOGRAPHY.small,
-          color: colors.textMuted,
-          fontWeight: "600",
-          textTransform: "uppercase",
-          letterSpacing: 0.8,
-          paddingHorizontal: SPACING.md,
-          paddingTop: SPACING.md,
-        },
         list: {
           padding: SPACING.md,
           gap: SPACING.sm2,
@@ -43,7 +35,7 @@ export function useStyles() {
           textAlign: "center",
         },
 
-        // Seletor de mês
+        // Seletor de mês (primitiva .monthnav do browser)
         monthSelector: {
           flexDirection: "row",
           alignItems: "center",
@@ -52,43 +44,57 @@ export function useStyles() {
           borderWidth: 1,
           borderColor: colors.border,
           borderRadius: RADIUS.md,
-          paddingHorizontal: SPACING.md,
-          paddingVertical: SPACING.sm2,
+          padding: 8,
+          ...SHADOW.card,
         },
         monthLabel: {
-          fontSize: TYPOGRAPHY.subtitle,
+          fontFamily: FONTS.displaySemiBold,
+          fontSize: 20,
           color: colors.text,
-          fontWeight: "600",
         },
         navButton: {
-          padding: 2,
+          width: 38,
+          height: 38,
+          borderRadius: 10,
+          backgroundColor: colors.inputBg,
+          alignItems: "center",
+          justifyContent: "center",
         },
         navButtonDisabled: {
-          opacity: 0.3,
+          opacity: 0.35,
         },
 
-        // Card de meta
+        // Card de meta (.card editorial: radius lg + sombra)
         card: {
           backgroundColor: colors.card,
           borderWidth: 1,
           borderColor: colors.border,
-          borderRadius: RADIUS.md,
-          padding: SPACING.md,
+          borderRadius: RADIUS.lg,
+          padding: SPACING.lg,
+          ...SHADOW.card,
         },
         cardHeaderRow: {
           flexDirection: "row",
           justifyContent: "space-between",
-          alignItems: "baseline",
+          alignItems: "center",
           marginBottom: SPACING.sm,
+        },
+        // Label em versalete ("META DO MÊS")
+        metaCap: {
+          fontSize: TYPOGRAPHY.xsmall,
+          color: colors.textMuted,
+          fontWeight: "700",
+          letterSpacing: 1.5,
+          textTransform: "uppercase",
         },
         metaLabel: {
           fontSize: TYPOGRAPHY.body,
           color: colors.textMuted,
         },
         metaPercent: {
-          fontSize: TYPOGRAPHY.body,
-          color: colors.textMuted,
-          fontWeight: "600",
+          fontSize: TYPOGRAPHY.subtitle,
+          color: colors.success,
+          fontWeight: "700",
         },
         metaValueRow: {
           flexDirection: "row",
@@ -135,11 +141,11 @@ export function useStyles() {
           fontWeight: "600",
         },
 
-        // Grid de métricas
+        // Grid de métricas (.tile do browser)
         metricGrid: {
           flexDirection: "row",
           flexWrap: "wrap",
-          gap: SPACING.sm,
+          gap: SPACING.sm2,
         },
         metricCard: {
           flexGrow: 1,
@@ -148,20 +154,32 @@ export function useStyles() {
           borderWidth: 1,
           borderColor: colors.border,
           borderRadius: RADIUS.md,
-          padding: SPACING.sm2,
+          paddingVertical: 16,
+          paddingHorizontal: 16,
+          ...SHADOW.card,
         },
         metricHeader: {
           flexDirection: "row",
           alignItems: "center",
           gap: SPACING.xs,
-          marginBottom: SPACING.xs,
+          marginBottom: SPACING.sm,
+        },
+        metricIcon: {
+          width: 30,
+          height: 30,
+          borderRadius: 9,
+          backgroundColor: colors.inputBg,
+          alignItems: "center",
+          justifyContent: "center",
         },
         metricLabel: {
-          fontSize: TYPOGRAPHY.small,
+          fontSize: 13,
           color: colors.textMuted,
+          fontWeight: "600",
+          flexShrink: 1,
         },
         metricValue: {
-          fontSize: TYPOGRAPHY.large,
+          fontSize: 24,
           color: colors.textStrong,
           fontWeight: "700",
         },
@@ -171,43 +189,55 @@ export function useStyles() {
           fontWeight: "400",
         },
 
-        // Abas
+        // Abas (.tabs do browser: pílula, ativo = marrom)
         tabBar: {
           flexDirection: "row",
           backgroundColor: colors.softBrown,
-          borderRadius: RADIUS.sm,
-          padding: 4,
-          gap: SPACING.xxs,
+          borderWidth: 1,
+          borderColor: colors.border,
+          borderRadius: 999,
+          padding: 5,
+          gap: 6,
         },
         tab: {
           flex: 1,
           alignItems: "center",
           paddingVertical: SPACING.sm,
-          borderRadius: RADIUS.sm - 2,
+          borderRadius: 999,
         },
         tabActive: {
-          backgroundColor: colors.card,
+          backgroundColor: colors.primary,
+          ...SHADOW.card,
         },
         tabText: {
           fontSize: TYPOGRAPHY.body,
           color: colors.textMuted,
+          fontWeight: "600",
         },
         tabTextActive: {
-          color: colors.textStrong,
+          color: colors.white,
           fontWeight: "600",
         },
 
-        // Item de membro
-        memberCard: {
-          flexDirection: "row",
-          alignItems: "center",
-          gap: SPACING.sm2,
+        // Lista de membros em card único (.card + .lrow do browser)
+        listCard: {
           backgroundColor: colors.card,
           borderWidth: 1,
           borderColor: colors.border,
-          borderRadius: RADIUS.md,
+          borderRadius: RADIUS.lg,
+          overflow: "hidden",
+          ...SHADOW.card,
+        },
+        rowDivider: {
+          height: 1,
+          backgroundColor: colors.border,
+        },
+        memberRow: {
+          flexDirection: "row",
+          alignItems: "center",
+          gap: SPACING.sm2,
           paddingHorizontal: SPACING.md,
-          paddingVertical: SPACING.sm2,
+          paddingVertical: 14,
         },
         memberInfo: {
           flex: 1,
@@ -215,7 +245,7 @@ export function useStyles() {
           gap: 2,
         },
         memberName: {
-          fontSize: TYPOGRAPHY.body,
+          fontSize: 15,
           color: colors.text,
           fontWeight: "600",
         },

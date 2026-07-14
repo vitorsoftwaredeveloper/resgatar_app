@@ -95,20 +95,6 @@ async function setDashboardOrder(memberId: string, order: string[]): Promise<voi
   );
 }
 
-const READING_MARKED_PREFIX = "@reading:marked:";
-
-function readingMarkedKey(memberId: string): string {
-  return `${READING_MARKED_PREFIX}${memberId}`;
-}
-
-async function getReadingMarkedDate(memberId: string): Promise<string | null> {
-  return AsyncStorage.getItem(readingMarkedKey(memberId));
-}
-
-async function setReadingMarkedDate(memberId: string, isoDate: string): Promise<void> {
-  await AsyncStorage.setItem(readingMarkedKey(memberId), isoDate);
-}
-
 // Liturgy daily cache — key includes the date so yesterday's entry is never
 // read again; no explicit expiration or cleanup required.
 async function getLiturgyCache(dateKey: string): Promise<ILiturgia | null> {
@@ -135,8 +121,6 @@ export {
   getOnboardingSeen,
   setOnboardingSeen,
   clearOnboardingSeen,
-  getReadingMarkedDate,
-  setReadingMarkedDate,
   getLiturgyCache,
   setLiturgyCache,
   getDashboardOrder,

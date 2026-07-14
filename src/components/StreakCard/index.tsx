@@ -68,52 +68,58 @@ export function StreakCard() {
       ? "Retome sua sequência"
       : "Comece sua sequência hoje";
 
-  const recordText =
-    data && data.longestStreak > 0
-      ? `Recorde: ${data.longestStreak} ${data.longestStreak === 1 ? "dia" : "dias"}`
-      : "Abra a liturgia todo dia para evoluir";
+  const recordText = (() => {
+    if (!data || data.longestStreak <= 0)
+      return "Abra a liturgia todo dia para evoluir";
+    if (!active)
+      return `Recorde: ${data.longestStreak} ${data.longestStreak === 1 ? "dia" : "dias"}`;
+
+    const toRecord = data.longestStreak - current;
+    if (toRecord <= 0) return "Você está no seu recorde!";
+    return `Faltam ${toRecord} ${toRecord === 1 ? "dia" : "dias"} para o recorde de ${data.longestStreak}`;
+  })();
 
   return (
     <CoachTarget id="streak-card">
-    <View
-      style={styles.container}
-      accessibilityLabel={`Ofensiva de leituras. ${headline}`}
-    >
-      <Text style={styles.label}>OFENSIVA DE LEITURAS</Text>
+      <View
+        style={styles.container}
+        accessibilityLabel={`Ofensiva de leituras. ${headline}`}
+      >
+        <Text style={styles.label}>OFENSIVA DE LEITURAS</Text>
 
-      <View style={styles.row}>
-        <View style={styles.left}>
-          <View style={[styles.flameWrap, !active && styles.flameWrapDim]}>
-            <Flame
-              size={22}
-              color={active ? STREAK_ACCENT : STREAK_ACCENT_DIM}
-              fill={active ? STREAK_ACCENT : "transparent"}
-            />
+        <View style={styles.row}>
+          <View style={styles.left}>
+            <View style={[styles.flameWrap, !active && styles.flameWrapDim]}>
+              <Flame
+                size={22}
+                color={active ? STREAK_ACCENT : STREAK_ACCENT_DIM}
+                fill={active ? STREAK_ACCENT : "transparent"}
+              />
+            </View>
+            <View style={styles.texts}>
+              <Text style={styles.headline}>{headline}</Text>
+              <Text style={styles.subtitle}>{recordText}</Text>
+            </View>
           </View>
-          <View style={styles.texts}>
-            <Text style={styles.headline}>{headline}</Text>
-            <Text style={styles.subtitle}>{recordText}</Text>
-          </View>
-        </View>
 
-        <View style={styles.right}>
-          <View style={styles.week}>
-            {week.map((cell, i) => (
-              <View key={i} style={styles.dayCol}>
-                <Text style={styles.dayInitial}>{cell.initial}</Text>
-                <View
-                  style={[
-                    styles.dot,
-                    cell.read && styles.dotRead,
-                    cell.isToday && !cell.read && styles.dotToday,
-                  ]}
-                />
-              </View>
-            ))}
+          <View style={styles.right}>
+            <View style={styles.week}>
+              {week.map((cell, i) => (
+                <View key={i} style={styles.dayCol}>
+                  <View
+                    style={[
+                      styles.dot,
+                      cell.read && styles.dotRead,
+                      cell.isToday && !cell.read && styles.dotToday,
+                    ]}
+                  />
+                  <Text style={styles.dayInitial}>{cell.initial}</Text>
+                </View>
+              ))}
+            </View>
           </View>
         </View>
       </View>
-    </View>
     </CoachTarget>
   );
 }
