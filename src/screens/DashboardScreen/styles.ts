@@ -23,17 +23,6 @@ export function useStyles() {
         hint: {
           marginBottom: SPACING.sm,
         },
-        hintInner: {
-          flexDirection: "row",
-          alignItems: "center",
-          gap: SPACING.xs,
-          backgroundColor: colors.card,
-          borderLeftWidth: 3,
-          borderLeftColor: colors.primary,
-          borderRadius: RADIUS.sm,
-          paddingHorizontal: SPACING.sm2,
-          paddingVertical: SPACING.sm,
-        },
         hintText: {
           fontSize: TYPOGRAPHY.small,
           color: colors.textMuted,

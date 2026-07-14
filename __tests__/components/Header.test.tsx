@@ -8,7 +8,6 @@ jest.mock("lucide-react-native", () => ({
   Moon: () => null,
   Sun: () => null,
   ChevronLeft: () => null,
-  EllipsisVertical: () => null,
 }));
 jest.mock("@/components/Svg/Logo", () => ({
   LogoResgatar: () => null,
@@ -29,9 +28,6 @@ jest.mock("@/components/CoachTarget", () => {
   const React = require("react");
   return { CoachTarget: ({ children }: any) => children };
 });
-jest.mock("@/components/QuickActionsSheet", () => ({
-  QuickActionsSheet: () => null,
-}));
 
 jest.mock("@/context/AuthContext", () => {
   const React = require("react");
@@ -84,11 +80,10 @@ describe("Header", () => {
     expect(getByText("Olá,")).toBeTruthy();
   });
 
-  it("abre o QuickActionsSheet ao pressionar o botão de ações", () => {
+  it("alterna o tema ao pressionar o botão de modo escuro", () => {
     const { getByTestId } = render(<Header name="João" />);
     fireEvent.press(getByTestId("theme-toggle"));
-    // QuickActionsSheet é mockado — apenas verifica que o botão é pressionável
-    expect(mockToggleTheme).not.toHaveBeenCalled();
+    expect(mockToggleTheme).toHaveBeenCalledTimes(1);
   });
 
   it("renderiza corretamente no modo dark", () => {

@@ -21,7 +21,7 @@ import ReorderableList, {
 } from "react-native-reorderable-list";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ModalBannerForm } from "../ModalBannerForm";
-import { RAIL_WIDTH, useStyles } from "./styles";
+import { useStyles } from "./styles";
 
 interface Props {
   visible: boolean;
@@ -65,7 +65,11 @@ function BannerRow({ item, index, editing, active, drag, onEdit }: RowProps) {
       </View>
 
       <View style={[styles.card, active && styles.cardActive]}>
-        <Image source={{ uri: item.banner }} style={styles.thumb} resizeMode="cover" />
+        <Image
+          source={{ uri: item.banner }}
+          style={styles.thumb}
+          resizeMode="cover"
+        />
 
         <View style={styles.cardBody}>
           <Text style={styles.cardTitle} numberOfLines={1}>
@@ -165,54 +169,62 @@ export function ModalBannerManager({ visible, onClose, onSuccess }: Props) {
   return (
     <ModalBase visible={visible} title="Campanhas" onClose={onClose}>
       <View style={styles.container}>
-          {/* Intro: eyebrow + contagem + botão Editar/Concluir — igual ao NoticeBoardScreen */}
-          {!loading && banners.length > 0 && (
-            <View style={styles.intro}>
-              <View style={styles.introText}>
-                <Text style={styles.eyebrow}>Carrossel da home</Text>
-                <Text style={styles.subtitle}>{subtitle}</Text>
-              </View>
-              <Pressable
-                style={[styles.editToggle, editing && styles.editToggleActive]}
-                onPress={() => setEditing((e) => !e)}
-                accessibilityLabel={editing ? "Concluir edição" : "Editar ordem dos banners"}
+        {/* Intro: eyebrow + contagem + botão Editar/Concluir — igual ao NoticeBoardScreen */}
+        {!loading && banners.length > 0 && (
+          <View style={styles.intro}>
+            <View style={styles.introText}>
+              <Text style={styles.eyebrow}>Carrossel da home</Text>
+              <Text style={styles.subtitle}>{subtitle}</Text>
+            </View>
+            <Pressable
+              style={[styles.editToggle, editing && styles.editToggleActive]}
+              onPress={() => setEditing((e) => !e)}
+              accessibilityLabel={
+                editing ? "Concluir edição" : "Editar ordem dos banners"
+              }
+            >
+              <Pencil size={15} color={editing ? colors.white : colors.text} />
+              <Text
+                style={[
+                  styles.editToggleText,
+                  editing && styles.editToggleTextActive,
+                ]}
               >
-                <Pencil size={15} color={editing ? colors.white : colors.text} />
-                <Text style={[styles.editToggleText, editing && styles.editToggleTextActive]}>
-                  {editing ? "Concluir" : "Editar"}
-                </Text>
-              </Pressable>
-            </View>
-          )}
-
-          {editing && (
-            <View style={styles.hint}>
-              <MoveVertical size={14} color={colors.textMuted} />
-              <Text style={styles.hintText}>
-                Toque em um banner para editar · arraste pela alça para reordenar.
+                {editing ? "Concluir" : "Editar"}
               </Text>
-            </View>
-          )}
+            </Pressable>
+          </View>
+        )}
 
-          {loading ? (
-            <View style={styles.centered}>
-              <ActivityIndicator size="large" color={colors.primary} />
-            </View>
-          ) : banners.length === 0 ? (
-            <View style={styles.centered}>
-              <Text style={styles.emptyTitle}>Nenhum banner</Text>
-              <Text style={styles.emptyText}>
-                Toque em + para publicar o primeiro banner no carrossel da tela inicial.
-              </Text>
-            </View>
-          ) : editing ? (
-            <>
-              {saving && (
-                <View style={styles.savingBanner}>
-                  <ActivityIndicator size="small" color={colors.primary} />
-                  <Text style={styles.savingText}>Salvando ordem…</Text>
-                </View>
-              )}
+        {editing && (
+          <View style={styles.hint}>
+            <MoveVertical size={14} color={colors.textMuted} />
+            <Text style={styles.hintText}>
+              Toque em um banner para editar · arraste pela alça para reordenar.
+            </Text>
+          </View>
+        )}
+
+        {loading ? (
+          <View style={styles.centered}>
+            <ActivityIndicator size="large" color={colors.primary} />
+          </View>
+        ) : banners.length === 0 ? (
+          <View style={styles.centered}>
+            <Text style={styles.emptyTitle}>Nenhum banner</Text>
+            <Text style={styles.emptyText}>
+              Toque em + para publicar o primeiro banner no carrossel da tela
+              inicial.
+            </Text>
+          </View>
+        ) : editing ? (
+          <>
+            {saving && (
+              <View style={styles.savingBanner}>
+                <ActivityIndicator size="small" color={colors.primary} />
+                <Text style={styles.savingText}>Salvando ordem…</Text>
+              </View>
+            )}
             <ReorderableList
               data={banners}
               keyExtractor={(b) => b.id}
@@ -220,32 +232,36 @@ export function ModalBannerManager({ visible, onClose, onSuccess }: Props) {
               contentContainerStyle={styles.list}
               showsVerticalScrollIndicator={false}
               renderItem={({ item, index }) => (
-                <DraggableRow item={item} index={index} onEdit={() => openEdit(item)} />
+                <DraggableRow
+                  item={item}
+                  index={index}
+                  onEdit={() => openEdit(item)}
+                />
               )}
             />
-            </>
-          ) : (
-            <FlatList
-              data={banners}
-              keyExtractor={(b) => b.id}
-              contentContainerStyle={styles.list}
-              showsVerticalScrollIndicator={false}
-              renderItem={({ item, index }) => (
-                <BannerRow item={item} index={index} editing={false} />
-              )}
-            />
-          )}
+          </>
+        ) : (
+          <FlatList
+            data={banners}
+            keyExtractor={(b) => b.id}
+            contentContainerStyle={styles.list}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item, index }) => (
+              <BannerRow item={item} index={index} editing={false} />
+            )}
+          />
+        )}
 
-          {!editing && (
-            <Pressable
-              style={[styles.fab, { bottom: insets.bottom + 20 }]}
-              onPress={openCreate}
-              accessibilityLabel="Adicionar banner"
-            >
-              <Plus size={28} color={colors.white} strokeWidth={2.5} />
-            </Pressable>
-          )}
-        </View>
+        {!editing && (
+          <Pressable
+            style={[styles.fab, { bottom: insets.bottom + 20 }]}
+            onPress={openCreate}
+            accessibilityLabel="Adicionar banner"
+          >
+            <Plus size={28} color={colors.white} strokeWidth={2.5} />
+          </Pressable>
+        )}
+      </View>
 
       {formVisible && (
         <ModalBannerForm

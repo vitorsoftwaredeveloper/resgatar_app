@@ -1,25 +1,6 @@
-export const THEME = {
-  COLORS: {
-    background: "#F6F1EB",
-    card: "#FFFFFF",
-    primary: "#6B4F3A",
-    text: "#3E2F23",
-    textStrong: "#3E2C1C",
-    textMuted: "#8C7A6B",
-    muted: "#9E8E80",
-    mutedBackground: "#ffffff40",
-    border: "#DED6CC",
-    inputBg: "#FBF8F4",
-    black: "#000000",
-    white: "#FFFFFF",
-    error: "#E53935",
-    waiting: "#E0B96A",
-    softBrown: "#EDE6DE",
-    skeletonBg: "#E6E0D8",
-    success: "#1E7F43",
-    info: "#3B6DF6",
-    successBackground: "#E6F4EA",
-  },
+// Tokens estáticos (independentes de modo claro/escuro). As cores vivem no
+// ThemeContext, que expõe a paleta do modo ativo via useAppTheme().
+const THEME = {
   SPACING: {
     xs: 6,
     xxs: 8,
@@ -58,5 +39,5 @@ export const THEME = {
   },
 };
 
-const { COLORS, RADIUS, SPACING, TYPOGRAPHY, SHADOW } = THEME;
-export { COLORS, RADIUS, SHADOW, SPACING, TYPOGRAPHY };
+const { RADIUS, SPACING, TYPOGRAPHY, SHADOW } = THEME;
+export { RADIUS, SHADOW, SPACING, TYPOGRAPHY };

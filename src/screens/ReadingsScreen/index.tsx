@@ -1,19 +1,17 @@
 import { CalendarModal } from "@/components/CalendarModal";
 import { DateNavigator } from "@/components/DateNavigator";
 import { Header } from "@/components/Header";
-import { LiturgySeasonBanner } from "@/components/LiturgySeasonBanner";
+import { LiturgyReader, LiturgySection } from "@/components/LiturgyReader";
 import { MarkReadingButton } from "@/components/MarkReadingButton";
-import { PsalmCard } from "@/components/PsalmCard";
-import { ReadingCard } from "@/components/ReadingCard";
+import { LiturgyHeadSkeleton } from "@/components/Skeleton/LiturgyHeadSkeleton";
 import { LiturgySkeleton } from "@/components/Skeleton/LiturgySkeleton";
 import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";
-import { getReadingMarkedDate, setReadingMarkedDate } from "@/storage/asyncStorage";
 import { useAppTheme } from "@/context/ThemeContext";
 import { useLiturgyTTS } from "@/hooks/useLiturgyTTS";
 import { LiturgyService } from "@/services/LiturgyService";
 import { ReadingStreakService } from "@/services/ReadingStreakService";
-import { ILiturgia } from "@/types/Liturgy";
+import { ILiturgia, LITURGICAL_ACCENT } from "@/types/Liturgy";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useFocusEffect } from "@react-navigation/native";
 import { Pause, RefreshCw, Volume2 } from "lucide-react-native";
@@ -44,6 +42,94 @@ function buildSectionText(
   return [titulo, referencia, texto, formulaFinal].filter(Boolean).join(". ");
 }
 
+// "Terça-feira, 7 de julho" — eyebrow do cabeçalho editorial (sem o ano).
+function formatEyebrowDate(date: Date): string {
+  const label = date.toLocaleDateString("pt-BR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
+// Achata a liturgia nas seções exibidas como abas no leitor. Segunda Leitura e
+// Oração do Dia entram só quando existem.
+function buildSections(liturgy: ILiturgia): LiturgySection[] {
+  const { leituras, oracoes } = liturgy;
+  const sections: LiturgySection[] = [
+    {
+      id: "primeira-leitura",
+      label: "Primeira Leitura",
+      referencia: leituras.primeiraLeitura.referencia,
+      titulo: leituras.primeiraLeitura.titulo,
+      texto: leituras.primeiraLeitura.texto,
+      formulaFinal: "Palavra do Senhor.",
+      ttsText: buildSectionText(
+        "Primeira leitura",
+        leituras.primeiraLeitura.referencia,
+        leituras.primeiraLeitura.texto,
+        "Palavra do Senhor.",
+      ),
+    },
+    {
+      id: "salmo",
+      label: "Salmo",
+      referencia: leituras.salmo.referencia,
+      refrao: leituras.salmo.refrao,
+      texto: leituras.salmo.texto,
+      ttsText: buildSectionText(
+        "Salmo responsorial",
+        leituras.salmo.referencia,
+        leituras.salmo.texto,
+      ),
+    },
+  ];
+
+  if (leituras.segundaLeitura) {
+    sections.push({
+      id: "segunda-leitura",
+      label: "Segunda Leitura",
+      referencia: leituras.segundaLeitura.referencia,
+      titulo: leituras.segundaLeitura.titulo,
+      texto: leituras.segundaLeitura.texto,
+      formulaFinal: "Palavra do Senhor.",
+      ttsText: buildSectionText(
+        "Segunda leitura",
+        leituras.segundaLeitura.referencia,
+        leituras.segundaLeitura.texto,
+        "Palavra do Senhor.",
+      ),
+    });
+  }
+
+  sections.push({
+    id: "evangelho",
+    label: "Evangelho",
+    referencia: leituras.evangelho.referencia,
+    titulo: leituras.evangelho.titulo,
+    texto: leituras.evangelho.texto,
+    formulaFinal: "Palavra da Salvação.",
+    ttsText: buildSectionText(
+      "Evangelho",
+      leituras.evangelho.referencia,
+      leituras.evangelho.texto,
+      "Palavra da Salvação.",
+    ),
+  });
+
+  if (oracoes?.coleta) {
+    sections.push({
+      id: "oracao",
+      label: "Oração do Dia",
+      referencia: "",
+      texto: oracoes.coleta,
+      ttsText: oracoes.coleta,
+    });
+  }
+
+  return sections;
+}
+
 export function ReadingsScreen() {
   const { member, updateMemberStreak } = useContext(AuthContext);
   const { colors } = useAppTheme();
@@ -51,12 +137,12 @@ export function ReadingsScreen() {
   const styles = useStyles();
 
   const [selectedDate, setSelectedDate] = useState<Date>(today());
+  const [activeSectionId, setActiveSectionId] = useState("primeira-leitura");
   const [calendarVisible, setCalendarVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   const [liturgy, setLiturgy] = useState<ILiturgia | null>(null);
   const [error, setError] = useState(false);
   const [marking, setMarking] = useState(false);
-  const [markDismissed, setMarkDismissed] = useState(false);
 
   const {
     activeId,
@@ -70,32 +156,21 @@ export function ReadingsScreen() {
 
   const isViewingToday = isSameDay(selectedDate, today());
 
-  // Deriva alreadyReadToday a partir do readingStreak do backend.
+  // O readingStreak do backend é a única fonte de verdade sobre a leitura de
+  // hoje: vale para qualquer cliente, então uma leitura marcada no browser
+  // some com o botão aqui também.
   const lastReadAt = member?.readingStreak?.lastReadAt;
   const alreadyReadToday = lastReadAt
     ? isSameDay(new Date(lastReadAt), today())
     : false;
   const streakCount = member?.readingStreak?.currentStreak ?? 0;
 
-  // Checa storage ao iniciar sessão para não reaparecer o botão após logout/login.
-  useEffect(() => {
-    if (!memberId) return;
-    getReadingMarkedDate(memberId).then((storedDate) => {
-      if (storedDate) {
-        const d = new Date(storedDate);
-        if (isSameDay(d, today())) setMarkDismissed(true);
-      }
-    });
-  }, [memberId]);
-
   const handleMarkRead = useCallback(async () => {
     if (!memberId) return;
     setMarking(true);
     try {
       const streak = await ReadingStreakService.markToday();
-      await setReadingMarkedDate(memberId, new Date().toISOString());
       updateMemberStreak(streak);
-      setMarkDismissed(true);
       ToastMessage.success(
         "Leitura de hoje realizada",
         "Mais um dia somado à sua ofensiva.",
@@ -110,47 +185,28 @@ export function ReadingsScreen() {
     }
   }, [memberId, updateMemberStreak]);
 
-  const fetchLiturgy = useCallback(
-    async (date: Date, force = false) => {
-      stop();
-      setLoading(true);
-      setError(false);
-      try {
-        const isToday = isSameDay(date, today());
-        const data = isToday
-          ? await LiturgyService.getToday(force)
-          : await LiturgyService.getByDate(date);
-        setLiturgy(data);
-      } catch {
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [],
-  );
+  const fetchLiturgy = useCallback(async (date: Date, force = false) => {
+    stop();
+    setLoading(true);
+    setError(false);
+    try {
+      const isToday = isSameDay(date, today());
+      const data = isToday
+        ? await LiturgyService.getToday(force)
+        : await LiturgyService.getByDate(date);
+      setLiturgy(data);
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
       fetchLiturgy(selectedDate);
     }, [selectedDate]),
   );
-
-  useEffect(() => {
-    fetchLiturgy(selectedDate);
-    // Ao trocar de data, reavalia o dismissed contra o storage (só oculta se for hoje).
-    if (memberId) {
-      getReadingMarkedDate(memberId).then((storedDate) => {
-        if (storedDate && isSameDay(new Date(storedDate), today())) {
-          setMarkDismissed(true);
-        } else {
-          setMarkDismissed(false);
-        }
-      });
-    } else {
-      setMarkDismissed(false);
-    }
-  }, [selectedDate, memberId]);
 
   const handlePrev = useCallback(() => {
     setSelectedDate((d) => {
@@ -189,180 +245,130 @@ export function ReadingsScreen() {
 
   return (
     <View style={styles.container}>
-        <Header
-          name={`${member?.firstName} ${member?.lastName}`}
-          photo={member?.profileImage}
-        />
+      <Header
+        name={`${member?.firstName} ${member?.lastName}`}
+        photo={member?.profileImage}
+      />
 
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={[
-            styles.content,
-            { paddingBottom: tabBarHeight + 70 },
-          ]}
-          showsVerticalScrollIndicator={false}
-        >
-          {loading ? (
-            <>
-              <DateNavigator
-                selectedDate={selectedDate}
-                onPrev={handlePrev}
-                onNext={handleNext}
-                onOpenCalendar={() => setCalendarVisible(true)}
-                onBackToToday={handleBackToToday}
-              />
-              <LiturgySkeleton />
-            </>
-          ) : error ? (
-            <View style={styles.errorContainer}>
-              <Text style={styles.errorTitle}>Não foi possível carregar</Text>
-              <Text style={styles.errorSubtitle}>
-                Verifique sua conexão e tente novamente.
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={[
+          styles.content,
+          { paddingBottom: tabBarHeight + 70 },
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
+        {loading ? (
+          <>
+            <LiturgyHeadSkeleton />
+            <DateNavigator
+              selectedDate={selectedDate}
+              onPrev={handlePrev}
+              onNext={handleNext}
+              onOpenCalendar={() => setCalendarVisible(true)}
+              onBackToToday={handleBackToToday}
+            />
+            <LiturgySkeleton />
+          </>
+        ) : error ? (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorTitle}>Não foi possível carregar</Text>
+            <Text style={styles.errorSubtitle}>
+              Verifique sua conexão e tente novamente.
+            </Text>
+            <TouchableOpacity
+              style={styles.retryButton}
+              onPress={() => fetchLiturgy(selectedDate, true)}
+            >
+              <RefreshCw size={16} color={colors.primary} />
+              <Text style={styles.retryText}>Tentar novamente</Text>
+            </TouchableOpacity>
+          </View>
+        ) : liturgy ? (
+          <>
+            <View style={styles.pageHead}>
+              <Text style={styles.eyebrow}>
+                Liturgia do dia · {formatEyebrowDate(selectedDate)}
               </Text>
-              <TouchableOpacity
-                style={styles.retryButton}
-                onPress={() => fetchLiturgy(selectedDate, true)}
+              <Text style={styles.pageTitle}>{liturgy.liturgia}</Text>
+              <View
+                style={[
+                  styles.colorPill,
+                  { backgroundColor: LITURGICAL_ACCENT[liturgy.cor] + "29" },
+                ]}
               >
-                <RefreshCw size={16} color={colors.primary} />
-                <Text style={styles.retryText}>Tentar novamente</Text>
-              </TouchableOpacity>
-            </View>
-          ) : liturgy ? (
-            <>
-              <DateNavigator
-                selectedDate={selectedDate}
-                onPrev={handlePrev}
-                onNext={handleNext}
-                onOpenCalendar={() => setCalendarVisible(true)}
-                onBackToToday={handleBackToToday}
-              />
-
-              {ttsState !== "idle" && (
-                <TouchableOpacity
-                  onPress={ttsState === "playing" ? pause : stop}
-                  style={styles.ttsIndicator}
-                  activeOpacity={0.8}
-                  disabled={ttsState === "loading"}
+                <View
+                  style={[
+                    styles.colorDot,
+                    { backgroundColor: LITURGICAL_ACCENT[liturgy.cor] },
+                  ]}
+                />
+                <Text
+                  style={[
+                    styles.colorPillText,
+                    { color: LITURGICAL_ACCENT[liturgy.cor] },
+                  ]}
                 >
-                  <Volume2 size={14} color={colors.primary} />
-                  <Text style={styles.ttsIndicatorText}>
-                    {ttsState === "loading"
-                      ? "Gerando áudio..."
-                      : ttsState === "playing"
+                  {liturgy.cor}
+                </Text>
+              </View>
+            </View>
+
+            <DateNavigator
+              selectedDate={selectedDate}
+              onPrev={handlePrev}
+              onNext={handleNext}
+              onOpenCalendar={() => setCalendarVisible(true)}
+              onBackToToday={handleBackToToday}
+            />
+
+            {isViewingToday && !alreadyReadToday && (
+              <MarkReadingButton
+                streakCount={streakCount}
+                loading={marking}
+                onPress={handleMarkRead}
+              />
+            )}
+
+            {ttsState !== "idle" && (
+              <TouchableOpacity
+                onPress={ttsState === "playing" ? pause : stop}
+                style={styles.ttsIndicator}
+                activeOpacity={0.8}
+                disabled={ttsState === "loading"}
+              >
+                <Volume2 size={14} color={colors.primary} />
+                <Text style={styles.ttsIndicatorText}>
+                  {ttsState === "loading"
+                    ? "Gerando áudio..."
+                    : ttsState === "playing"
                       ? "Reproduzindo áudio"
                       : "Áudio pausado"}
-                  </Text>
-                  {ttsState === "playing"
-                    ? <Pause size={14} color={colors.primary} />
-                    : <RefreshCw size={14} color={colors.primary} />
-                  }
-                </TouchableOpacity>
-              )}
-
-              {isViewingToday && !alreadyReadToday && !markDismissed && (
-                <MarkReadingButton
-                  streakCount={streakCount}
-                  loading={marking}
-                  onPress={handleMarkRead}
-                />
-              )}
-
-              <LiturgySeasonBanner
-                liturgia={liturgy.liturgia}
-                data={liturgy.data}
-                cor={liturgy.cor}
-              />
-
-              <ReadingCard
-                testID="card-primeira-leitura"
-                coachId="reading-tts-btn"
-                label="PRIMEIRA LEITURA"
-                referencia={liturgy.leituras.primeiraLeitura.referencia}
-                titulo={liturgy.leituras.primeiraLeitura.titulo}
-                texto={liturgy.leituras.primeiraLeitura.texto}
-                formulaFinal="Palavra do Senhor."
-                {...sectionTTSProps(
-                  "primeira-leitura",
-                  buildSectionText(
-                    "Primeira leitura",
-                    liturgy.leituras.primeiraLeitura.referencia,
-                    liturgy.leituras.primeiraLeitura.texto,
-                    "Palavra do Senhor.",
-                  ),
+                </Text>
+                {ttsState === "playing" ? (
+                  <Pause size={14} color={colors.primary} />
+                ) : (
+                  <RefreshCw size={14} color={colors.primary} />
                 )}
-              />
+              </TouchableOpacity>
+            )}
 
-              <PsalmCard
-                testID="card-salmo"
-                referencia={liturgy.leituras.salmo.referencia}
-                refrao={liturgy.leituras.salmo.refrao}
-                texto={liturgy.leituras.salmo.texto}
-                {...sectionTTSProps(
-                  "salmo",
-                  buildSectionText(
-                    "Salmo responsorial",
-                    liturgy.leituras.salmo.referencia,
-                    liturgy.leituras.salmo.texto,
-                  ),
-                )}
-              />
-
-              {!!liturgy.leituras.segundaLeitura && (
-                <ReadingCard
-                  testID="card-segunda-leitura"
-                  label="SEGUNDA LEITURA"
-                  referencia={liturgy.leituras.segundaLeitura.referencia}
-                  titulo={liturgy.leituras.segundaLeitura.titulo}
-                  texto={liturgy.leituras.segundaLeitura.texto}
-                  formulaFinal="Palavra do Senhor."
-                  {...sectionTTSProps(
-                    "segunda-leitura",
-                    buildSectionText(
-                      "Segunda leitura",
-                      liturgy.leituras.segundaLeitura.referencia,
-                      liturgy.leituras.segundaLeitura.texto,
-                      "Palavra do Senhor.",
-                    ),
-                  )}
-                />
-              )}
-
-              <ReadingCard
-                testID="card-evangelho"
-                label="EVANGELHO"
-                referencia={liturgy.leituras.evangelho.referencia}
-                titulo={liturgy.leituras.evangelho.titulo}
-                texto={liturgy.leituras.evangelho.texto}
-                formulaFinal="Palavra da Salvação."
-                {...sectionTTSProps(
-                  "evangelho",
-                  buildSectionText(
-                    "Evangelho",
-                    liturgy.leituras.evangelho.referencia,
-                    liturgy.leituras.evangelho.texto,
-                    "Palavra da Salvação.",
-                  ),
-                )}
-              />
-
-              {!!liturgy.oracoes?.coleta && (
-                <ReadingCard
-                  testID="card-oracao"
-                  label="ORAÇÃO DO DIA"
-                  referencia=""
-                  texto={liturgy.oracoes.coleta}
-                  {...sectionTTSProps("oracao", liturgy.oracoes.coleta)}
-                />
-              )}
-            </>
-          ) : null}
-        </ScrollView>
-        <CalendarModal
-          visible={calendarVisible}
-          selectedDate={selectedDate}
-          onSelectDate={handleSelectDate}
-          onClose={() => setCalendarVisible(false)}
-        />
+            <LiturgyReader
+              sections={buildSections(liturgy)}
+              activeId={activeSectionId}
+              onSelectSection={setActiveSectionId}
+              getTTS={sectionTTSProps}
+              coachId="reading-tts-btn"
+            />
+          </>
+        ) : null}
+      </ScrollView>
+      <CalendarModal
+        visible={calendarVisible}
+        selectedDate={selectedDate}
+        onSelectDate={handleSelectDate}
+        onClose={() => setCalendarVisible(false)}
+      />
     </View>
   );
 }

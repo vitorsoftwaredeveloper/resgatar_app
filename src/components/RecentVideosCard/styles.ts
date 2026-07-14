@@ -3,6 +3,8 @@ import { RADIUS, SPACING, TYPOGRAPHY } from "@/theme";
 import { useMemo } from "react";
 import { StyleSheet } from "react-native";
 
+const ITEM_WIDTH = 132;
+
 export function useStyles() {
   const { colors } = useAppTheme();
   return useMemo(
@@ -19,21 +21,66 @@ export function useStyles() {
         header: {
           flexDirection: "row",
           alignItems: "center",
-          gap: SPACING.xs,
+          justifyContent: "space-between",
+          gap: SPACING.sm,
           paddingVertical: SPACING.sm2,
           borderBottomWidth: 1,
           borderBottomColor: colors.border,
         },
-        label: {
+        headerTitle: {
           fontSize: TYPOGRAPHY.xsmall,
           fontWeight: "600",
           color: colors.textMuted,
           letterSpacing: 0.8,
+          textTransform: "uppercase",
         },
         list: {
-          gap: SPACING.md,
+          gap: SPACING.sm,
           paddingVertical: SPACING.sm2,
+        },
+        item: {
+          width: ITEM_WIDTH,
+        },
+        thumbWrapper: {
+          borderRadius: RADIUS.sm,
+          overflow: "hidden",
+          position: "relative",
+        },
+        thumb: {
+          width: ITEM_WIDTH,
+          aspectRatio: 16 / 9,
+          backgroundColor: colors.skeletonBg,
+        },
+        playIcon: {
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          marginTop: -14,
+          marginLeft: -14,
+          width: 28,
+          height: 28,
+          borderRadius: 14,
+          backgroundColor: "rgba(0, 0, 0, 0.55)",
           alignItems: "center",
+          justifyContent: "center",
+        },
+        itemInfo: {
+          flexDirection: "row",
+          alignItems: "center",
+          gap: SPACING.xs,
+          marginTop: SPACING.xs,
+        },
+        itemTexts: {
+          flexShrink: 1,
+        },
+        itemTitle: {
+          fontSize: TYPOGRAPHY.xsmall,
+          fontWeight: "600",
+          color: colors.text,
+        },
+        itemAuthor: {
+          fontSize: TYPOGRAPHY.xsmall,
+          color: colors.textMuted,
         },
         emptyState: {
           alignItems: "center",
@@ -50,53 +97,11 @@ export function useStyles() {
           fontSize: TYPOGRAPHY.small,
           color: colors.textMuted,
         },
-        item: {
-          alignItems: "center",
-          width: 56,
-          gap: SPACING.xs,
-        },
-        name: {
-          fontSize: TYPOGRAPHY.xsmall,
-          fontWeight: "600",
-          color: colors.text,
-          textAlign: "center",
-        },
-        day: {
-          fontSize: TYPOGRAPHY.xsmall,
-          color: colors.textMuted,
-          textAlign: "center",
-        },
-        dayToday: {
-          color: colors.primary,
-          fontWeight: "700",
-        },
-        nameToday: {
-          color: colors.primary,
-        },
-        avatarRing: {
-          borderRadius: 999,
-          borderWidth: 2,
-          borderColor: colors.primary,
-          padding: 2,
-          shadowColor: colors.primary,
-          shadowOpacity: 0.5,
-          shadowRadius: 6,
-          shadowOffset: { width: 0, height: 0 },
-          elevation: 4,
-        },
-        todayBadge: {
-          position: "absolute",
-          bottom: -2,
-          right: -2,
-          backgroundColor: colors.card,
-          borderRadius: 999,
-          width: 18,
-          height: 18,
-          alignItems: "center",
-          justifyContent: "center",
-        },
-        todayBadgeText: {
-          fontSize: 10,
+        skeletonThumb: {
+          width: ITEM_WIDTH,
+          aspectRatio: 16 / 9,
+          borderRadius: RADIUS.sm,
+          backgroundColor: colors.skeletonBg,
         },
       }),
     [colors],

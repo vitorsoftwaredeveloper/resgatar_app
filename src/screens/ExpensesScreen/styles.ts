@@ -1,5 +1,6 @@
 import { useAppTheme } from "@/context/ThemeContext";
-import { RADIUS, SPACING, TYPOGRAPHY } from "@/theme";
+import { RADIUS, SHADOW, SPACING, TYPOGRAPHY } from "@/theme";
+import { FONTS } from "@/theme/fonts";
 import { useMemo } from "react";
 import { StyleSheet } from "react-native";
 
@@ -19,15 +20,6 @@ export function useStyles() {
           borderTopRightRadius: RADIUS.xl,
           overflow: "hidden",
         },
-        screenTitle: {
-          fontSize: TYPOGRAPHY.small,
-          color: colors.textMuted,
-          fontWeight: "600",
-          textTransform: "uppercase",
-          letterSpacing: 0.8,
-          paddingHorizontal: SPACING.md,
-          paddingTop: SPACING.md,
-        },
         list: {
           padding: SPACING.md,
           gap: SPACING.sm2,
@@ -44,7 +36,7 @@ export function useStyles() {
           textAlign: "center",
         },
 
-        // Seletor de mês
+        // Seletor de mês (primitiva .monthnav do browser)
         monthSelector: {
           flexDirection: "row",
           alignItems: "center",
@@ -53,37 +45,50 @@ export function useStyles() {
           borderWidth: 1,
           borderColor: colors.border,
           borderRadius: RADIUS.md,
-          paddingHorizontal: SPACING.md,
-          paddingVertical: SPACING.sm2,
+          padding: 8,
+          ...SHADOW.card,
         },
         monthLabel: {
-          fontSize: TYPOGRAPHY.subtitle,
+          fontFamily: FONTS.displaySemiBold,
+          fontSize: 20,
           color: colors.text,
-          fontWeight: "600",
         },
         navButton: {
-          padding: 2,
+          width: 38,
+          height: 38,
+          borderRadius: 10,
+          backgroundColor: colors.inputBg,
+          alignItems: "center",
+          justifyContent: "center",
         },
         navButtonDisabled: {
-          opacity: 0.3,
+          opacity: 0.35,
         },
 
-        // Card de total + breakdown
+        // Card de total + breakdown (.card editorial)
         card: {
           backgroundColor: colors.card,
           borderWidth: 1,
           borderColor: colors.border,
-          borderRadius: RADIUS.md,
-          padding: SPACING.md,
+          borderRadius: RADIUS.lg,
+          padding: SPACING.lg,
           gap: SPACING.xs,
+          ...SHADOW.card,
+        },
+        metaCap: {
+          fontSize: TYPOGRAPHY.xsmall,
+          color: colors.textMuted,
+          fontWeight: "700",
+          letterSpacing: 1.5,
+          textTransform: "uppercase",
         },
         metaLabel: {
-          fontSize: TYPOGRAPHY.body,
+          fontSize: TYPOGRAPHY.small,
           color: colors.textMuted,
         },
         totalValue: {
-          fontSize: TYPOGRAPHY.hero,
-          color: colors.textStrong,
+          fontSize: 32,
+          color: colors.error,
           fontWeight: "700",
         },
         breakdown: {
@@ -108,19 +113,36 @@ export function useStyles() {
           fontWeight: "600",
         },
 
-        // Item de despesa
-        expenseCard: {
+        // Lista de despesas em card único (.card + .lrow do browser)
+        listCard: {
           backgroundColor: colors.card,
           borderWidth: 1,
           borderColor: colors.border,
-          borderRadius: RADIUS.md,
+          borderRadius: RADIUS.lg,
+          overflow: "hidden",
+          ...SHADOW.card,
+        },
+        expenseItem: {
           paddingHorizontal: SPACING.md,
-          paddingVertical: SPACING.sm2,
+          paddingVertical: 14,
+        },
+        rowDivider: {
+          height: 1,
+          backgroundColor: colors.border,
         },
         expenseRow: {
           flexDirection: "row",
           alignItems: "center",
           gap: SPACING.sm2,
+        },
+        // Ícone em caixa (.la com danger-soft do browser)
+        expenseIconBox: {
+          width: 40,
+          height: 40,
+          borderRadius: 12,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: colors.error + "22",
         },
         expenseDetails: {
           marginTop: SPACING.sm,
@@ -152,7 +174,7 @@ export function useStyles() {
           gap: 2,
         },
         expenseName: {
-          fontSize: TYPOGRAPHY.body,
+          fontSize: 15,
           color: colors.text,
           fontWeight: "600",
         },
@@ -164,14 +186,23 @@ export function useStyles() {
           fontSize: TYPOGRAPHY.body,
           color: colors.textStrong,
           fontWeight: "700",
+          marginRight: 6,
         },
         expenseActions: {
           flexDirection: "row",
           alignItems: "center",
-          gap: SPACING.xs,
+          gap: 6,
         },
+        // Botões de ação em caixa (.icon-btn do browser)
         rowAction: {
-          padding: SPACING.xs,
+          width: 36,
+          height: 36,
+          borderRadius: 10,
+          borderWidth: 1,
+          borderColor: colors.border,
+          backgroundColor: colors.inputBg,
+          alignItems: "center",
+          justifyContent: "center",
         },
 
         // FAB

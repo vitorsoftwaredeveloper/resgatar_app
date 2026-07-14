@@ -3,7 +3,7 @@ import { MemberListWithSkeleton } from "@/components/Skeleton/MemberListWithSkel
 import { ModalBase } from "@/components/ModalBase";
 import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";
-import { COLORS } from "@/theme";
+import { useAppTheme } from "@/context/ThemeContext";
 import { IMember } from "@/types/Member";
 import { Trash2 } from "lucide-react-native";
 import React, { useContext, useEffect, useState } from "react";
@@ -14,6 +14,7 @@ type Props = {
 };
 
 export function ModalRemoveMember({ visible, onClose }: Props) {
+  const { colors } = useAppTheme();
   const [members, setMembers] = useState<IMember[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedMember, setSelectedMember] = useState<IMember | null>(null);
@@ -64,7 +65,7 @@ export function ModalRemoveMember({ visible, onClose }: Props) {
         members={members}
         loading={loading}
         onAction={handleSelectMember}
-        iconAction={<Trash2 size={20} color={COLORS.primary} />}
+        iconAction={<Trash2 size={20} color={colors.primary} />}
         variant="delete"
       />
       <Dialog

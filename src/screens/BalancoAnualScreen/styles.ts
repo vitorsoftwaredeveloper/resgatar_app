@@ -1,5 +1,6 @@
 import { useAppTheme } from "@/context/ThemeContext";
-import { RADIUS, SPACING, TYPOGRAPHY } from "@/theme";
+import { RADIUS, SHADOW, SPACING, TYPOGRAPHY } from "@/theme";
+import { FONTS } from "@/theme/fonts";
 import { useMemo } from "react";
 import { StyleSheet } from "react-native";
 
@@ -19,15 +20,6 @@ export function useStyles() {
           borderTopRightRadius: RADIUS.xl,
           overflow: "hidden",
         },
-        screenTitle: {
-          fontSize: TYPOGRAPHY.small,
-          color: colors.textMuted,
-          fontWeight: "600",
-          textTransform: "uppercase",
-          letterSpacing: 0.8,
-          paddingHorizontal: SPACING.md,
-          paddingTop: SPACING.md,
-        },
         list: {
           padding: SPACING.md,
           gap: SPACING.sm2,
@@ -43,7 +35,7 @@ export function useStyles() {
           textAlign: "center",
         },
 
-        // Seletor de ano
+        // Seletor de ano (primitiva .monthnav do browser)
         yearSelector: {
           flexDirection: "row",
           alignItems: "center",
@@ -52,43 +44,56 @@ export function useStyles() {
           borderWidth: 1,
           borderColor: colors.border,
           borderRadius: RADIUS.md,
-          paddingHorizontal: SPACING.md,
-          paddingVertical: SPACING.sm2,
+          padding: 8,
+          ...SHADOW.card,
         },
         yearLabel: {
-          fontSize: TYPOGRAPHY.subtitle,
+          fontFamily: FONTS.displaySemiBold,
+          fontSize: 20,
           color: colors.text,
-          fontWeight: "600",
         },
         navButton: {
-          padding: 2,
+          width: 38,
+          height: 38,
+          borderRadius: 10,
+          backgroundColor: colors.inputBg,
+          alignItems: "center",
+          justifyContent: "center",
         },
         navButtonDisabled: {
-          opacity: 0.3,
+          opacity: 0.35,
         },
 
-        // Card de meta (YTD)
+        // Card de meta/mês/balanço (.card editorial: radius lg + sombra)
         card: {
           backgroundColor: colors.card,
           borderWidth: 1,
           borderColor: colors.border,
-          borderRadius: RADIUS.md,
-          padding: SPACING.md,
+          borderRadius: RADIUS.lg,
+          padding: SPACING.lg,
+          ...SHADOW.card,
         },
         cardHeaderRow: {
           flexDirection: "row",
           justifyContent: "space-between",
-          alignItems: "baseline",
+          alignItems: "center",
           marginBottom: SPACING.sm,
+        },
+        metaCap: {
+          fontSize: TYPOGRAPHY.xsmall,
+          color: colors.textMuted,
+          fontWeight: "700",
+          letterSpacing: 1.5,
+          textTransform: "uppercase",
         },
         metaLabel: {
           fontSize: TYPOGRAPHY.body,
           color: colors.textMuted,
         },
         metaPercent: {
-          fontSize: TYPOGRAPHY.body,
-          color: colors.textMuted,
-          fontWeight: "600",
+          fontSize: TYPOGRAPHY.subtitle,
+          color: colors.success,
+          fontWeight: "700",
         },
         metaValueRow: {
           flexDirection: "row",
@@ -142,12 +147,16 @@ export function useStyles() {
           fontWeight: "700",
           marginBottom: SPACING.sm2,
         },
+        // Grid 2×2 (Entradas/Doações · Saídas/Saldo), como o browser
         balanceRow: {
           flexDirection: "row",
-          alignItems: "stretch",
+          flexWrap: "wrap",
+          rowGap: SPACING.md,
+          columnGap: SPACING.sm2,
         },
         balanceItem: {
-          flex: 1,
+          flexBasis: "47%",
+          flexGrow: 1,
           gap: SPACING.xxs,
         },
         balanceItemHeader: {
@@ -173,11 +182,6 @@ export function useStyles() {
           fontSize: TYPOGRAPHY.large,
           fontWeight: "700",
         },
-        balanceDivider: {
-          width: 1,
-          backgroundColor: colors.border,
-          marginHorizontal: SPACING.sm,
-        },
         balanceHint: {
           fontSize: TYPOGRAPHY.small,
           color: colors.textMuted,
@@ -196,9 +200,9 @@ export function useStyles() {
           gap: SPACING.xs,
           paddingVertical: SPACING.sm2,
           paddingHorizontal: SPACING.xs,
-          borderRadius: RADIUS.sm,
+          borderRadius: RADIUS.md,
           borderWidth: 1,
-          borderColor: colors.primary,
+          borderColor: colors.border,
           backgroundColor: colors.softBrown,
         },
         exportButtonText: {
@@ -238,11 +242,11 @@ export function useStyles() {
           fontWeight: "700",
         },
 
-        // Grid de métricas
+        // Grid de métricas (.tile do browser)
         metricGrid: {
           flexDirection: "row",
           flexWrap: "wrap",
-          gap: SPACING.sm,
+          gap: SPACING.sm2,
         },
         metricCard: {
           flexGrow: 1,
@@ -251,47 +255,63 @@ export function useStyles() {
           borderWidth: 1,
           borderColor: colors.border,
           borderRadius: RADIUS.md,
-          padding: SPACING.sm2,
+          paddingVertical: 16,
+          paddingHorizontal: 16,
+          ...SHADOW.card,
         },
         metricHeader: {
           flexDirection: "row",
           alignItems: "center",
           gap: SPACING.xs,
-          marginBottom: SPACING.xs,
+          marginBottom: SPACING.sm,
+        },
+        metricIcon: {
+          width: 30,
+          height: 30,
+          borderRadius: 9,
+          backgroundColor: colors.inputBg,
+          alignItems: "center",
+          justifyContent: "center",
         },
         metricLabel: {
-          fontSize: TYPOGRAPHY.small,
+          fontSize: 13,
           color: colors.textMuted,
+          fontWeight: "600",
+          flexShrink: 1,
         },
         metricValue: {
-          fontSize: TYPOGRAPHY.large,
+          fontSize: 24,
           color: colors.textStrong,
           fontWeight: "700",
         },
 
-        // Abas
+        // Abas (.tabs do browser: pílula, ativo = marrom)
         tabBar: {
           flexDirection: "row",
           backgroundColor: colors.softBrown,
-          borderRadius: RADIUS.sm,
-          padding: 4,
-          gap: SPACING.xxs,
+          borderWidth: 1,
+          borderColor: colors.border,
+          borderRadius: 999,
+          padding: 5,
+          gap: 6,
         },
         tab: {
           flex: 1,
           alignItems: "center",
           paddingVertical: SPACING.sm,
-          borderRadius: RADIUS.sm - 2,
+          borderRadius: 999,
         },
         tabActive: {
-          backgroundColor: colors.card,
+          backgroundColor: colors.primary,
+          ...SHADOW.card,
         },
         tabText: {
           fontSize: TYPOGRAPHY.body,
           color: colors.textMuted,
+          fontWeight: "600",
         },
         tabTextActive: {
-          color: colors.textStrong,
+          color: colors.white,
           fontWeight: "600",
         },
 
@@ -303,9 +323,9 @@ export function useStyles() {
           marginBottom: SPACING.xs,
         },
         monthName: {
-          fontSize: TYPOGRAPHY.body,
+          fontFamily: FONTS.displaySemiBold,
+          fontSize: 20,
           color: colors.text,
-          fontWeight: "600",
         },
         monthValueRow: {
           flexDirection: "row",

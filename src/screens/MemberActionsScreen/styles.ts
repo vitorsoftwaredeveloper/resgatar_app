@@ -14,10 +14,11 @@ export function useStyles() {
         },
         content: {
           flex: 1,
-          padding: SPACING.lg,
           backgroundColor: colors.softBrown,
           borderTopLeftRadius: RADIUS.xl,
           borderTopRightRadius: RADIUS.xl,
+          paddingHorizontal: SPACING.lg,
+          paddingTop: SPACING.lg,
         },
         sectionGroup: {
           gap: SPACING.xs,

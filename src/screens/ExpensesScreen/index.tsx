@@ -1,5 +1,6 @@
 import { Dialog } from "@/components/Dialog";
 import { Header } from "@/components/Header";
+import { AdminScreenTitle } from "@/components/AdminScreenTitle";
 import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";
 import { useAppTheme } from "@/context/ThemeContext";
@@ -23,8 +24,8 @@ import {
 import React, { useCallback, useContext, useState } from "react";
 import {
   ActivityIndicator,
-  FlatList,
   Linking,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -157,7 +158,7 @@ export function ExpensesScreen() {
 
     return (
       <TouchableOpacity
-        style={styles.expenseCard}
+        style={styles.expenseItem}
         onPress={() => toggleExpanded(item._id)}
         activeOpacity={0.7}
         accessibilityLabel={
@@ -165,6 +166,9 @@ export function ExpensesScreen() {
         }
       >
         <View style={styles.expenseRow}>
+          <View style={styles.expenseIconBox}>
+            <Receipt size={20} color={colors.error} />
+          </View>
           <View style={styles.expenseInfo}>
             <Text style={styles.expenseName} numberOfLines={isExpanded ? 0 : 1}>
               {item.description}
@@ -267,7 +271,7 @@ export function ExpensesScreen() {
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           accessibilityLabel="Mês anterior"
         >
-          <ChevronLeft size={22} color={colors.primary} />
+          <ChevronLeft size={22} color={colors.text} />
         </TouchableOpacity>
         <Text style={styles.monthLabel}>
           {MONTH_LABELS[month]} {year}
@@ -279,12 +283,12 @@ export function ExpensesScreen() {
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           accessibilityLabel="Próximo mês"
         >
-          <ChevronRight size={22} color={colors.primary} />
+          <ChevronRight size={22} color={colors.text} />
         </TouchableOpacity>
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.metaLabel}>Total de despesas no mês</Text>
+        <Text style={styles.metaCap}>Total de despesas no mês</Text>
         <Text style={styles.totalValue}>{formatMoneyBRL(summary.total)}</Text>
         <Text style={styles.metaLabel}>
           {summary.count} {summary.count === 1 ? "lançamento" : "lançamentos"}
@@ -317,7 +321,7 @@ export function ExpensesScreen() {
       />
 
       <View style={styles.content}>
-        <Text style={styles.screenTitle}>Despesa mensal</Text>
+        <AdminScreenTitle title="Despesa mensal" />
         {loading ? (
           <ActivityIndicator
             size="large"
@@ -331,22 +335,29 @@ export function ExpensesScreen() {
             </Text>
           </View>
         ) : (
-          <FlatList
-            data={sortedExpenses}
-            keyExtractor={(item) => item._id}
-            renderItem={renderExpense}
-            ListHeaderComponent={header}
+          <ScrollView
             contentContainerStyle={styles.list}
             showsVerticalScrollIndicator={false}
-            ListEmptyComponent={
+          >
+            {header}
+            {sortedExpenses.length === 0 ? (
               <View style={styles.centered}>
                 <Receipt size={32} color={colors.textMuted} />
                 <Text style={styles.emptyText}>
                   Nenhuma despesa lançada neste mês.
                 </Text>
               </View>
-            }
-          />
+            ) : (
+              <View style={styles.listCard}>
+                {sortedExpenses.map((item, i) => (
+                  <React.Fragment key={item._id}>
+                    {i > 0 && <View style={styles.rowDivider} />}
+                    {renderExpense({ item })}
+                  </React.Fragment>
+                ))}
+              </View>
+            )}
+          </ScrollView>
         )}
       </View>
 

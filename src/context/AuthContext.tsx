@@ -9,6 +9,7 @@ import {
 import { IMemberState, IMemberWithContribution } from "@/types/Member";
 import { getCurrentUser, signIn, signOut } from "aws-amplify/auth";
 import React, { createContext, useEffect, useState } from "react";
+import { AppState } from "react-native";
 
 interface RegisterPayload {
   firstName: string;
@@ -37,7 +38,11 @@ interface AuthContextData {
   updateMember: (member: IMemberState) => Promise<void>;
   updateMemberPhoto: (profileImage: string) => Promise<void>;
   reloadMemberData: () => Promise<void>;
-  updateMemberStreak: (streak: { currentStreak: number; longestStreak: number; lastReadAt: string | null }) => void;
+  updateMemberStreak: (streak: {
+    currentStreak: number;
+    longestStreak: number;
+    lastReadAt: string | null;
+  }) => void;
   register: (payload: RegisterPayload) => Promise<void>;
   listMembers: () => Promise<void>;
   removeMember: (memberId: string) => Promise<void>;
@@ -63,6 +68,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   const memberId = member?._id;
+
+  // Revalida ao voltar do background: a leitura pode ter sido marcada no
+  // browser enquanto o app estava aberto, e o app pode ficar dias sem
+  // reiniciar. Silencioso — se falhar, mantém o estado atual.
+  useEffect(() => {
+    if (!memberId) return;
+
+    const subscription = AppState.addEventListener("change", (nextState) => {
+      if (nextState !== "active") return;
+      reloadMemberData().catch(() => {});
+    });
+
+    return () => subscription.remove();
+  }, [memberId]);
 
   useEffect(() => {
     let active = true;
@@ -106,13 +125,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       const storedMember = await getStoredMember();
 
-      if (storedMember) {
-        setMember(storedMember);
-      } else {
+      if (storedMember) setMember(storedMember);
+
+      // Sempre revalida com a API, mesmo com cache local: garante que dados
+      // como readingStreak reflitam o estado real do servidor (ex.: uma
+      // leitura marcada no browser precisa aparecer aqui sem precisar
+      // deslogar). O cache só fica de pé se essa revalidação falhar.
+      try {
         const memberData = await MemberServices.getMember();
         setMember(memberData);
         await saveMember(memberData);
+      } catch {
+        if (!storedMember) throw new Error("Falha ao carregar membro");
       }
+
       setSessionVersion((v) => v + 1);
     } catch {
       setMember(null);
@@ -249,7 +275,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     await saveMember(memberData);
   }
 
-  function updateMemberStreak(streak: { currentStreak: number; longestStreak: number; lastReadAt: string | null }) {
+  function updateMemberStreak(streak: {
+    currentStreak: number;
+    longestStreak: number;
+    lastReadAt: string | null;
+  }) {
     setMember((prev) => {
       if (!prev) return prev;
       return { ...prev, readingStreak: { ...streak, alreadyDoneToday: true } };

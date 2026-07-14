@@ -54,9 +54,6 @@ export function useStyles() {
           color: colors.white,
           fontWeight: "500",
         },
-        secondaryButtonText: {
-          color: colors.text,
-        },
       }),
     [colors],
   );

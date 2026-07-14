@@ -1,4 +1,5 @@
 import { Header } from "@/components/Header";
+import { AdminScreenTitle } from "@/components/AdminScreenTitle";
 import { ToastMessage } from "@/components/Toast";
 import { AuthContext } from "@/context/AuthContext";
 import { useAppTheme } from "@/context/ThemeContext";
@@ -17,7 +18,7 @@ import {
 import React, { useCallback, useContext, useMemo, useState } from "react";
 import {
   ActivityIndicator,
-  FlatList,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -135,7 +136,7 @@ export function DonationsScreen() {
     const isPix = item.paymentMethodId === "pix";
     const isApproved = item.status === TRANSACTION_STATUS.APPROVED;
     return (
-      <View style={styles.donationCard}>
+      <View style={styles.donationItem}>
         <View style={styles.donationRow}>
           <View style={styles.methodIcon}>
             {isPix ? (
@@ -178,7 +179,7 @@ export function DonationsScreen() {
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           accessibilityLabel="Mês anterior"
         >
-          <ChevronLeft size={22} color={colors.primary} />
+          <ChevronLeft size={22} color={colors.text} />
         </TouchableOpacity>
         <Text style={styles.yearLabel}>
           {MONTH_LABELS[month]} {year}
@@ -190,12 +191,12 @@ export function DonationsScreen() {
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           accessibilityLabel="Próximo mês"
         >
-          <ChevronRight size={22} color={colors.primary} />
+          <ChevronRight size={22} color={colors.text} />
         </TouchableOpacity>
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.metaLabel}>Total de doações no mês</Text>
+        <Text style={styles.metaCap}>Total de doações no mês</Text>
         <Text style={styles.totalValue}>{formatMoneyBRL(total)}</Text>
         <Text style={styles.metaLabel}>
           {approved.length}{" "}
@@ -208,7 +209,9 @@ export function DonationsScreen() {
               <QrCode size={14} color={colors.info} />
               <Text style={styles.breakdownLabel}>PIX</Text>
             </View>
-            <Text style={styles.breakdownValue}>{formatMoneyBRL(pixTotal)}</Text>
+            <Text style={styles.breakdownValue}>
+              {formatMoneyBRL(pixTotal)}
+            </Text>
           </View>
           <View style={styles.breakdownRow}>
             <View style={styles.breakdownLabelRow}>
@@ -233,7 +236,7 @@ export function DonationsScreen() {
       />
 
       <View style={styles.content}>
-        <Text style={styles.screenTitle}>Listagem de doações</Text>
+        <AdminScreenTitle title="Listagem de doações" />
         {loading ? (
           <ActivityIndicator
             size="large"
@@ -241,22 +244,29 @@ export function DonationsScreen() {
             style={{ marginTop: 32 }}
           />
         ) : (
-          <FlatList
-            data={monthDonations}
-            keyExtractor={(item) => item.transactionId}
-            renderItem={renderDonation}
-            ListHeaderComponent={header}
+          <ScrollView
             contentContainerStyle={styles.list}
             showsVerticalScrollIndicator={false}
-            ListEmptyComponent={
+          >
+            {header}
+            {monthDonations.length === 0 ? (
               <View style={styles.centered}>
                 <Gift size={32} color={colors.textMuted} />
                 <Text style={styles.emptyText}>
                   Nenhuma doação registrada neste mês.
                 </Text>
               </View>
-            }
-          />
+            ) : (
+              <View style={styles.listCard}>
+                {monthDonations.map((item, i) => (
+                  <React.Fragment key={item.transactionId}>
+                    {i > 0 && <View style={styles.rowDivider} />}
+                    {renderDonation({ item })}
+                  </React.Fragment>
+                ))}
+              </View>
+            )}
+          </ScrollView>
         )}
       </View>
     </View>

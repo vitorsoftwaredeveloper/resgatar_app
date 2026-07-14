@@ -2,7 +2,10 @@ const mockGetGoalProgress = jest.fn();
 
 jest.mock("@/components/CoachTarget", () => {
   const React = require("react");
-  return { CoachTarget: ({ children }: any) => React.createElement(React.Fragment, null, children) };
+  return {
+    CoachTarget: ({ children }: any) =>
+      React.createElement(React.Fragment, null, children),
+  };
 });
 
 jest.mock("@react-navigation/native", () => {
@@ -41,8 +44,11 @@ jest.mock("@/services/ChargeService", () => ({
 }));
 
 jest.mock("lucide-react-native", () => ({
+  Banknote: () => null,
   CircleCheck: () => null,
-  UsersRound: () => null,
+  HandHeart: () => null,
+  Target: () => null,
+  Wallet: () => null,
 }));
 
 // O skeleton usa react-native-reanimated (não transformado pelo jest); aqui
@@ -59,9 +65,13 @@ const base = {
   year: 2026,
   month: 6,
   goal: 4800,
+  dues: 4200,
   collected: 3100,
+  donations: 900,
+  expenses: 300,
   remaining: 1700,
   percent: 64.58,
+  donationItems: [],
 };
 
 describe("CommunityGoalCard", () => {
@@ -73,7 +83,7 @@ describe("CommunityGoalCard", () => {
 
     await waitFor(() => expect(getByText("65%")).toBeTruthy());
     expect(getByText("Meta da comunidade · Junho")).toBeTruthy();
-    expect(getByText("da meta atingida")).toBeTruthy();
+    expect(getByText("no caminho certo")).toBeTruthy();
   });
 
   it.each([
@@ -93,13 +103,28 @@ describe("CommunityGoalCard", () => {
     expect(style.color).toBe(color);
   });
 
-  it("não exibe valores em reais (nem quanto falta)", async () => {
+  it("exibe quanto falta em reais na caixa de destaque", async () => {
     mockGetGoalProgress.mockResolvedValue(base);
-    const { getByText, queryByText } = render(<CommunityGoalCard />);
+    const { getByText, queryByText, getAllByText } = render(
+      <CommunityGoalCard />,
+    );
 
     await waitFor(() => expect(getByText("65%")).toBeTruthy());
-    expect(queryByText(/R\$/)).toBeNull();
-    expect(queryByText(/para a meta/)).toBeNull();
+    expect(queryByText(/para a meta/)).not.toBeNull();
+    expect(getAllByText(/R\$/).length).toBeGreaterThan(0);
+  });
+
+  it("exibe mensalidades, doações e despesas do mês", async () => {
+    mockGetGoalProgress.mockResolvedValue(base);
+    const { getByText } = render(<CommunityGoalCard />);
+
+    await waitFor(() => expect(getByText("65%")).toBeTruthy());
+    expect(getByText("Mensalidades")).toBeTruthy();
+    expect(getByText("R$ 3.100,00")).toBeTruthy();
+    expect(getByText("Doações")).toBeTruthy();
+    expect(getByText("+R$ 900,00")).toBeTruthy();
+    expect(getByText("Despesas")).toBeTruthy();
+    expect(getByText("−R$ 300,00")).toBeTruthy();
   });
 
   it("exibe estado de meta atingida quando remaining <= 0", async () => {
@@ -113,8 +138,9 @@ describe("CommunityGoalCard", () => {
 
     await waitFor(() => expect(getByText("100%")).toBeTruthy());
     expect(getByText("meta atingida!")).toBeTruthy();
+    expect(getByText("Meta atingida!")).toBeTruthy();
     expect(
-      getByText("Meta atingida! Obrigado a todos que contribuíram."),
+      getByText("Obrigado a todos que contribuíram para esse resultado!"),
     ).toBeTruthy();
   });
 
@@ -126,11 +152,12 @@ describe("CommunityGoalCard", () => {
     expect(queryByText(/Meta da comunidade/)).toBeNull();
   });
 
-  it("não renderiza nada quando percent não é um número válido", async () => {
+  it("mostra estado vazio quando não há meta definida", async () => {
     mockGetGoalProgress.mockResolvedValue({ ...base, percent: NaN });
-    const { queryByText } = render(<CommunityGoalCard />);
+    const { getByText } = render(<CommunityGoalCard />);
 
-    await waitFor(() => expect(mockGetGoalProgress).toHaveBeenCalled());
-    expect(queryByText(/Meta da comunidade/)).toBeNull();
+    await waitFor(() =>
+      expect(getByText("Nenhuma meta definida para este mês")).toBeTruthy(),
+    );
   });
 });

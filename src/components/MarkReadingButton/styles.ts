@@ -3,8 +3,6 @@ import { RADIUS, SPACING, TYPOGRAPHY } from "@/theme";
 import { useMemo } from "react";
 import { StyleSheet } from "react-native";
 
-export const READING_ACCENT = "#E8862E";
-
 export function useStyles() {
   const { colors } = useAppTheme();
   return useMemo(

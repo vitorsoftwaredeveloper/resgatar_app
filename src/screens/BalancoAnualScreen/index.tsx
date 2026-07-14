@@ -1,5 +1,6 @@
 import { Avatar } from "@/components/Avatar";
 import { Header } from "@/components/Header";
+import { AdminScreenTitle } from "@/components/AdminScreenTitle";
 import { AuthContext } from "@/context/AuthContext";
 import { useAppTheme } from "@/context/ThemeContext";
 import { BalanceServices } from "@/services/BalanceService";
@@ -266,7 +267,7 @@ export function BalancoAnualScreen() {
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           accessibilityLabel="Ano anterior"
         >
-          <ChevronLeft size={22} color={colors.primary} />
+          <ChevronLeft size={22} color={colors.text} />
         </TouchableOpacity>
         <Text style={styles.yearLabel}>{year}</Text>
         <TouchableOpacity
@@ -276,13 +277,13 @@ export function BalancoAnualScreen() {
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           accessibilityLabel="Próximo ano"
         >
-          <ChevronRight size={22} color={colors.primary} />
+          <ChevronRight size={22} color={colors.text} />
         </TouchableOpacity>
       </View>
 
       <View style={styles.card}>
         <View style={styles.cardHeaderRow}>
-          <Text style={styles.metaLabel}>{cutoffLabel}</Text>
+          <Text style={styles.metaCap}>{cutoffLabel}</Text>
           <Text style={styles.metaPercent}>{Math.round(progress * 100)}%</Text>
         </View>
         <View style={styles.metaValueRow}>
@@ -339,7 +340,6 @@ export function BalancoAnualScreen() {
                 {formatMoneyBRL(balance.totals.entradas)}
               </Text>
             </View>
-            <View style={styles.balanceDivider} />
             <View style={styles.balanceItem}>
               <View style={styles.balanceItemHeader}>
                 <Gift size={14} color={colors.info} />
@@ -349,7 +349,6 @@ export function BalancoAnualScreen() {
                 {formatMoneyBRL(balance.totals.doacoes)}
               </Text>
             </View>
-            <View style={styles.balanceDivider} />
             <View style={styles.balanceItem}>
               <View style={styles.balanceItemHeader}>
                 <ArrowUpCircle size={14} color={colors.error} />
@@ -359,7 +358,6 @@ export function BalancoAnualScreen() {
                 {formatMoneyBRL(balance.totals.saidas)}
               </Text>
             </View>
-            <View style={styles.balanceDivider} />
             <View style={styles.balanceItem}>
               <View style={styles.balanceItemHeader}>
                 <Wallet size={14} color={colors.primary} />
@@ -400,7 +398,7 @@ export function BalancoAnualScreen() {
                 <FileDown size={16} color={colors.primary} />
               )}
               <Text style={styles.exportButtonText}>
-                {exporting ? "Gerando PDF…" : "PDF"}
+                {exporting ? "Gerando PDF…" : "Exportar PDF"}
               </Text>
             </TouchableOpacity>
 
@@ -417,7 +415,7 @@ export function BalancoAnualScreen() {
                 <FileSpreadsheet size={16} color={colors.primary} />
               )}
               <Text style={styles.exportButtonText}>
-                {exportingExcel ? "Gerando Excel…" : "Excel"}
+                {exportingExcel ? "Gerando Excel…" : "Exportar Excel"}
               </Text>
             </TouchableOpacity>
           </View>
@@ -427,7 +425,9 @@ export function BalancoAnualScreen() {
       <View style={styles.metricGrid}>
         <View style={styles.metricCard}>
           <View style={styles.metricHeader}>
-            <QrCode size={16} color={colors.info} />
+            <View style={styles.metricIcon}>
+              <QrCode size={16} color={colors.info} />
+            </View>
             <Text style={styles.metricLabel}>PIX</Text>
           </View>
           <Text style={styles.metricValue}>
@@ -436,7 +436,9 @@ export function BalancoAnualScreen() {
         </View>
         <View style={styles.metricCard}>
           <View style={styles.metricHeader}>
-            <Banknote size={16} color={colors.success} />
+            <View style={styles.metricIcon}>
+              <Banknote size={16} color={colors.success} />
+            </View>
             <Text style={styles.metricLabel}>Dinheiro</Text>
           </View>
           <Text style={styles.metricValue}>
@@ -445,14 +447,18 @@ export function BalancoAnualScreen() {
         </View>
         <View style={styles.metricCard}>
           <View style={styles.metricHeader}>
-            <CircleCheck size={16} color={colors.success} />
+            <View style={styles.metricIcon}>
+              <CircleCheck size={16} color={colors.success} />
+            </View>
             <Text style={styles.metricLabel}>Pagamentos</Text>
           </View>
           <Text style={styles.metricValue}>{summary.totals.counts.paid}</Text>
         </View>
         <View style={styles.metricCard}>
           <View style={styles.metricHeader}>
-            <CircleAlert size={16} color={colors.error} />
+            <View style={styles.metricIcon}>
+              <CircleAlert size={16} color={colors.error} />
+            </View>
             <Text style={styles.metricLabel}>Pendências</Text>
           </View>
           <Text style={styles.metricValue}>
@@ -504,7 +510,7 @@ export function BalancoAnualScreen() {
       />
 
       <View style={styles.content}>
-        <Text style={styles.screenTitle}>Balanço anual</Text>
+        <AdminScreenTitle title="Balanço anual" />
         {loading ? (
           <ActivityIndicator
             size="large"

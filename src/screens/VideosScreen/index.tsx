@@ -7,7 +7,6 @@ import { VideoService } from "@/services/VideoService";
 import { IVideoFeedItem } from "@/types/Video";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import {
-  ArrowRight,
   ChevronLeft,
   ChevronRight,
   Clapperboard,

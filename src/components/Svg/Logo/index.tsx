@@ -1,4 +1,4 @@
-import { COLORS } from "@/theme";
+import { useAppTheme } from "@/context/ThemeContext";
 import * as React from "react";
 import { View } from "react-native";
 import Svg, { G, Path } from "react-native-svg";
@@ -8,18 +8,16 @@ interface Props {
   color?: string;
 }
 
-export function LogoResgatar({
-  size = 120,
-  color = COLORS.primary,
-  ...props
-}: Props) {
+export function LogoResgatar({ size = 120, color, ...props }: Props) {
+  const { colors } = useAppTheme();
+
   return (
     <View style={{ width: size, height: size }}>
       <Svg
         width="100%"
         height="100%"
         viewBox="0 0 1024 1024"
-        fill={color}
+        fill={color ?? colors.primary}
         {...props}
       >
         <G>

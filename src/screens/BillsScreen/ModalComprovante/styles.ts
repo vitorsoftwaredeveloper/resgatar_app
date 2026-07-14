@@ -19,10 +19,6 @@ export function useStyles() {
         scroll: {
           flex: 1,
         },
-        scrollContent: {
-          padding: 16,
-          paddingBottom: 32,
-        },
         header: {
           alignItems: "center",
           marginBottom: 20,

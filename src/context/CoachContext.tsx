@@ -101,8 +101,8 @@ export const COACH_STEPS: CoachStep[] = [
   },
   {
     id: "header-quickactions",
-    title: "Ações rápidas",
-    text: "Toque aqui para acessar atalhos úteis como aniversariantes, modo escuro e mais.",
+    title: "Modo escuro",
+    text: "Toque aqui para alternar entre o modo claro e o modo escuro.",
     tab: "Dashboard",
   },
 ];
