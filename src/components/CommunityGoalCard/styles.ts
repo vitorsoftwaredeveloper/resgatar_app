@@ -29,6 +29,10 @@ export function useStyles() {
           letterSpacing: 0.8,
           textTransform: "uppercase",
         },
+        editButton: {
+          marginLeft: "auto",
+          padding: SPACING.xxs,
+        },
         valueRow: {
           flexDirection: "row",
           alignItems: "baseline",

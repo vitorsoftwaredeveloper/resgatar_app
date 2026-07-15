@@ -4,7 +4,9 @@
 const mockListMembers = jest.fn();
 
 jest.mock("@/services/MemberService", () => ({
-  MemberServices: { listMembers: (...args: any[]) => mockListMembers(...args) },
+  MemberServices: {
+    listBirthdayMembers: (...args: any[]) => mockListMembers(...args),
+  },
 }));
 jest.mock("lucide-react-native", () => ({
   Cake: () => null,

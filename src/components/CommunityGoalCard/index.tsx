@@ -1,4 +1,5 @@
 import { CoachTarget } from "@/components/CoachTarget";
+import { ModalSetGoal } from "@/components/ModalSetGoal";
 import { AuthContext } from "@/context/AuthContext";
 import { useAppTheme } from "@/context/ThemeContext";
 import { CommunityGoalCardSkeleton } from "@/components/Skeleton/CommunityGoalCardSkeleton";
@@ -10,11 +11,12 @@ import {
   Banknote,
   CircleCheck,
   HandHeart,
+  Pencil,
   Target,
   Wallet,
 } from "lucide-react-native";
 import React, { useCallback, useContext, useRef, useState } from "react";
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { useStyles } from "./styles";
 
 const MONTH_LABELS = [
@@ -35,10 +37,13 @@ const MONTH_LABELS = [
 export function CommunityGoalCard() {
   const styles = useStyles();
   const { colors } = useAppTheme();
-  const { sessionVersion } = useContext(AuthContext);
+  const { sessionVersion, member } = useContext(AuthContext);
   const [progress, setProgress] = useState<IGoalProgress | null>(null);
   const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
   const fetchedSessionVersion = useRef<number | null>(null);
+
+  const isAdmin = member?.role === "admin";
 
   const load = useCallback(async () => {
     try {
@@ -68,7 +73,7 @@ export function CommunityGoalCard() {
   if (!progress) return null;
 
   // Meta não definida para o mês: estado vazio (em vez de sumir).
-  if (!Number.isFinite(progress.percent)) {
+  if (!Number.isFinite(progress.achievedPercent)) {
     return (
       <CoachTarget id="community-goal-card">
         <View style={styles.card}>
@@ -86,8 +91,8 @@ export function CommunityGoalCard() {
     );
   }
 
-  const percent = Math.max(0, Math.min(100, Math.round(progress.percent)));
-  const reached = percent >= 100;
+  const percent = Math.max(0, Math.min(100, Math.round(progress.achievedPercent)));
+  const reached = progress.goalReached;
   const monthLabel = MONTH_LABELS[progress.month - 1] ?? "";
 
   // Uma faixa só alimenta cor, legenda e mensagem.
@@ -125,6 +130,16 @@ export function CommunityGoalCard() {
       <View style={styles.card}>
         <View style={styles.header}>
           <Text style={styles.title}>Meta da comunidade · {monthLabel}</Text>
+          {isAdmin && (
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={() => setEditing(true)}
+              hitSlop={8}
+              accessibilityLabel="Editar meta do mês"
+            >
+              <Pencil size={14} color={colors.textMuted} />
+            </TouchableOpacity>
+          )}
         </View>
 
         <View style={styles.valueRow}>
@@ -162,13 +177,15 @@ export function CommunityGoalCard() {
             </Text>
           </View>
 
+          {/* Despesas são informativas — não entram no cálculo da meta, então
+              sem o "−" que sugeria subtração, mas em vermelho como valor de saída. */}
           <View style={styles.statRow}>
             <View style={styles.statLeft}>
               <Banknote size={16} color={colors.error} />
               <Text style={styles.statLabel}>Despesas</Text>
             </View>
             <Text style={[styles.statValue, { color: colors.error }]}>
-              −{formatMoneyBRL(progress.expenses ?? 0)}
+              {formatMoneyBRL(progress.expenses ?? 0)}
             </Text>
           </View>
         </View>
@@ -186,9 +203,7 @@ export function CommunityGoalCard() {
               ) : (
                 <>
                   Faltam{" "}
-                  <Text style={styles.remainingStrong}>
-                    {formatMoneyBRL(progress.remaining)}
-                  </Text>{" "}
+                  <Text style={styles.remainingStrong}>{100 - percent}%</Text>{" "}
                   para a meta
                 </>
               )}
@@ -197,6 +212,18 @@ export function CommunityGoalCard() {
           <Text style={styles.highlightMessage}>{message}</Text>
         </View>
       </View>
+
+      {isAdmin && (
+        <ModalSetGoal
+          visible={editing}
+          onClose={() => setEditing(false)}
+          onSaved={load}
+          year={progress.year}
+          month={progress.month}
+          monthLabel={monthLabel}
+          currentGoal={progress.targetGoal}
+        />
+      )}
     </CoachTarget>
   );
 }

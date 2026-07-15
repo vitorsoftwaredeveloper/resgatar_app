@@ -49,6 +49,16 @@ jest.mock("lucide-react-native", () => ({
   HandHeart: () => null,
   Target: () => null,
   Wallet: () => null,
+  X: () => null,
+}));
+
+// ModalSetGoal → ModalBase importa react-native-safe-area-context, que não é
+// transformado pelo jest; substituímos SafeAreaView por uma View simples.
+jest.mock("react-native-safe-area-context", () => ({
+  SafeAreaView: ({ children, style }: any) => {
+    const React = require("react");
+    return React.createElement("View", { style }, children);
+  },
 }));
 
 // O skeleton usa react-native-reanimated (não transformado pelo jest); aqui
@@ -64,14 +74,17 @@ import { CommunityGoalCard } from "@/components/CommunityGoalCard";
 const base = {
   year: 2026,
   month: 6,
-  goal: 4800,
+  targetGoal: 4800,
+  achieved: 4000,
+  goalReached: false,
+  achievedPercent: 64.58,
   dues: 4200,
   collected: 3100,
   donations: 900,
   expenses: 300,
-  remaining: 1700,
-  percent: 64.58,
+  remaining: 800,
   donationItems: [],
+  expenseItems: [],
 };
 
 describe("CommunityGoalCard", () => {
@@ -87,12 +100,14 @@ describe("CommunityGoalCard", () => {
   });
 
   it.each([
+    // 40 (não 50) para o tier "mid": "50%" colidiria com o "Faltam 50%…" do
+    // destaque (100 − 50), que também renderiza "50%".
     [20, "#E53935"],
-    [50, "#E0B96A"],
+    [40, "#E0B96A"],
     [80, "#1E7F43"],
     [100, "#1E7F43"],
   ])("usa a cor de feedback para %i%%", async (percent, color) => {
-    mockGetGoalProgress.mockResolvedValue({ ...base, percent });
+    mockGetGoalProgress.mockResolvedValue({ ...base, achievedPercent: percent });
     const { getByText } = render(<CommunityGoalCard />);
 
     const node = await waitFor(() => getByText(`${percent}%`));
@@ -124,15 +139,17 @@ describe("CommunityGoalCard", () => {
     expect(getByText("Doações")).toBeTruthy();
     expect(getByText("+R$ 900,00")).toBeTruthy();
     expect(getByText("Despesas")).toBeTruthy();
-    expect(getByText("−R$ 300,00")).toBeTruthy();
+    expect(getByText("R$ 300,00")).toBeTruthy();
   });
 
   it("exibe estado de meta atingida quando remaining <= 0", async () => {
     mockGetGoalProgress.mockResolvedValue({
       ...base,
       collected: 4800,
+      achieved: 4800,
       remaining: 0,
-      percent: 100,
+      goalReached: true,
+      achievedPercent: 100,
     });
     const { getByText } = render(<CommunityGoalCard />);
 
@@ -153,7 +170,7 @@ describe("CommunityGoalCard", () => {
   });
 
   it("mostra estado vazio quando não há meta definida", async () => {
-    mockGetGoalProgress.mockResolvedValue({ ...base, percent: NaN });
+    mockGetGoalProgress.mockResolvedValue({ ...base, achievedPercent: NaN });
     const { getByText } = render(<CommunityGoalCard />);
 
     await waitFor(() =>

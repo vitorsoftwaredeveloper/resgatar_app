@@ -152,6 +152,26 @@ export function VideosScreen() {
     });
   }, []);
 
+  const mergeMemberOptions = useCallback((videos: IVideoFeedItem[]) => {
+    if (videos.length === 0) return;
+    setMemberOptions((prev) => {
+      const seen = new Set(prev.map((m) => m.memberId));
+      const additions: MemberOption[] = [];
+      videos.forEach((v) => {
+        if (!seen.has(v.memberId)) {
+          seen.add(v.memberId);
+          additions.push({
+            memberId: v.memberId,
+            firstName: v.firstName,
+            lastName: v.lastName,
+            profileImage: v.profileImage,
+          });
+        }
+      });
+      return additions.length ? [...prev, ...additions] : prev;
+    });
+  }, []);
+
   const load = useCallback(
     async (pageToLoad: number) => {
       if (pageToLoad === 1) {
@@ -167,6 +187,10 @@ export function VideosScreen() {
         setItems((prev) =>
           pageToLoad === 1 ? data.items : [...prev, ...data.items],
         );
+        // Derive the member filter from the feed itself so the row always
+        // shows when videos exist. Accumulate (never replace) so a
+        // member-filtered load doesn't collapse the roster.
+        mergeMemberOptions(data.items);
         setPage(data.page);
         setTotalPages(Math.max(1, data.totalPages));
       } catch {
@@ -176,7 +200,7 @@ export function VideosScreen() {
         setLoadingMore(false);
       }
     },
-    [committedSearch, selectedMemberId],
+    [committedSearch, selectedMemberId, mergeMemberOptions],
   );
 
   const handleSearch = useCallback(() => {
@@ -185,26 +209,16 @@ export function VideosScreen() {
   }, [search]);
 
   const loadMemberOptions = useCallback(async () => {
+    // Best-effort enrichment: pull a wider page to surface members whose
+    // videos live beyond the first feed page. On failure we keep whatever
+    // the feed already gave us, so the filter never vanishes.
     try {
       const data = await VideoService.listAllVideos(1, 50);
-      const seen = new Set<string>();
-      const options: MemberOption[] = [];
-      data.items.forEach((v) => {
-        if (!seen.has(v.memberId)) {
-          seen.add(v.memberId);
-          options.push({
-            memberId: v.memberId,
-            firstName: v.firstName,
-            lastName: v.lastName,
-            profileImage: v.profileImage,
-          });
-        }
-      });
-      setMemberOptions(options);
+      mergeMemberOptions(data.items);
     } catch {
-      setMemberOptions([]);
+      // keep existing options derived from the feed
     }
-  }, []);
+  }, [mergeMemberOptions]);
 
   useFocusEffect(
     useCallback(() => {
